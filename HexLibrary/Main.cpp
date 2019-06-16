@@ -183,14 +183,7 @@ void concurrent_stack_test() {
 
 }
 
-size_t LeftHash(int const&value) {
-	return value;
-}
-size_t RightHash(int const&value) {
-	return 2 * value + 1;
-}
-
 void Main()
 {
-	auto object = parser.ParseObject();
+
 }
