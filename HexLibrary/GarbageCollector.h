@@ -142,7 +142,7 @@ namespace HL
 					m_time_span_cnt(200),
 					m_time_pause(50),
 					m_status(GCStatus::Idle),
-					m_handle_table(1u << 8) {
+					m_handle_table(1u << 4) {
 					m_collect_thread.Go();
 				}
 				GCHandle* AllocateHandle(GCObject* Target)
@@ -209,7 +209,10 @@ namespace HL
 						return;
 					m_handle = GCInstance().AllocateHandle(rhs.m_handle->Reference);
 				}
-				gc(gc&&) = default;
+				gc(gc&&lhs) {
+					Utility::move_assign(m_handle, lhs.m_handle);
+					Utility::move_assign(m_object_ptr, lhs.m_object_ptr);
+				}
 				gc& operator=(gc const&rhs) {
 					if (m_handle != nullptr)
 						m_handle->IsOnReferenece = false;
@@ -233,21 +236,46 @@ namespace HL
 					}
 
 				}
-				inline U* operator->()noexcept {
+				constexpr inline U* operator->()noexcept {
 					return m_object_ptr;
 				}
-				inline const U* operator->()const noexcept {
+				constexpr inline const U* operator->()const noexcept {
 					return m_object_ptr;
 				}
 			};
 			
-			template<class U,class...Args>
-			gc<U> gcnew(Args&&...args) {
+			static void* GCRelease(void* Target) {
+				if (Target == nullptr)
+					return nullptr;
+				GCHandle* ptr = static_cast<GCHandle*>(Target);
+				ptr->IsOnReferenece.store(false, std::memory_order_release);
+				return nullptr;
+			}
+			static void* GCUpdate(void* Target) {
+				GCHandle* ptr = static_cast<GCHandle*>(Target);
+				if (ptr == nullptr || !ptr->IsOnReferenece.load(std::memory_order_acquire))
+					return nullptr;
+				GCHandle* another = GCInstance().AllocateHandle(ptr->Reference);
+				return another;
+			}
+			static bool GCQuery(void* Target) {
+				GCHandle* ptr = static_cast<GCHandle*>(Target);
+				if (ptr == nullptr)
+					return false;
+				return ptr->IsOnReferenece.load(std::memory_order_acquire);
+			}
+			static Pointer::ResourceActions* GCActions() {
+				static Pointer::ResourceActions actions = { &GCRelease,&GCUpdate,&GCQuery,nullptr };
+				return &actions;
+			}
+
+			template<class U, class...Args>
+			Pointer::ptr<U> gcnew(Args&& ...args) {
 				U* ptr = new U(std::forward<Args>(args)...);
 				GCObject* object = GCInstance().AddObject<U>(ptr);
 				GCHandle* handle = GCInstance().AllocateHandle(object);
 				object->Reachable = false;
-				return { handle,ptr };
+				return Pointer::ptr<U>(handle, ptr, GCActions());
 			}
 		}
 	}

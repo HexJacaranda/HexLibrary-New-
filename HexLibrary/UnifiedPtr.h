@@ -52,7 +52,7 @@ namespace HL
 			{
 				friend struct me_setter;
 			protected:
-				weakptr<T> This;
+				mutable weakptr<T> This;
 			};
 
 			struct me_setter
@@ -155,13 +155,13 @@ namespace HL
 					}
 					m_object_ptr = nullptr;
 				}
-				inline T* operator->()const noexcept {
+				constexpr inline T* operator->()const noexcept {
 					return this->m_object_ptr;
 				}
-				inline T* GetObjectPtr()noexcept {
+				constexpr inline T* GetObjectPtr()noexcept {
 					return this->m_object_ptr;
 				}
-				inline const T* GetObjectPtr()const noexcept {
+				constexpr inline const T* GetObjectPtr()const noexcept {
 					return this->m_object_ptr;
 				}
 				inline typename GetReference<Utility::IsSame<T, void>::Value, void_t, T>::Type GetObject()noexcept {
@@ -285,7 +285,7 @@ namespace HL
 					return true;
 				}
 				void SetToNull() {
-					if (!IsInvaild())
+					if (m_resource != nullptr)
 					{
 						m_resource->WeakReference--;
 						if (m_resource->WeakReference == 0)

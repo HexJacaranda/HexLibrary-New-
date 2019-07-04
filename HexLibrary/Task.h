@@ -93,7 +93,7 @@ namespace HL
 				template<class T>
 				class Task
 				{
-					GC::gc<Thread> m_thread;
+					Pointer::ptr<Thread> m_thread;
 					AsyncResult<T> m_result;
 					template<class U,class TaskT,class...Args>
 					inline std::enable_if_t<!std::is_same_v<U, void_t>,void> Execute(TaskT&&task, Args&&...args) {
@@ -150,7 +150,7 @@ namespace HL
 					inline T& Await() {
 						return *m_result.Await();
 					}
-				};
+				}; 
 
 				template<class TaskT,class...Args>
 				Pointer::ptr<Task<std::conditional_t<std::is_same_v<void,Utility::callable_return_t<TaskT,Args...>>,void_t, Utility::callable_return_t<TaskT, Args...>>>>

@@ -10,6 +10,7 @@ using namespace HL::System::Pointer;
 using namespace HL::System::Pointer::Reference;
 using namespace HL::System;
 using namespace HL::System::Threading::Tasks;
+using namespace HL::System::GC;
 
 void Main();
 int main() {
@@ -183,8 +184,9 @@ void concurrent_stack_test() {
 
 }
 
-
 void Main()
 {
-		
+	Async([]() {
+		std::wcout << L"Hello" << std::endl;
+		});
 }
