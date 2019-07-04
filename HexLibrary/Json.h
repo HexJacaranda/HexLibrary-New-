@@ -291,9 +291,11 @@ namespace HL
 						ReadTrue(token); break;
 					case L'f':
 						ReadFalse(token); break;
+					default:
+						if (Text::StringFunction::IsDigit(m_source[m_index]))
+							ReadDigit(token);
+						break;
 					}
-					if (Text::StringFunction::IsDigit(m_source[m_index]))
-						ReadDigit(token);
 				}
 				inline bool Done()const noexcept {
 					return m_index >= m_cnt;
