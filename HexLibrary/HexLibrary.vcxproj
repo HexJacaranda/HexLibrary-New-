@@ -142,6 +142,7 @@
     <ClInclude Include="Linq.h" />
     <ClInclude Include="List.h" />
     <ClInclude Include="Lock.h" />
+    <ClInclude Include="Dynamic.h" />
     <ClInclude Include="Memory.h" />
     <ClInclude Include="NewRegex.h" />
     <ClInclude Include="Nullable.h" />

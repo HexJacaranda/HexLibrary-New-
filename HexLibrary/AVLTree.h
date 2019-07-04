@@ -357,14 +357,18 @@ namespace HL
 					}
 					public:
 					typedef TreeIterator<AVLNode<TKey>> IteratorT;
+					typedef TreeConstIterator<AVLNode<TKey>> ConstIteratorT;
 					IteratorT begin() {
 						return IteratorT(TreeMin(m_root), nullptr);
 					}
 					IteratorT begin()const {
-						return IteratorT(TreeMin(m_root), nullptr);
+						return ConstIteratorT(TreeMin(m_root), nullptr);
 					}
-					IteratorT end()const {
+					IteratorT end() {
 						return IteratorT(nullptr, nullptr);
+					}
+					ConstIteratorT end()const {
+						return ConstIteratorT(nullptr, nullptr);
 					}
 				};
 			}

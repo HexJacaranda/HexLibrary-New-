@@ -39,4 +39,4 @@
 #include "RegexParser.h"
 #include "Regex.h"
 #include "NewRegex.h"
-#include "GeneticAlgorithm.h"
+#include "Dynamic.h"

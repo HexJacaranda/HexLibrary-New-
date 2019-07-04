@@ -15,7 +15,7 @@ namespace HL
 
 			class Thread: public Pointer::me<Thread>
 			{
-				NativeThread::Handle m_handle;
+				NativeThread::Handle m_handle = nullptr;
 				ThreadPack m_pack;
 			private:
 				static void ThreadAgent(void* pack_ptr) {

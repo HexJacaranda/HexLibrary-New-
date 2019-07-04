@@ -8,7 +8,7 @@ namespace HL
 			namespace Generic
 			{
 				template<class U>
-				class Array :public Memory::AllocatorSupporter
+				class Array :public Linq::LinqBase<U*, const U*, Array<U>>, Memory::AllocatorSupporter
 				{
 					U* m_objects = nullptr;
 					size_t m_count = 0;

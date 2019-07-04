@@ -8,7 +8,7 @@ namespace HL
 			namespace Generic
 			{
 				template<class U>
-				class List :public Linq::LinqBase<U*, List<U>>
+				class List :public Linq::LinqBase<U*,const U*, List<U>>
 				{
 					LinearMemoryManager<U> m_memory;
 				public:

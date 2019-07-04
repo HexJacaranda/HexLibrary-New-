@@ -93,7 +93,7 @@ namespace HL
 
 
 			template<class IteratorT>
-			class LinqResult :public LinqBase<IteratorT, LinqResult<IteratorT>>
+			class LinqResult :public LinqBase<IteratorT, IteratorT, LinqResult<IteratorT>>
 			{
 				IteratorT m_begin;
 				IteratorT m_end;
@@ -105,10 +105,16 @@ namespace HL
 				inline IteratorT& end()noexcept {
 					return m_end;
 				}
+				inline IteratorT const& begin()const noexcept {
+					return m_begin;
+				}
+				inline IteratorT const& end()const noexcept {
+					return m_end;
+				}
 				virtual ~LinqResult(){}
 			};
 
-			template<class IteratorT,class Derived>
+			template<class IteratorT,class ConstIterator,class Derived>
 			class LinqBase
 			{
 			public:
@@ -117,6 +123,12 @@ namespace HL
 				}
 				inline IteratorT end()noexcept {
 					return static_cast<Derived*>(this)->end();
+				}
+				inline ConstIterator begin()const noexcept {
+					return static_cast<Derived const*>(this)->begin();
+				}
+				inline ConstIterator end()const noexcept {
+					return static_cast<Derived const*>(this)->end();
 				}
 				template<class FunctorT>
 				LinqResult<WhereIterator<IteratorT, FunctorT>> where(FunctorT&&filter)
@@ -128,6 +140,19 @@ namespace HL
 				template<class FunctorT>
 				LinqResult<SelectIterator<IteratorT, FunctorT>> select(FunctorT&&pipe) {
 					typedef SelectIterator<IteratorT, FunctorT> IteratorType;
+					typedef LinqResult<IteratorType> ReturnType;
+					return ReturnType(IteratorType(begin(), std::forward<FunctorT>(pipe)), IteratorType(end(), std::forward<FunctorT>(pipe)));
+				}
+				template<class FunctorT>
+				LinqResult<WhereIterator<ConstIterator, FunctorT>> where(FunctorT&& filter)const
+				{
+					typedef WhereIterator<ConstIterator, FunctorT> IteratorType;
+					typedef LinqResult<IteratorType> ReturnType;
+					return ReturnType(IteratorType(begin(), end(), std::forward<FunctorT>(filter)), IteratorType(end(), end(), std::forward<FunctorT>(filter)));
+				}
+				template<class FunctorT>
+				LinqResult<SelectIterator<ConstIterator, FunctorT>> select(FunctorT&& pipe)const {
+					typedef SelectIterator<ConstIterator, FunctorT> IteratorType;
 					typedef LinqResult<IteratorType> ReturnType;
 					return ReturnType(IteratorType(begin(), std::forward<FunctorT>(pipe)), IteratorType(end(), std::forward<FunctorT>(pipe)));
 				}

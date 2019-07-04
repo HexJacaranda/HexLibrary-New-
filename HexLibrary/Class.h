@@ -21,7 +21,7 @@ namespace HL
 		{
 			template<class IteratorT, class FilterT>
 			class WhereIterator;
-			template<class IteratorT, class Derived>
+			template<class IteratorT,class ConstIteratorT, class Derived>
 			class LinqBase;
 			template<class IteratorT>
 			class LinqResult;
@@ -74,6 +74,19 @@ namespace HL
 		namespace Threading
 		{
 			class Thread;
+		}
+		namespace Script
+		{
+			class Descriptor;
+			class FunctionDescriptor;
+			class VaribaleDescriptor;
+			class ExpressionDescriptor;
+			class ClassDescriptor;
+			class FieldDescriptor;
+			class PropertyDescriptor;
+			class TypeDescriptor;
+			class ConditionDescriptor;
+			class ArgumentDescriptor;
 		}
 	}
 }

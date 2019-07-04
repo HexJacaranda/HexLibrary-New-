@@ -84,6 +84,49 @@ namespace HL
 						return m_current != other.m_current;
 					}
 				};
+				template<class NodeT>
+				class TreeConstIterator
+				{
+					NodeT* m_current = nullptr;
+					NodeT* m_nil = nullptr;
+					typedef typename NodeT::ElementType ElementType;
+				public:
+					TreeConstIterator(NodeT const* root, NodeT* nil)noexcept
+						:m_current(root), m_nil(nil) {}
+					TreeConstIterator(TreeConstIterator const&)noexcept = default;
+					TreeConstIterator(TreeConstIterator&&)noexcept = default;
+					TreeConstIterator& operator=(TreeConstIterator const&)noexcept = default;
+					TreeConstIterator& operator=(TreeConstIterator&&)noexcept = default;
+					~TreeConstIterator() = default;
+					TreeConstIterator& operator++() {
+						if (m_current->Right == m_nil)
+						{
+							NodeT* ptr = m_current->Parent;
+							while (ptr != nullptr && ptr->Right == m_current)
+							{
+								m_current = ptr;
+								ptr = ptr->Parent;
+							}
+							m_current = ptr;
+						}
+						else
+							m_current = TreeMin(m_current->Right, m_nil);
+						return *this;
+					}
+					TreeConstIterator operator++(int) {
+						TreeIterator temp = ++(*this);
+						return temp;
+					}
+					inline ElementType const& operator*() {
+						return m_current->Get();
+					}
+					inline bool operator==(TreeConstIterator const& other)noexcept {
+						return m_current == other.m_current;
+					}
+					inline bool operator!=(TreeConstIterator const& other)noexcept {
+						return m_current != other.m_current;
+					}
+				};
 
 				enum class NodeColor :bool
 				{

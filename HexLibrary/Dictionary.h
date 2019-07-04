@@ -178,8 +178,45 @@ namespace HL
 					}
 				};
 
+				template<class TKey, class TValue>
+				class DictionaryConstIterator
+				{
+					typedef Entry<TKey, TValue> EntryT;
+					EntryT* m_iterator = nullptr;
+					EntryT* m_end = nullptr;
+					Pair<TKey, TValue>* m_object = nullptr;
+				public:
+					DictionaryConstIterator(EntryT* Iterator, EntryT* End)
+						:m_iterator(Iterator), m_end(End) {
+						if (m_iterator != m_end)
+							m_object = &m_iterator->Object;
+					}
+					DictionaryConstIterator& operator++() {
+						while (m_iterator != m_end)
+						{
+							m_iterator++;
+							if (m_iterator->HashCode > 0)
+							{
+								m_object = &m_iterator->Object;
+								break;
+							}
+						}
+						return *this;
+					}
+					~DictionaryConstIterator() = default;
+					Pair<TKey, TValue> const& operator*()const {
+						return *this->m_object;
+					}
+					inline bool operator==(DictionaryConstIterator const& other)const noexcept {
+						return this->m_iterator == other.m_iterator;
+					}
+					inline bool operator!=(DictionaryConstIterator const& other)const noexcept {
+						return this->m_iterator != other.m_iterator;
+					}
+				};
+
 				template<class TKey,class TValue>
-				class Dictionary :public Linq::LinqBase<DictionaryIterator<TKey, TValue>, Dictionary<TKey, TValue>>
+				class Dictionary :public Linq::LinqBase<DictionaryIterator<TKey, TValue>, DictionaryConstIterator<TKey, TValue>,Dictionary<TKey, TValue>>
 				{
 					typedef Entry<TKey, TValue> EntryT;
 					Collection::Generic::Array<EntryT> m_entries;
@@ -352,17 +389,18 @@ namespace HL
 						return m_entries[index].Object.Value;
 					}
 					typedef DictionaryIterator<TKey, TValue> IteratorT;
+					typedef DictionaryConstIterator<TKey, TValue> ConstIteratorT;
 					inline IteratorT begin() {
 						return IteratorT(this->m_entries.begin(), this->m_entries.end());
 					}
 					inline IteratorT end() {
 						return IteratorT(this->m_entries.end(), this->m_entries.end());
 					}
-					inline IteratorT begin()const {
-						return IteratorT((EntryT*)this->m_entries.begin(), (EntryT*)this->m_entries.end());
+					inline ConstIteratorT begin()const {
+						return ConstIteratorT((EntryT*)this->m_entries.begin(), (EntryT*)this->m_entries.end());
 					}
-					inline IteratorT end()const {
-						return IteratorT((EntryT*)this->m_entries.end(), (EntryT*)this->m_entries.end());
+					inline ConstIteratorT end()const {
+						return ConstIteratorT((EntryT*)this->m_entries.end(), (EntryT*)this->m_entries.end());
 					}
 				};
 			}
