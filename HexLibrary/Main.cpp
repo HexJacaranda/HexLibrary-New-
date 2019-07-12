@@ -186,12 +186,13 @@ void concurrent_stack_test() {
 
 void Main()
 {
-	IO::FileHandle handle(L"D:\\JsonSampleData\\data5.txt", IO::FileMode::Read, IO::Encoding::Unicode);
-	auto json = IO::File::Read(handle);
-	Json::JsonParser parser(json);
-	ptr<Json::JsonArray> array;
-	std::wcout << Diagnosis::time::measure_time<std::chrono::microseconds>([&]() {
-		array = std::move(parser.ParseArray());
-		}, 1) << L" ¦Ìs" << std::endl;
-	
+	//auto range = newptr<Array<ptr<Task<void_t>>>>(3);
+	//for (int i = 0; i < 3; ++i)
+	//	range[i] = Async([=]() {Sleep(i * 500); });
+	//std::wcout << Diagnosis::time::measure_time<std::chrono::milliseconds>([&]() {
+	//	WhenAll(range->select([](auto&& item)->auto && {return item.GetObject(); }))->Await();
+	//	}, 1) << std::endl;
+
+	int a = 0;
+	a = ++a + 1;
 }

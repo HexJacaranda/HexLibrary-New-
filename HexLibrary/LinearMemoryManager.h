@@ -17,7 +17,7 @@ namespace HL
 				U* m_data = nullptr;
 				size_t m_total_count = 0;
 				size_t m_used_count = 0;
-				float m_increasing_factor = 1.5f;
+				float m_increasing_factor = 2.0f;
 
 				void Resize(size_t Count, bool AllowGrowth = true) {
 					size_t to = 0;

@@ -116,20 +116,27 @@ namespace HL
 					template<class TaskT,class...Args>
 					void Run(TaskT&&task, Args&&...args)
 					{
-						m_thread = GC::gcnew<Thread>([=,this]() {
-							Execute<T>(task, args...);
-						});
+						m_thread = GC::gcnew<Thread>([=]() {Execute<T>(task, args...); });
 						m_thread->Go();
 					}
 					inline T& Await() {
 						return m_result.Await();
+					}
+					template<class TaskT,class...Args>
+					Pointer::ptr<Task<std::conditional_t<std::is_same_v<void, Utility::callable_return_t<TaskT, Args...>>, void_t, Utility::callable_return_t<TaskT, Args...>>>>
+						Then(TaskT&& task, Args&& ...args) {
+						typedef Task<std::conditional_t<std::is_same_v<void, Utility::callable_return_t<TaskT, Args...>>, void_t, Utility::callable_return_t<TaskT, Args...>>> task_t;
+						Await();
+						Pointer::ptr<task_t> ret = std::move(Pointer::Reference::newptr<task_t>());
+						ret->Run(std::forward<TaskT>(task), std::forward<Args>(args)...);
+						return std::move(ret);
 					}
 				};
 
 				template<class T>
 				class Task<T&>
 				{
-					GC::gc<Thread> m_thread;
+					Pointer::ptr<Thread> m_thread;
 					AsyncResult<T*> m_result;
 				public:
 					Task(Task const&) = delete;
@@ -142,13 +149,22 @@ namespace HL
 					template<class TaskT, class...Args>
 					void Run(TaskT&&task, Args&&...args)
 					{
-						m_thread = GC::gcnew<Thread>([=, this]() {
+						m_thread = GC::gcnew<Thread>([=]() {
 							m_result.SetValue(&task(args...));
 						});
 						m_thread->Go();
 					}
 					inline T& Await() {
 						return *m_result.Await();
+					}
+					template<class TaskT, class...Args>
+					Pointer::ptr<Task<std::conditional_t<std::is_same_v<void, Utility::callable_return_t<TaskT, Args...>>, void_t, Utility::callable_return_t<TaskT, Args...>>>>
+						Then(TaskT&& task, Args&& ...args) {
+						typedef Task<std::conditional_t<std::is_same_v<void, Utility::callable_return_t<TaskT, Args...>>, void_t, Utility::callable_return_t<TaskT, Args...>>> task_t;
+						Await();
+						Pointer::ptr<task_t> ret = std::move(Pointer::Reference::newptr<task_t>());
+						ret->Run(std::forward<TaskT>(task), std::forward<Args>(args)...);
+						return std::move(ret);
 					}
 				}; 
 
@@ -159,6 +175,18 @@ namespace HL
 					Pointer::ptr<task_t> ret = std::move(Pointer::Reference::newptr<task_t>());
 					ret->Run(std::forward<TaskT>(task), std::forward<Args>(args)...);
 					return std::move(ret);
+				}
+				template<class EnumerableT>
+				Pointer::ptr<Task<void_t>> WhenAll(EnumerableT&& range) {
+					Pointer::ptr<Task<void_t>> ret = Pointer::Reference::newptr<Task<void_t>>();
+					ret->Run([=]() {for (auto&& task : range) task.Await(); });
+					return ret;
+				}
+				template<class IteratorT>
+				Pointer::ptr<Task<void_t>> WhenAll(IteratorT&& begin, IteratorT&& end) {
+					Pointer::ptr<Task<void_t>> ret = Pointer::Reference::newptr<Task<void_t>>();
+					ret->Run([=]() {for (IteratorT iter = begin; iter != end; ++iter)(*iter).Await(); });
+					return ret;
 				}
 			} 
 		}
