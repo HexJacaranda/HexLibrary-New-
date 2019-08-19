@@ -93,10 +93,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);_ENABLE_ATOMIC_ALIGNMENT_FIX</PreprocessorDefinitions>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -138,6 +139,7 @@
     <ClInclude Include="GeneticAlgorithm.h" />
     <ClInclude Include="Hash.h" />
     <ClInclude Include="Json.h" />
+    <ClInclude Include="JsonForStandard.h" />
     <ClInclude Include="LinearMemoryManager.h" />
     <ClInclude Include="Include.h" />
     <ClInclude Include="Linq.h" />

@@ -36,6 +36,7 @@
 #include "TextWriter.h"
 #include "File.h"
 #include "Json.h"
+#include "JsonForStandard.h"
 #include "RegexParser.h"
 #include "Regex.h"
 #include "NewRegex.h"

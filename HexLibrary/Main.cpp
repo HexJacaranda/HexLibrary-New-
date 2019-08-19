@@ -1,5 +1,5 @@
 #include <iostream>
-#include <map>
+#include <vector>
 #include "Include.h"
 
 using namespace HL::System::Collection::Generic;
@@ -13,10 +13,22 @@ using namespace HL::System::Threading::Tasks;
 using namespace HL::System::GC;
 
 void Main();
+
 int main() {
 	Diagnosis::memory::enable_memory_leak_report();
 	std::wcout.imbue(std::locale("chs"));
-	Main();
+	try {
+		Main();
+	}
+	catch (Exception::IException& e) {
+		std::wcout << e.Message() << std::endl;
+	}
+	catch (std::exception& e) {
+		std::cout << e.what() << std::endl;
+	}
+	catch (...) {
+		std::wcout << L"Non-FCL exception occurs" << std::endl;
+	}
 	system("pause");
 	return 0;
 }
@@ -186,13 +198,5 @@ void concurrent_stack_test() {
 
 void Main()
 {
-	//auto range = newptr<Array<ptr<Task<void_t>>>>(3);
-	//for (int i = 0; i < 3; ++i)
-	//	range[i] = Async([=]() {Sleep(i * 500); });
-	//std::wcout << Diagnosis::time::measure_time<std::chrono::milliseconds>([&]() {
-	//	WhenAll(range->select([](auto&& item)->auto && {return item.GetObject(); }))->Await();
-	//	}, 1) << std::endl;
 
-	int a = 0;
-	a = ++a + 1;
 }

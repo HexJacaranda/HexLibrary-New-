@@ -11,8 +11,8 @@ namespace HL
 			class time
 			{
 			public:
-				template<class time_t, class target_t, class...Args>
-				static long long measure_time(target_t&&target, size_t cnt, Args&&...args)
+				template<class time_t=std::chrono::milliseconds, class target_t, class...Args>
+				static long long measure_time(target_t&& target, size_t cnt, Args&& ...args)
 				{
 					long long total = 0;
 					for (size_t i = 0; i < cnt; ++i)

@@ -400,6 +400,9 @@ namespace HL
 					ret.Append(string, length);
 					return ret;
 				}
+				static BasicString<U> Format() {
+
+				}
 				static constexpr size_t Nop = std::numeric_limits<size_t>::max();
 			};
 

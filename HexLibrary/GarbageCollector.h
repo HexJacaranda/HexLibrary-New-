@@ -171,6 +171,8 @@ namespace HL
 				}
 				~GarbageCollector()
 				{
+					if (m_final_singal.load(std::memory_order_acquire))
+						return;
 					m_final_singal.store(true, std::memory_order_release);
 					m_handle_table_lock.Lock();
 					m_generation.Lock.Lock();
@@ -193,56 +195,6 @@ namespace HL
 				static GarbageCollector GC;
 				return GC;
 			}
-
-			template<class U>
-			class gc
-			{
-				GCHandle* m_handle = nullptr;
-				U* m_object_ptr = nullptr;
-			public:
-				gc() = default;
-				gc(nullptr_t) {}
-				gc(GCHandle* handle, U* ptr) noexcept
-					:m_handle(handle), m_object_ptr(ptr) {}
-				gc(gc const&rhs) {
-					if (rhs.m_handle == nullptr)
-						return;
-					m_handle = GCInstance().AllocateHandle(rhs.m_handle->Reference);
-				}
-				gc(gc&&lhs) {
-					Utility::move_assign(m_handle, lhs.m_handle);
-					Utility::move_assign(m_object_ptr, lhs.m_object_ptr);
-				}
-				gc& operator=(gc const&rhs) {
-					if (m_handle != nullptr)
-						m_handle->IsOnReferenece = false;
-					m_handle= GCInstance().AllocateHandle(rhs.m_handle->Reference);
-					m_object_ptr = rhs.m_object_ptr;
-					return *this;
-				}
-				gc& operator=(gc &&lhs)noexcept {
-					if (m_handle != nullptr)
-						m_handle->IsOnReferenece = false;
-					Utility::move_assign(m_handle, lhs.m_handle);
-					Utility::move_assign(m_object_ptr, lhs.m_object_ptr);
-					return *this;
-				}
-				~gc() {
-					if (m_handle != nullptr)
-					{
-						m_handle->IsOnReferenece.store(false, std::memory_order_release);
-						m_handle = nullptr;
-						m_object_ptr = nullptr;
-					}
-
-				}
-				constexpr inline U* operator->()noexcept {
-					return m_object_ptr;
-				}
-				constexpr inline const U* operator->()const noexcept {
-					return m_object_ptr;
-				}
-			};
 			
 			static void* GCRelease(void* Target) {
 				if (Target == nullptr)
