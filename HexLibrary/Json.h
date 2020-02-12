@@ -184,7 +184,7 @@ namespace HL
 								m_index++;
 								wchar_t unicode = 0;
 								for (int i = 3; i >= 0; --i)
-									unicode += (wchar_t)(Text::StringFunction::HexToInt(m_source[m_index++])*(int)std::pow(16, i));
+									unicode |= Text::StringFunction::HexToInt(m_source[m_index++]) << i * 4;
 								string.Append(unicode);
 							}
 							else

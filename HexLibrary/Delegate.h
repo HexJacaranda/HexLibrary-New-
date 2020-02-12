@@ -23,7 +23,7 @@ namespace HL
 			public:
 				template<class Fun>
 				Invoker(Fun&&target) :m_method(std::forward<Fun>(target)) {}
-				virtual R Invoke(void*Object, Args&&...args) {
+				virtual R Invoke(void* Object, Args&& ...args) {
 					return m_method(std::forward<Args>(args)...);
 				}
 				virtual ~Invoker() = default;

@@ -123,9 +123,6 @@
     <ClInclude Include="TextWriter.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="GeneticAlgorithm.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="GarbageCollector.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -145,6 +142,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="JsonForStandard.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Variant.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="RegexRuntime.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

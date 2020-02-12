@@ -86,6 +86,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -113,6 +114,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -136,7 +138,6 @@
     <ClInclude Include="File.h" />
     <ClInclude Include="GarbageCollector.h" />
     <ClInclude Include="GCMemory.h" />
-    <ClInclude Include="GeneticAlgorithm.h" />
     <ClInclude Include="Hash.h" />
     <ClInclude Include="Json.h" />
     <ClInclude Include="JsonForStandard.h" />
@@ -154,6 +155,7 @@
     <ClInclude Include="Reference.h" />
     <ClInclude Include="Regex.h" />
     <ClInclude Include="RegexParser.h" />
+    <ClInclude Include="RegexRuntime.h" />
     <ClInclude Include="SPSCQueue.h" />
     <ClInclude Include="Stack.h" />
     <ClInclude Include="String.h" />
@@ -165,6 +167,7 @@
     <ClInclude Include="UnifiedPtr.h" />
     <ClInclude Include="Utility.h" />
     <ClInclude Include="LinkedList.h" />
+    <ClInclude Include="Variant.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />

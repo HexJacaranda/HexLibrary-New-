@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Definition.h"
 #include "Class.h"
 #include "Diagnosis.h"
@@ -12,6 +13,7 @@
 #include "Memory.h"
 #include "Array.h"
 #include "Nullable.h"
+#include "Variant.h"
 #include "RBTree.h"
 #include "AVLTree.h"
 #include "Stack.h"
@@ -40,4 +42,5 @@
 #include "RegexParser.h"
 #include "Regex.h"
 #include "NewRegex.h"
+#include "RegexRuntime.h"
 #include "Dynamic.h"

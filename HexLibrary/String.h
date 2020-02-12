@@ -191,9 +191,9 @@ namespace HL
 							}
 						}
 						else
-							return (int_part + float_part)*sign;
+							return (int_part + float_part) * sign;
 					}
-					return (int_part + float_part)*sign;
+					return (int_part + float_part) * sign;
 				}
 				template<class CharT>
 				static size_t HexToInt(CharT ch) {

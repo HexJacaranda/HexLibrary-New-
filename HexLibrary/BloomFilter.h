@@ -303,7 +303,7 @@ namespace HL
 						return (3 * value) % mod;
 					}
 					inline constexpr static void SetBit(size_t& value, size_t origin, size_t index) {
-						value |= (1 << index)&origin;
+						value |= ((size_t)1 << index) & origin;
 					}
 					inline static size_t DthHash(size_t hash, size_t wide, size_t index) {
 						size_t ret = 0;

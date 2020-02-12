@@ -8,11 +8,11 @@ namespace HL
 	{
 		namespace Diagnosis
 		{
-			class time
+			class Time
 			{
 			public:
-				template<class time_t=std::chrono::milliseconds, class target_t, class...Args>
-				static long long measure_time(target_t&& target, size_t cnt, Args&& ...args)
+				template<class time_t = std::chrono::milliseconds, class target_t, class...Args>
+				static long long Measure(target_t&& target, size_t cnt, Args&& ...args)
 				{
 					long long total = 0;
 					for (size_t i = 0; i < cnt; ++i)
@@ -27,14 +27,14 @@ namespace HL
 				}
 			};
 
-			class memory
+			class Memory
 			{
 			public:
-				inline static void enable_memory_leak_report()noexcept
+				inline static void EnableMemoryLeakReport()noexcept
 				{
 					_CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);
 				}
-				inline static void break_allocation_at(long flag)noexcept 
+				inline static void BreakAllocationAt(long flag)noexcept 
 				{
 					_CrtSetBreakAlloc(flag);
 				}
