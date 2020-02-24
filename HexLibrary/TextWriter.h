@@ -21,9 +21,9 @@ namespace HL
 				void Write(const U* string) {
 					if (string == nullptr)
 						return;
-					while (*string != CharSet::CharBase<U>::EndOfString)
+					while (*string != CharacterSet::CharBase<U>::EndOfString)
 						*m_iterator++ = *string++;
-					*m_iterator = CharSet::CharBase<U>::EndOfString;
+					*m_iterator = CharacterSet::CharBase<U>::EndOfString;
 				}
 			};
 		}

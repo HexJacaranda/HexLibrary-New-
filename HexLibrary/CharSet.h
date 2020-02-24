@@ -1,21 +1,17 @@
 #pragma once
-namespace HL
+namespace HL::System::Text::CharacterSet
 {
-	namespace System
+	template<class CharT>
+	struct CharBase
 	{
-		namespace CharSet
-		{
-			template<class CharT>
-			struct CharBase
-			{
-				static constexpr CharT UpperA = (CharT)'A';
-				static constexpr CharT UpperZ = (CharT)'Z';
-				static constexpr CharT LowerA = (CharT)'a';
-				static constexpr CharT LowerZ = (CharT)'z';
-				static constexpr CharT DigitZero = (CharT)'0';
-				static constexpr CharT DigitNine = (CharT)'9';
-				static constexpr CharT EndOfString = (CharT)'\0';
-			};
+		static constexpr CharT UpperA = (CharT)'A';
+		static constexpr CharT UpperZ = (CharT)'Z';
+		static constexpr CharT LowerA = (CharT)'a';
+		static constexpr CharT LowerZ = (CharT)'z';
+		static constexpr CharT DigitZero = (CharT)'0';
+		static constexpr CharT DigitNine = (CharT)'9';
+		static constexpr CharT EndOfString = (CharT)'\0';
+	};
 #define _CHAR_BASE_SPECIALIZE(CHAR_T,TRIMER)\
 			template<>\
 			struct CharBase<CHAR_T>\
@@ -29,9 +25,8 @@ namespace HL
 				static constexpr CHAR_T EndOfString = TRIMER##'\0';\
 			}
 
-			_CHAR_BASE_SPECIALIZE(wchar_t, L);
-			_CHAR_BASE_SPECIALIZE(char16_t, u);
-			_CHAR_BASE_SPECIALIZE(char32_t, U);
-		}
-	}
+	_CHAR_BASE_SPECIALIZE(wchar_t, L);
+	_CHAR_BASE_SPECIALIZE(char16_t, u);
+	_CHAR_BASE_SPECIALIZE(char32_t, U);
+
 }

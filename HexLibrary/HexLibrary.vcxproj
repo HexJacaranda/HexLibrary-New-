@@ -139,6 +139,7 @@
     <ClInclude Include="GarbageCollector.h" />
     <ClInclude Include="GCMemory.h" />
     <ClInclude Include="Hash.h" />
+    <ClInclude Include="JIT.h" />
     <ClInclude Include="Json.h" />
     <ClInclude Include="JsonForStandard.h" />
     <ClInclude Include="LinearMemoryManager.h" />
@@ -146,7 +147,6 @@
     <ClInclude Include="Linq.h" />
     <ClInclude Include="List.h" />
     <ClInclude Include="Lock.h" />
-    <ClInclude Include="Dynamic.h" />
     <ClInclude Include="Memory.h" />
     <ClInclude Include="NewRegex.h" />
     <ClInclude Include="Nullable.h" />
@@ -155,7 +155,6 @@
     <ClInclude Include="Reference.h" />
     <ClInclude Include="Regex.h" />
     <ClInclude Include="RegexParser.h" />
-    <ClInclude Include="RegexRuntime.h" />
     <ClInclude Include="SPSCQueue.h" />
     <ClInclude Include="Stack.h" />
     <ClInclude Include="String.h" />
@@ -166,7 +165,6 @@
     <ClInclude Include="Tuple.h" />
     <ClInclude Include="UnifiedPtr.h" />
     <ClInclude Include="Utility.h" />
-    <ClInclude Include="LinkedList.h" />
     <ClInclude Include="Variant.h" />
   </ItemGroup>
   <ItemGroup>

@@ -17,7 +17,6 @@ using namespace HL::System::GC;
 void Main();
 
 int main() {
-
 	Diagnosis::Memory::EnableMemoryLeakReport();
 	std::wcout.imbue(std::locale("chs"));
 	try {
@@ -38,6 +37,6 @@ int main() {
 
 void Main()
 {
-
+	std::wcout << std::numeric_limits<int>::max();
 }
 

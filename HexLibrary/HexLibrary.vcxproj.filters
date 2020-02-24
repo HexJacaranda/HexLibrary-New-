@@ -13,142 +13,223 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="头文件\System">
+      <UniqueIdentifier>{e4369aa3-8615-42d1-a9d0-9d328377d9da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Runtime">
+      <UniqueIdentifier>{615825e6-6dd0-404e-a033-d367a152bc85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Collections">
+      <UniqueIdentifier>{de0dac31-a84a-4e40-92e3-718f903d20c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Collections\Generic">
+      <UniqueIdentifier>{8551cb47-f59d-4989-b637-227d92f0650d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Algorithm">
+      <UniqueIdentifier>{fb8c29ba-79eb-4185-bbd7-efb371261781}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Collections\Tree">
+      <UniqueIdentifier>{1d89f522-e170-4cce-90f1-04aaf180a539}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Collections\BloomFilter">
+      <UniqueIdentifier>{cfb32f5e-a79d-4612-8ea2-72dd709b9c37}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Concurrency">
+      <UniqueIdentifier>{b22309c6-fcce-438a-ac45-7d12a262a407}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Threading">
+      <UniqueIdentifier>{39b18bee-fd4d-4608-8674-6e5f7ed3919e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Delegation">
+      <UniqueIdentifier>{b606415d-1190-478c-a4f4-219db607bdd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Exception">
+      <UniqueIdentifier>{7d7eed79-a93c-4eb5-b76e-926cc1dfdf02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\GC">
+      <UniqueIdentifier>{51f6276b-2141-4847-aa50-08f359f9ddc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\IO">
+      <UniqueIdentifier>{7943dda2-de20-49be-8fb1-13ad7a4b38d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Text">
+      <UniqueIdentifier>{b2363929-3153-421b-850a-10c36a121b63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Text\Json">
+      <UniqueIdentifier>{432e902d-97d6-4c8e-85e1-e2a4a2bb346b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Text\StandardJson">
+      <UniqueIdentifier>{81de37d9-3994-4c17-a513-d6ec94f9fa5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Hash">
+      <UniqueIdentifier>{04120723-51c1-41c4-aeeb-dae933c61f70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Linq">
+      <UniqueIdentifier>{3bf0e64e-eaff-440b-a3d0-163f74a2d046}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Variance">
+      <UniqueIdentifier>{c9af8efb-d379-470b-9f6e-4086eca82403}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Pointer">
+      <UniqueIdentifier>{96edd4b8-d81c-4055-ba61-82ebe89d721a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Memory">
+      <UniqueIdentifier>{85eb3369-38ba-4377-8ebf-aeab0fea7fc3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Threading\Lock">
+      <UniqueIdentifier>{62d6c108-bec0-4ca3-8974-8494a2ef1297}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Nullable">
+      <UniqueIdentifier>{0844d225-09fe-4101-b2cd-a96540422e0c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Pointer\Reference">
+      <UniqueIdentifier>{df1429b9-f60b-445c-94cf-654b0be7f9c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Threading\Tasks">
+      <UniqueIdentifier>{56563bcb-fc43-4812-9f25-329bd80d3ff5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Text\RegularExpression">
+      <UniqueIdentifier>{85c79978-e054-435f-b909-b47fcdfc847a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Utility">
+      <UniqueIdentifier>{35909459-eefc-42bd-89eb-cffc4744f34f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Diagnosis">
+      <UniqueIdentifier>{8d803634-121e-45a2-be91-f4c2423073b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Text\CharacterSet">
+      <UniqueIdentifier>{3bd0b7ad-0af7-4672-8085-99bfdead4d00}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Memory.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Utility.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Include.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="LinearMemoryManager.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Exception.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="List.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Definition.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="String.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Linq.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Class.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="CharSet.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Dictionary.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Algorithm.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Nullable.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="JIT.h">
+      <Filter>头文件\System\Runtime</Filter>
     </ClInclude>
     <ClInclude Include="Array.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\System\Collections\Generic</Filter>
     </ClInclude>
-    <ClInclude Include="Hash.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="UnifiedPtr.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Regex.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Reference.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="NewRegex.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Stack.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="RegexParser.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Delegate.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="LinkedList.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Json.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="File.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="RBTree.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="Algorithm.h">
+      <Filter>头文件\System\Algorithm</Filter>
     </ClInclude>
     <ClInclude Include="AVLTree.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Thread.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Diagnosis.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Task.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ConditionVariable.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Lock.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ThreadingDefine.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Tuple.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="TextWriter.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="GarbageCollector.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="SPSCQueue.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="GCMemory.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="ConcurrentStack.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\System\Collections\Tree</Filter>
     </ClInclude>
     <ClInclude Include="BloomFilter.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\System\Collections\BloomFilter</Filter>
     </ClInclude>
-    <ClInclude Include="Dynamic.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="ConcurrentStack.h">
+      <Filter>头文件\System\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="ConditionVariable.h">
+      <Filter>头文件\System\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="Delegate.h">
+      <Filter>头文件\System\Delegation</Filter>
+    </ClInclude>
+    <ClInclude Include="Dictionary.h">
+      <Filter>头文件\System\Collections\Generic</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception.h">
+      <Filter>头文件\System\Exception</Filter>
+    </ClInclude>
+    <ClInclude Include="GarbageCollector.h">
+      <Filter>头文件\System\GC</Filter>
+    </ClInclude>
+    <ClInclude Include="GCMemory.h">
+      <Filter>头文件\System\GC</Filter>
+    </ClInclude>
+    <ClInclude Include="File.h">
+      <Filter>头文件\System\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="Json.h">
+      <Filter>头文件\System\Text\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="String.h">
+      <Filter>头文件\System\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="LinearMemoryManager.h">
+      <Filter>头文件\System\Collections</Filter>
     </ClInclude>
     <ClInclude Include="JsonForStandard.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\System\Text\StandardJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Hash.h">
+      <Filter>头文件\System\Hash</Filter>
+    </ClInclude>
+    <ClInclude Include="Linq.h">
+      <Filter>头文件\System\Linq</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadingDefine.h">
+      <Filter>头文件\System\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread.h">
+      <Filter>头文件\System\Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="Tuple.h">
+      <Filter>头文件\System\Collections</Filter>
     </ClInclude>
     <ClInclude Include="Variant.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\System\Variance</Filter>
     </ClInclude>
-    <ClInclude Include="RegexRuntime.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="UnifiedPtr.h">
+      <Filter>头文件\System\Pointer</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory.h">
+      <Filter>头文件\System\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Lock.h">
+      <Filter>头文件\System\Threading\Lock</Filter>
+    </ClInclude>
+    <ClInclude Include="List.h">
+      <Filter>头文件\System\Collections\Generic</Filter>
+    </ClInclude>
+    <ClInclude Include="Nullable.h">
+      <Filter>头文件\System\Nullable</Filter>
+    </ClInclude>
+    <ClInclude Include="SPSCQueue.h">
+      <Filter>头文件\System\Concurrency</Filter>
+    </ClInclude>
+    <ClInclude Include="Reference.h">
+      <Filter>头文件\System\Pointer\Reference</Filter>
+    </ClInclude>
+    <ClInclude Include="RBTree.h">
+      <Filter>头文件\System\Collections\Tree</Filter>
+    </ClInclude>
+    <ClInclude Include="Stack.h">
+      <Filter>头文件\System\Collections\Generic</Filter>
+    </ClInclude>
+    <ClInclude Include="Task.h">
+      <Filter>头文件\System\Threading\Tasks</Filter>
+    </ClInclude>
+    <ClInclude Include="TextWriter.h">
+      <Filter>头文件\System\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="RegexParser.h">
+      <Filter>头文件\System\Text\RegularExpression</Filter>
+    </ClInclude>
+    <ClInclude Include="Regex.h">
+      <Filter>头文件\System\Text\RegularExpression</Filter>
+    </ClInclude>
+    <ClInclude Include="NewRegex.h">
+      <Filter>头文件\System\Text\RegularExpression</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility.h">
+      <Filter>头文件\System\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Diagnosis.h">
+      <Filter>头文件\System\Diagnosis</Filter>
+    </ClInclude>
+    <ClInclude Include="CharSet.h">
+      <Filter>头文件\System\Text\CharacterSet</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
