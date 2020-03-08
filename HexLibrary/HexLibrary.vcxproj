@@ -134,11 +134,15 @@
     <ClInclude Include="Definition.h" />
     <ClInclude Include="Delegate.h" />
     <ClInclude Include="Dictionary.h" />
+    <ClInclude Include="Emitter.h" />
     <ClInclude Include="Exception.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="GarbageCollector.h" />
     <ClInclude Include="GCMemory.h" />
     <ClInclude Include="Hash.h" />
+    <ClInclude Include="MethodDescriptor.h" />
+    <ClInclude Include="X86Emitter.h" />
+    <ClInclude Include="HexJIT.h" />
     <ClInclude Include="JIT.h" />
     <ClInclude Include="Json.h" />
     <ClInclude Include="JsonForStandard.h" />
@@ -148,9 +152,11 @@
     <ClInclude Include="List.h" />
     <ClInclude Include="Lock.h" />
     <ClInclude Include="Memory.h" />
+    <ClInclude Include="MetaDataDescriptor.h" />
     <ClInclude Include="NewRegex.h" />
     <ClInclude Include="Nullable.h" />
     <ClInclude Include="Diagnosis.h" />
+    <ClInclude Include="OpCode.h" />
     <ClInclude Include="RBTree.h" />
     <ClInclude Include="Reference.h" />
     <ClInclude Include="Regex.h" />

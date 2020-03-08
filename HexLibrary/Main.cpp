@@ -37,6 +37,9 @@ int main() {
 
 void Main()
 {
-	std::wcout << std::numeric_limits<int>::max();
+	__asm
+	{
+		add word ptr[ebx], 0x12345678
+	}
 }
 

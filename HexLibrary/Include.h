@@ -35,6 +35,16 @@
 #include "CharSet.h"
 #include "String.h"
 #include "TextWriter.h"
+
+
+#include "MetaDataDescriptor.h"
+#include "OpCode.h"
+#include "Emitter.h"
+#include "X86Emitter.h"
+#include "JIT.h"
+#include "HexJIT.h"
+
+
 #include "File.h"
 #include "Json.h"
 #include "JsonForStandard.h"

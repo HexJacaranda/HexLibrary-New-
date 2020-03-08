@@ -100,6 +100,18 @@
     <Filter Include="头文件\System\Text\CharacterSet">
       <UniqueIdentifier>{3bd0b7ad-0af7-4672-8085-99bfdead4d00}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\System\Runtime\JIT">
+      <UniqueIdentifier>{702f04d8-27e9-4a5e-83b3-319ec2fda2eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Runtime\MetaData">
+      <UniqueIdentifier>{77f550a0-5f01-4eff-9535-32ceec6975e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Runtime\JIT\Emit">
+      <UniqueIdentifier>{ed1dc752-89df-4fab-b21c-636ef1067c6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Runtime\JIT\Descriptor">
+      <UniqueIdentifier>{74d74951-7329-4e24-a367-85151c6500f6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include.h">
@@ -110,9 +122,6 @@
     </ClInclude>
     <ClInclude Include="Class.h">
       <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="JIT.h">
-      <Filter>头文件\System\Runtime</Filter>
     </ClInclude>
     <ClInclude Include="Array.h">
       <Filter>头文件\System\Collections\Generic</Filter>
@@ -230,6 +239,27 @@
     </ClInclude>
     <ClInclude Include="CharSet.h">
       <Filter>头文件\System\Text\CharacterSet</Filter>
+    </ClInclude>
+    <ClInclude Include="JIT.h">
+      <Filter>头文件\System\Runtime\JIT</Filter>
+    </ClInclude>
+    <ClInclude Include="OpCode.h">
+      <Filter>头文件\System\Runtime\JIT</Filter>
+    </ClInclude>
+    <ClInclude Include="MetaDataDescriptor.h">
+      <Filter>头文件\System\Runtime\MetaData</Filter>
+    </ClInclude>
+    <ClInclude Include="HexJIT.h">
+      <Filter>头文件\System\Runtime\JIT</Filter>
+    </ClInclude>
+    <ClInclude Include="Emitter.h">
+      <Filter>头文件\System\Runtime\JIT\Emit</Filter>
+    </ClInclude>
+    <ClInclude Include="X86Emitter.h">
+      <Filter>头文件\System\Runtime\JIT\Emit</Filter>
+    </ClInclude>
+    <ClInclude Include="MethodDescriptor.h">
+      <Filter>头文件\System\Runtime\JIT\Descriptor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
