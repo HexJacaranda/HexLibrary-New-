@@ -37,9 +37,6 @@ int main() {
 
 void Main()
 {
-	__asm
-	{
-		add word ptr[ebx], 0x12345678
-	}
+	
 }
 

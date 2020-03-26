@@ -112,6 +112,12 @@
     <Filter Include="头文件\System\Runtime\JIT\Descriptor">
       <UniqueIdentifier>{74d74951-7329-4e24-a367-85151c6500f6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\System\Runtime\JIT\BinaryWriter">
+      <UniqueIdentifier>{c4e8c378-a42b-4aee-8b91-e4341eb50872}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Runtime\JIT\Interfaces">
+      <UniqueIdentifier>{2e7a02a3-f869-4969-a809-9bfd4ed4500c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include.h">
@@ -260,6 +266,18 @@
     </ClInclude>
     <ClInclude Include="MethodDescriptor.h">
       <Filter>头文件\System\Runtime\JIT\Descriptor</Filter>
+    </ClInclude>
+    <ClInclude Include="Binary.h">
+      <Filter>头文件\System\Runtime\JIT\BinaryWriter</Filter>
+    </ClInclude>
+    <ClInclude Include="TypeAlias.h">
+      <Filter>头文件\System\Runtime\JIT</Filter>
+    </ClInclude>
+    <ClInclude Include="ExecutablePage.h">
+      <Filter>头文件\System\Runtime\JIT\Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowsExecutablePage.h">
+      <Filter>头文件\System\Runtime\JIT\Interfaces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

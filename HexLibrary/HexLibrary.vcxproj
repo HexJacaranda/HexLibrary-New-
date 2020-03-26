@@ -99,6 +99,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);_ENABLE_ATOMIC_ALIGNMENT_FIX</PreprocessorDefinitions>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -126,6 +127,7 @@
     <ClInclude Include="Algorithm.h" />
     <ClInclude Include="Array.h" />
     <ClInclude Include="AVLTree.h" />
+    <ClInclude Include="Binary.h" />
     <ClInclude Include="BloomFilter.h" />
     <ClInclude Include="CharSet.h" />
     <ClInclude Include="Class.h" />
@@ -136,11 +138,14 @@
     <ClInclude Include="Dictionary.h" />
     <ClInclude Include="Emitter.h" />
     <ClInclude Include="Exception.h" />
+    <ClInclude Include="ExecutablePage.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="GarbageCollector.h" />
     <ClInclude Include="GCMemory.h" />
     <ClInclude Include="Hash.h" />
     <ClInclude Include="MethodDescriptor.h" />
+    <ClInclude Include="TypeAlias.h" />
+    <ClInclude Include="WindowsExecutablePage.h" />
     <ClInclude Include="X86Emitter.h" />
     <ClInclude Include="HexJIT.h" />
     <ClInclude Include="JIT.h" />

@@ -36,10 +36,16 @@
 #include "String.h"
 #include "TextWriter.h"
 
-
+#include "TypeAlias.h"
+#include "MethodDescriptor.h"
 #include "MetaDataDescriptor.h"
 #include "OpCode.h"
+
+#include "ExecutablePage.h"
+#include "WindowsExecutablePage.h"
+
 #include "Emitter.h"
+#include "Binary.h"
 #include "X86Emitter.h"
 #include "JIT.h"
 #include "HexJIT.h"
