@@ -41,7 +41,7 @@ namespace HL::System::Runtime::Descriptor
 			return (Int8)((m_flag & TypeIndexMask) >> 20);
 		}
 		inline bool IsGeneric()const {
-			return !!m_flag & GenericMask;
+			return !!(m_flag & GenericMask);
 		}
 	};
 }

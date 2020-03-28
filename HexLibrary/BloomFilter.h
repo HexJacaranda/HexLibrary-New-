@@ -8,7 +8,7 @@ namespace HL
 			namespace BloomFilter
 			{
 				inline size_t EstimateMinimalBitCnt(size_t ElementCnt, double MaxFalsePosibility)noexcept {
-					return ElementCnt * std::log2(1 / MaxFalsePosibility);
+					return (size_t)(ElementCnt * std::log2(1 / MaxFalsePosibility));
 				}
 
 				template<class LeftT,class RightT>

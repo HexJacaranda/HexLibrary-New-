@@ -35,8 +35,37 @@ int main() {
 	return 0;
 }
 
+using namespace HL::System::Runtime;
+using namespace HL::System::Runtime::JIT::Emit;
+using namespace HL::System::Runtime::JIT::Emit::X86;
+using namespace HL::System::Runtime::Interfaces;
+
+typedef int(__fastcall *Fn)();
+
 void Main()
 {
-	
+	Int32 divider = 4;
+	X86Emitter emitter;
+	auto context = newptr<EmitContext>();
+	auto page = newptr<OSToEE::Windows::ExecutablePage>(32);
+	emitter.SetEmitContext(context.GetObjectPtr());
+	emitter.SetExecutablePage(page);
+	emitter.StartEmitting();
+
+	//mov ebx,64
+	emitter.EmitStoreImmediateToRegister(Register::BX, 64, SlotType::Int32);
+	//mov eax,[divider]
+	emitter.EmitLoadMemoryToRegisterViaImmediate(Register::AX, (Int64)&divider, SlotType::Int32);
+	//cdq
+	//div ebx,eax
+	emitter.EmitDivRegisterToRegister(Register::BX, Register::AX, SlotType::Int32, ArithmeticType::Signed);
+	//mov eax,ebx
+	emitter.EmitLoadRegisterToRegister(Register::AX, Register::BX, SlotType::Int32);
+	//ret
+	emitter.EmitReturn();
+
+	emitter.CommitEmitting();
+	Fn fn = (Fn)page->GetRawPage();
+	std::wcout << fn() << std::endl;
 }
 

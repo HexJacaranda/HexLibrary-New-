@@ -100,7 +100,7 @@ namespace HL
 				}
 				FileHandle(FileHandle&&) = default;
 				FileHandle(FileHandle const&) = delete;
-				FileHandle& operator=(FileHandle&&lhs) {
+				FileHandle& operator=(FileHandle&&lhs)noexcept {
 					if (m_handle != nullptr)
 					{
 						fclose(m_handle);

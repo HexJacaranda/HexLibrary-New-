@@ -159,9 +159,6 @@
     <ClInclude Include="GarbageCollector.h">
       <Filter>头文件\System\GC</Filter>
     </ClInclude>
-    <ClInclude Include="GCMemory.h">
-      <Filter>头文件\System\GC</Filter>
-    </ClInclude>
     <ClInclude Include="File.h">
       <Filter>头文件\System\IO</Filter>
     </ClInclude>

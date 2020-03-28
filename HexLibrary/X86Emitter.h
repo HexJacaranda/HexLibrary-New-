@@ -42,11 +42,15 @@ namespace HL::System::Runtime::JIT::Emit
 		class Context 
 		{
 		public:
+			static constexpr Int32 PlatformMask = 0b10;
 			static void OperandSlice(EmitContext* context, SlotType To) {
 				context->EmitState |= (Int8)To;
 			}
 			static void OperandPromote(EmitContext* context, SlotType To) {
 				context->EmitState |= (Int8)To;
+			}
+			static bool X86(EmitContext* context) {
+				return context->CommonFlags & PlatformMask;
 			}
 		};
 
@@ -119,6 +123,8 @@ namespace HL::System::Runtime::JIT::Emit
 
 			static constexpr Int8 DivRMToR[] = { (Int8)0xF6,(Int8)0xF7,(Int8)0xF7,(Int8)0xF7 };
 
+			static constexpr Int8 CDQ = (Int8)0x99;
+
 			static constexpr Int8 CmpImmWR4AX[] = { (Int8)0x3C,(Int8)0x3D,(Int8)0x3D,(Int8)0x3D };
 
 			static constexpr Int8 CmpImmWR[] = { (Int8)0x80,(Int8)0x81,(Int8)0x81,(Int8)0x81 };
@@ -148,25 +154,42 @@ namespace HL::System::Runtime::JIT::Emit
 
 			static constexpr Int8 CallImmRel[] = { (Int8)0xE8,(Int8)0xE8,(Int8)0xE8 ,(Int8)0xE8 };
 
-			static constexpr Int8 CallImmAbs[] = { (Int8)0x9A,(Int8)0x9A,(Int8)0x9A ,(Int8)0x9A };
-
 			static constexpr Int8 CallRMAbs[] = { (Int8)0xFF,(Int8)0xFF,(Int8)0xFF ,(Int8)0xFF };
+
+			static constexpr Int8 CallRMRel[] = { (Int8)0xE8,(Int8)0xE8,(Int8)0xE8 ,(Int8)0xE8 };
+
+			static constexpr Int8 Pause = (Int8)0xCC;
 		};
 
+		enum class AddressFixUpType :Int8
+		{
+			AbsoluteToRelative,
+			RelativeToAbsolute
+		};
 
+		struct AddressFixUp
+		{
+			Int32 Index;
+			SlotType Slot;
+			AddressFixUpType Type;
+			//To indicate the offset from operand to end of the opcode
+			Int16 Offset;
+		};
 
 
 		class X86Emitter :public INativeEmitter
 		{		
+			Collection::Generic::List<AddressFixUp> m_fixups;
+
 			template<class IntT>
 			void Write(IntT value) {
-				Binary::BinaryWriter::WriteIntByBigEndianess(
+				Binary::BinaryHelper::WriteIntByBigEndianess(
 					GetExecutablePage()->PrepareWrite(sizeof(IntT)), value);
 				GetExecutablePage()->CommitWrite(sizeof(IntT));
 			}
 			template<class IntT>
 			void WriteLittleEndian(IntT value) {
-				Binary::BinaryWriter::WriteIntByLittleEndianess(
+				Binary::BinaryHelper::WriteIntByLittleEndianess(
 					GetExecutablePage()->PrepareWrite(sizeof(IntT)), value);
 				GetExecutablePage()->CommitWrite(sizeof(IntT));
 			}
@@ -174,15 +197,48 @@ namespace HL::System::Runtime::JIT::Emit
 			{
 				switch (Slot)
 				{
-				case SlotType::Int8:WriteLittleEndian((Int8)Imm); break;
-				case SlotType::Int16:WriteLittleEndian((Int16)Imm); break;
+				case SlotType::Int8:Write((Int8)Imm); break;
+				case SlotType::Int16:Write((Int16)Imm); break;
 				case SlotType::Int32:
 				case SlotType::Float:
-					WriteLittleEndian((Int32)Imm); break;
+					Write((Int32)Imm); break;
 				case SlotType::Int64:
 				case SlotType::Double:
-					WriteLittleEndian((Int64)Imm); break;
+					Write((Int64)Imm); break;
 				}
+			}
+			static void WriteImmediate(Int8* Target,SlotType Slot, Int64 Imm)
+			{
+				switch (Slot)
+				{
+				case SlotType::Int8:Binary::BinaryHelper::WriteIntByBigEndianess(
+					Target, (Int8)Imm); break;
+				case SlotType::Int16:Binary::BinaryHelper::WriteIntByBigEndianess(
+					Target, (Int16)Imm); break;
+				case SlotType::Int32:
+				case SlotType::Float:
+					Binary::BinaryHelper::WriteIntByBigEndianess(
+						Target, (Int32)Imm); break;
+				case SlotType::Int64:
+				case SlotType::Double:
+					Binary::BinaryHelper::WriteIntByBigEndianess(
+						Target, (Int64)Imm); break;
+				}
+			}
+			static Int64 ReadAsImmediate(Int8* Target, SlotType Slot) {
+				switch (Slot)
+				{
+				case SlotType::Int8:return *Target;
+				case SlotType::Int16:return *(Int16*)Target;
+				case SlotType::Int32:
+				case SlotType::Float:
+					return *(Int32*)Target;
+				case SlotType::Int64:
+				case SlotType::Double:
+					return *(Int64*)Target;					
+				}
+				Exception::Throw<EmitException>(L"Invalid slot type when reading immediate!");
+				return *Target;
 			}
 			void WriteREX(SlotType Slot)
 			{
@@ -190,11 +246,47 @@ namespace HL::System::Runtime::JIT::Emit
 				if (REX != 0)
 					Write(REX);
 			}
+
+			inline void NeedFixup(SlotType Slot, AddressFixUpType Type,Int16 Offset = 0) {
+				m_fixups.Add({ GetExecutablePage()->Current(),Slot,Type,Offset });
+			}
+			inline void NeedFixup(SlotType Slot, Int32 Index, AddressFixUpType Type, Int16 Offset = 0) {
+				m_fixups.Add({ Index,Slot,Type,Offset });
+			}
 		public:
+			virtual void StartEmitting()
+			{
+
+			}
+			virtual void CommitEmitting()
+			{
+				Int8* base = GetExecutablePage()->GetRawPage();
+				//Fix up work
+				{					
+					
+					for (auto&& fixup : m_fixups)
+					{
+						Int64 value = ReadAsImmediate(base + fixup.Index, fixup.Slot);
+						if (fixup.Type == AddressFixUpType::AbsoluteToRelative)
+							value = value - ((Int64)base + (Int64)fixup.Index + (Int64)fixup.Offset);
+						else if (fixup.Type == AddressFixUpType::RelativeToAbsolute)
+							value = value + ((Int64)base + (Int64)fixup.Index + (Int64)fixup.Offset);
+						WriteImmediate(base + fixup.Index, fixup.Slot, value);
+					}
+				}
+				//Fill the remain blank with int3
+				{
+					Int32 index = GetExecutablePage()->Current();
+					Int32 length = GetExecutablePage()->Length();
+					for (; index < length; ++index)
+						base[index] = X86OpCodes::Pause;
+				}
+			}
+
 			virtual void EmitStoreImmediateToRegister(Int8 Register, Int64 Imm, SlotType Slot)
 			{
 				WriteREX(Slot);
-				Write(X86OpCodes::MovImmToR[(int)Slot] + Register);
+				Write((Int8)(X86OpCodes::MovImmToR[(int)Slot] + Register));
 				WriteImmediate(Slot, Imm);
 			}
 			virtual void EmitStoreImmediateToMemoryViaRegister(Int8 Register, Int64 Imm, SlotType Slot)
@@ -318,8 +410,24 @@ namespace HL::System::Runtime::JIT::Emit
 
 			virtual void EmitDivRegisterToRegister(Int8 DestinationRegister, Int8 SourceRegister, SlotType Slot, ArithmeticType Type)
 			{
+				GetEmitContext()->SetRegisterOccupied(Register::AX);
+				GetEmitContext()->SetRegisterOccupied(DestinationRegister);
+
 				if (DestinationRegister != Register::AX)
+				{
+					if (SourceRegister == Register::AX)
+					{
+						Int8 ephemeral_register = GetEmitContext()->AvailableRegister();
+						if (ephemeral_register == -1)
+							Exception::Throw<EmitException>(L"All registers unavailable");
+						EmitLoadRegisterToRegister(ephemeral_register, Register::AX, Slot);
+						SourceRegister = ephemeral_register;
+					}
 					EmitLoadRegisterToRegister(Register::AX, DestinationRegister, Slot);
+				}
+
+				WriteREX(Slot);
+				Write(X86OpCodes::CDQ);
 				WriteREX(Slot);
 				Write(X86OpCodes::DivRMToR[(int)Slot]);
 				if (Type == ArithmeticType::Signed)
@@ -328,11 +436,16 @@ namespace HL::System::Runtime::JIT::Emit
 					Write(ModRM(AddressingMode::Register, 0b110, SourceRegister));
 				if (DestinationRegister != Register::AX)
 					EmitLoadRegisterToRegister(DestinationRegister, Register::AX, Slot);
+
+				GetEmitContext()->SetRegisterAvailable(Register::AX);
+				GetEmitContext()->SetRegisterAvailable(DestinationRegister);
 			}
-			virtual void EmitDivImmediateToRegister(Int8 Register, SlotType, Int64 Imm, SlotType Slot, ArithmeticType Type)
+			virtual void EmitDivImmediateToRegister(Int8 Register, Int64 Imm, SlotType Slot, ArithmeticType Type)
 			{
 				if (Register != Register::AX)
 					EmitLoadRegisterToRegister(Register::AX, Register, Slot);
+				WriteREX(Slot);
+				Write(X86OpCodes::CDQ);
 				WriteREX(Slot);
 				Write(X86OpCodes::DivRMToR[(int)Slot]);
 				Int8 ephemeral_register = GetEmitContext()->AvailableRegister();
@@ -456,8 +569,9 @@ namespace HL::System::Runtime::JIT::Emit
 
 			virtual void EmitReturn()
 			{
-				
+				Write(X86OpCodes::Ret[0]);
 			}
+
 			virtual void EmitJmpViaImmediate(Int64 Imm, SlotType Slot, RedirectSemantic Sem)
 			{
 				if (Sem == RedirectSemantic::Absolute && Slot == SlotType::Int8)
@@ -479,7 +593,8 @@ namespace HL::System::Runtime::JIT::Emit
 			{
 				if (Sem == RedirectSemantic::Relative)
 				{
-					//
+					EmitAddImmediateToRegister(Register, 0, Slot, ArithmeticType::Signed);
+					NeedFixup(Slot, GetExecutablePage()->Current() - SlotTypeToSize(Slot), AddressFixUpType::RelativeToAbsolute);
 				}
 				if (Slot == SlotType::Int8)
 				{
@@ -492,49 +607,53 @@ namespace HL::System::Runtime::JIT::Emit
 
 			virtual void EmitJcc(Condition Cond, Int64 Imm, SlotType Slot, RedirectSemantic Sem)
 			{
-				if (Sem == RedirectSemantic::Absolute)
-				{
-
-				}
 				if (Slot == SlotType::Int8 || Slot == SlotType::Int16)
 					Context::OperandPromote(GetEmitContext(), SlotType::Int32);
-				else if(Slot == SlotType::Int64)
+				else if (Slot == SlotType::Int64)
 					Context::OperandSlice(GetEmitContext(), SlotType::Int32);
-
 				Write(X86OpCodes::JccImmRel[(int)Cond]);
+				if (Sem == RedirectSemantic::Absolute)
+					NeedFixup(SlotType::Int32, AddressFixUpType::AbsoluteToRelative);
 				WriteImmediate(SlotType::Int32, Imm);
 			}
 
 			virtual void EmitCallViaRegister(Int8 Register, SlotType Slot, RedirectSemantic Sem)
 			{
-				if (Sem == RedirectSemantic::Relative)
+				if (Sem == RedirectSemantic::Relative && Slot == SlotType::Int64)
 				{
-					//
+					Context::OperandSlice(GetEmitContext(), SlotType::Int32);
+					Slot = SlotType::Int32;
 				}
-				if (Slot == SlotType::Int8)
+				else if (Slot == SlotType::Int8)
 				{
+					Context::OperandPromote(GetEmitContext(), SlotType::Int16);
 					Slot = SlotType::Int16;
-					Context::OperandPromote(GetEmitContext(), Slot);
 				}
-				Write(X86OpCodes::CallRMAbs[(int)Slot] );
+				const Int8* OpCodes =
+					Sem == RedirectSemantic::Relative ? X86OpCodes::CallRMRel : X86OpCodes::CallRMAbs;
+				Write(OpCodes[(int)Slot] );
 				Write(ModRM(AddressingMode::Register, 0b010, Register));
 			}
 
 			virtual void EmitCallViaImmediate(Int64 Imm, SlotType Slot, RedirectSemantic Sem)
 			{
-				if (Sem == RedirectSemantic::Absolute && Slot == SlotType::Int8)
+				if (Sem == RedirectSemantic::Relative && Slot == SlotType::Int64)
 				{
-					Slot = SlotType::Int16;
-					Context::OperandPromote(GetEmitContext(), Slot);
-				}
-				else if (Slot == SlotType::Int64)
-				{
+					Context::OperandSlice(GetEmitContext(), SlotType::Int32);
 					Slot = SlotType::Int32;
-					Context::OperandSlice(GetEmitContext(), Slot);
 				}
-				const Int8* OpCodes =
-					Sem == RedirectSemantic::Relative ? X86OpCodes::CallImmRel : X86OpCodes::CallImmAbs;
-				Write(OpCodes[(int)Slot]);
+				else if (Slot == SlotType::Int8)
+				{
+					Context::OperandPromote(GetEmitContext(), SlotType::Int16);
+					Slot = SlotType::Int16;
+				}
+				if (Sem == RedirectSemantic::Absolute)
+				{
+					Write(X86OpCodes::CallRMAbs[(int)Slot]);
+					Write(ModRM(AddressingMode::RegisterAddressing, 0b010, RegisterOrMemory::Offset32bit));	
+				}
+				else
+					Write(X86OpCodes::CallImmRel[(int)Slot]);
 				WriteImmediate(Slot, Imm);
 			}
 		};

@@ -143,7 +143,7 @@ namespace HL
 				inline float IncFactor()const {
 					return this->m_increasing_factor;
 				}
-				inline void IncFactor(float Value) {
+				inline void IncFactor(size_t Value) {
 					this->m_increasing_factor = Value;
 				}
 				inline void Shrink() {

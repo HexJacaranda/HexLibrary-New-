@@ -62,7 +62,8 @@ namespace HL
 					inline void AcquireRead()noexcept {
 						AcquireSRWLockShared(&m_lock);
 					}
-					inline void ReleaseWrite()noexcept {
+					_Requires_lock_held_(m_lock)
+					inline void ReleaseWrite()noexcept {			
 						ReleaseSRWLockExclusive(&m_lock);
 					}
 					inline void ReleaseRead()noexcept {

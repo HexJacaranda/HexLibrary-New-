@@ -141,7 +141,6 @@
     <ClInclude Include="ExecutablePage.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="GarbageCollector.h" />
-    <ClInclude Include="GCMemory.h" />
     <ClInclude Include="Hash.h" />
     <ClInclude Include="MethodDescriptor.h" />
     <ClInclude Include="TypeAlias.h" />

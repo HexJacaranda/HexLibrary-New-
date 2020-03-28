@@ -28,7 +28,6 @@
 #include "ConditionVariable.h"
 #include "Thread.h"
 #include "ConcurrentStack.h"
-#include "GCMemory.h"
 #include "GarbageCollector.h"
 #include "Task.h"
 #include "Dictionary.h"

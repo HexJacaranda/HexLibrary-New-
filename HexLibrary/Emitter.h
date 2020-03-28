@@ -1,13 +1,16 @@
 #pragma once
+#pragma warning(disable : 4200)
 namespace HL::System::Runtime::JIT::Emit
 {
 	class EmitException :public Exception::IException
 	{
+		Text::WString m_message;
 	public:
-		EmitException(Text::WString const& text) :Exception::IException() {}
+		EmitException(wchar_t const* text) :Exception::IException(text) {}
+		EmitException(Text::WString const& text) :Exception::IException(text.GetNativePtr()) {}
 	};
 
-	enum class SlotType
+	enum class SlotType :Int8
 	{
 		Int8,
 		Int16,
@@ -16,6 +19,22 @@ namespace HL::System::Runtime::JIT::Emit
 		Float,
 		Double
 	};
+
+	static constexpr Int32 SlotTypeToSize(SlotType Slot)
+	{
+		switch (Slot)
+		{
+		case SlotType::Int8:return sizeof(Int8);
+		case SlotType::Int16:return sizeof(Int16); 
+		case SlotType::Int32:
+		case SlotType::Float:
+			return sizeof(Int32);
+		default:
+		case SlotType::Int64:
+		case SlotType::Double:
+			return sizeof(Int64);		
+		}
+	}
 
 	enum class ArithmeticType
 	{
@@ -46,13 +65,19 @@ namespace HL::System::Runtime::JIT::Emit
 		return (*(Int64*)&target);
 	}
 
+	enum class EmitState
+	{
+		OK,
+		NotSupported
+	};
+
 	struct EmitContext
 	{
 		//This field may be used by some implementations to implicitly use extra register
-		Int32 GeneralRegisterUsage;
-		Int32 CommonFlags;
+		Int32 GeneralRegisterUsage = 0xFFFFFFFF;
+		Int32 CommonFlags = 0;
 		//This field is used to indicate the state of emitting
-		Int32 EmitState;
+		Int32 EmitState = 0;
 		//This field is used to extend the context
 		Int8 Appendix[0];	
 		//Get the first available register, -1 indicates there's none
@@ -62,6 +87,12 @@ namespace HL::System::Runtime::JIT::Emit
 					return i;
 			return -1;
 		}
+		inline void SetRegisterAvailable(Int8 Register) {
+			GeneralRegisterUsage |= (1 << Register);
+		}
+		inline void SetRegisterOccupied(Int8 Register) {			
+			GeneralRegisterUsage &= ~(1 << Register);
+		}
 	};
 
 
@@ -70,8 +101,11 @@ namespace HL::System::Runtime::JIT::Emit
 	{
 	protected:
 		Pointer::ptr<Interfaces::OSToEE::IExecutablePage> m_page;
-		EmitContext* m_context;
+		EmitContext* m_context = nullptr;
 	public:
+		virtual void StartEmitting() = 0;
+		virtual void CommitEmitting() = 0;
+
 		virtual void SetEmitContext(EmitContext* value) {
 			m_context = value;
 		}
@@ -96,7 +130,7 @@ namespace HL::System::Runtime::JIT::Emit
 		virtual void EmitLoadMemoryToRegisterViaRegister(Int8 DestinationRegister, Int8 SourceRegister, SlotType) = 0;
 
 		virtual void EmitAddRegisterToRegister(Int8 DestinationRegister, Int8 SourceRegister, SlotType, ArithmeticType) = 0;
-		virtual void EmitAddImmediateToRegister(Int8 Register, Int64 Imm, ArithmeticType) = 0;
+		virtual void EmitAddImmediateToRegister(Int8 Register, Int64 Imm, SlotType, ArithmeticType) = 0;
 
 		virtual void EmitSubRegisterToRegister(Int8 DestinationRegister, Int8 SourceRegister, SlotType, ArithmeticType) = 0;
 		virtual void EmitSubImmediateToRegister(Int8 Register, Int64 Imm, SlotType, ArithmeticType) = 0;
@@ -128,5 +162,7 @@ namespace HL::System::Runtime::JIT::Emit
 
 		virtual void EmitCallViaRegister(Int8 Register, SlotType, RedirectSemantic) = 0;
 		virtual void EmitCallViaImmediate(Int64 Imm, SlotType, RedirectSemantic) = 0;
+
+		virtual ~INativeEmitter(){}
 	};
 }

@@ -45,7 +45,7 @@ namespace HL
 
 			template<class UDT>
 			struct IsPod {
-				static constexpr bool Value = std::is_pod<UDT>::value;
+				static constexpr bool Value = std::is_trivially_copyable<UDT>::value;
 			};
 
 			template<class U>inline long ___IsClassOrUnionTest(void(U::* p)()) { return 0; }
@@ -95,12 +95,12 @@ namespace HL
 			};
 
 			template<class Target>
-			inline constexpr void move_assign(Target& left, Target& right, typename std::enable_if_t<!std::is_pod_v<Target>, int>* = 0)
+			inline constexpr void move_assign(Target& left, Target& right, typename std::enable_if_t<!std::is_trivially_copyable_v<Target>, int>* = 0)
 				noexcept(std::is_nothrow_move_assignable_v<Target>) {
 				left = std::move(right);
 			}
 			template<class Target>
-			inline constexpr void move_assign(Target& left, Target& right, typename std::enable_if_t<std::is_pod_v<Target>, int>* = 0)
+			inline constexpr void move_assign(Target& left, Target& right, typename std::enable_if_t<std::is_trivially_copyable_v<Target>, int>* = 0)
 				noexcept(std::is_nothrow_move_assignable_v<Target>) {
 				left = std::move(right);
 				right = { 0 };
