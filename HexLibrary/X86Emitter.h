@@ -109,7 +109,7 @@ namespace HL::System::Runtime::JIT::Emit
 
 			static constexpr Int8 AddImmToR4AX[] = { (Int8)0x04,(Int8)0x05,(Int8)0x05,(Int8)0x05 };
 
-			static constexpr Int8 SubRToR[] = { (Int8)0x01,(Int8)0x01,(Int8)0x01,(Int8)0x01 };
+			static constexpr Int8 SubRToR[] = { (Int8)0x28,(Int8)0x29,(Int8)0x29,(Int8)0x29 };
 
 			static constexpr Int8 SubImmToR[] = { (Int8)0x80,(Int8)0x81,(Int8)0x81,(Int8)0x81 };
 
@@ -274,6 +274,7 @@ namespace HL::System::Runtime::JIT::Emit
 						WriteImmediate(base + fixup.Index, fixup.Slot, value);
 					}
 				}
+				m_fixups.Clear();
 				//Fill the remain blank with int3
 				{
 					Int32 index = GetExecutablePage()->Current();
@@ -281,7 +282,10 @@ namespace HL::System::Runtime::JIT::Emit
 					for (; index < length; ++index)
 						base[index] = X86OpCodes::Pause;
 				}
+				
 			}
+
+			//Memory/Register operation
 
 			virtual void EmitStoreImmediateToRegister(Int8 Register, Int64 Imm, SlotType Slot)
 			{
@@ -343,6 +347,8 @@ namespace HL::System::Runtime::JIT::Emit
 				Write(ModRM(AddressingMode::RegisterAddressing, DestinationRegister, SourceRegister));
 			}
 
+			//Arithmetic operation
+
 			virtual void EmitAddRegisterToRegister(Int8 DestinationRegister, Int8 SourceRegister, SlotType Slot, ArithmeticType)
 			{
 				WriteREX(Slot);
@@ -365,17 +371,17 @@ namespace HL::System::Runtime::JIT::Emit
 			virtual void EmitSubRegisterToRegister(Int8 DestinationRegister, Int8 SourceRegister, SlotType Slot, ArithmeticType)
 			{
 				WriteREX(Slot);
-				Write(X86OpCodes::AddRToR[(int)Slot]);
+				Write(X86OpCodes::SubRToR[(int)Slot]);
 				Write(ModRM(AddressingMode::Register, SourceRegister, DestinationRegister));
 			}
 			virtual void EmitSubImmediateToRegister(Int8 Register, Int64 Imm, SlotType Slot, ArithmeticType)
 			{
 				WriteREX(Slot);
 				if (Register == Register::AX)
-					Write(X86OpCodes::AddImmToR4AX[(int)Slot]);
+					Write(X86OpCodes::SubImmToR4AX[(int)Slot]);
 				else
 				{
-					Write(X86OpCodes::AddImmToR[(int)Slot]);
+					Write(X86OpCodes::SubImmToR[(int)Slot]);
 					Write(ModRM(AddressingMode::Register, 0b101, Register));
 				}
 				WriteImmediate(Slot, Imm);
@@ -442,21 +448,30 @@ namespace HL::System::Runtime::JIT::Emit
 			}
 			virtual void EmitDivImmediateToRegister(Int8 Register, Int64 Imm, SlotType Slot, ArithmeticType Type)
 			{
+				GetEmitContext()->SetRegisterOccupied(Register::AX);
+				GetEmitContext()->SetRegisterOccupied(Register);
+
+				Int8 ephemeral_register = GetEmitContext()->AvailableRegister();
+				if (ephemeral_register == -1)
+					Exception::Throw<EmitException>(L"All registers unavailable");
+				EmitStoreImmediateToRegister(ephemeral_register, Imm, Slot);
+
 				if (Register != Register::AX)
 					EmitLoadRegisterToRegister(Register::AX, Register, Slot);
 				WriteREX(Slot);
 				Write(X86OpCodes::CDQ);
 				WriteREX(Slot);
 				Write(X86OpCodes::DivRMToR[(int)Slot]);
-				Int8 ephemeral_register = GetEmitContext()->AvailableRegister();
-				if (ephemeral_register == -1)
-					Exception::Throw<EmitException>(L"All registers unavailable");
 				if (Type == ArithmeticType::Signed)
 					Write(ModRM(AddressingMode::Register, 0b111, ephemeral_register));
 				else if (Type == ArithmeticType::Unsigned)
 					Write(ModRM(AddressingMode::Register, 0b110, ephemeral_register));
+
 				if (Register != Register::AX)
 					EmitLoadRegisterToRegister(Register, Register::AX, Slot);
+
+				GetEmitContext()->SetRegisterAvailable(Register::AX);
+				GetEmitContext()->SetRegisterAvailable(Register);
 			}
 
 			virtual void EmitCompareRegisterWithMemoryViaImmediate(Int8 Register, Int64 Address, SlotType Slot)
@@ -493,11 +508,13 @@ namespace HL::System::Runtime::JIT::Emit
 				WriteImmediate(Slot, Imm);
 			}
 
+			//Stack operation
+
 			virtual void EmitPopToRegister(Int8 Register, SlotType Slot)
 			{
 				if (Slot == SlotType::Int8)
 					Slot = SlotType::Int16;
-				Write(X86OpCodes::PopToR[(int)Slot] + Register);
+				Write((Int8)(X86OpCodes::PopToR[(int)Slot] + Register));
 			}
 			virtual void EmitPopToMemoryViaRegister(Int8 Register, SlotType Slot)
 			{
@@ -524,7 +541,7 @@ namespace HL::System::Runtime::JIT::Emit
 				}
 				if (Slot == SlotType::Int16)
 					WriteREX(Slot);
-				Write(X86OpCodes::PushR[(int)Slot] + Register);
+				Write((Int8)(X86OpCodes::PushR[(int)Slot] + Register));
 			}
 			virtual void EmitPushMemoryViaRegister(Int8 Register, SlotType Slot)
 			{
@@ -566,6 +583,8 @@ namespace HL::System::Runtime::JIT::Emit
 				Write(X86OpCodes::PushImm[(int)Slot]);
 				WriteImmediate(Slot, Imm);
 			}
+
+			//Flow control
 
 			virtual void EmitReturn()
 			{
@@ -655,6 +674,70 @@ namespace HL::System::Runtime::JIT::Emit
 				else
 					Write(X86OpCodes::CallImmRel[(int)Slot]);
 				WriteImmediate(Slot, Imm);
+			}
+
+			//Bit operation
+
+			virtual void EmitLShiftRegisterByImmediateTimes(Int8 Register, Int64 Imm, SlotType, ArithmeticType)
+			{
+
+			}
+			virtual void EmitLShiftRegisterByRegisterTimes(Int8 Register, Int8 SourceRegister, SlotType, ArithmeticType)
+			{
+
+			}
+
+			virtual void EmitRShiftRegisterByImmediateTimes(Int8 Register, Int64 Imm, SlotType, ArithmeticType)
+			{
+
+			}
+			virtual void EmitRShiftRegisterByRegisterTimes(Int8 Register, Int8 SourceRegister, SlotType, ArithmeticType)
+			{
+
+			}
+
+
+			virtual void EmitRShiftRegisterByImmediateTimes(Int8 Register, Int64 Imm, SlotType, ArithmeticType) = 0;
+			virtual void EmitRShiftRegisterByRegisterTimes(Int8 Register, Int8 SourceRegister, SlotType, ArithmeticType) = 0;
+
+			virtual void EmitOrRegisterToRegister(Int8 Register, Int8 SourceRegister, SlotType)
+			{
+
+			}
+			virtual void EmitOrImmediateToRegister(Int8 Register, Int64 Imm, SlotType)
+			{
+
+			}
+
+			virtual void EmitAndRegisterToRegister(Int8 Register, Int8 SourceRegister, SlotType)
+			{
+
+			}
+			virtual void EmitAndImmediateToRegister(Int8 Register, Int64 Imm, SlotType)
+			{
+
+			}
+
+			virtual void EmitXorRegisterToRegister(Int8 Register, Int8 SourceRegister, SlotType)
+			{
+
+			}
+			virtual void EmitXorImmediateToRegister(Int8 Register, Int64 Imm, SlotType)
+			{
+
+			}
+
+			virtual void EmitNotRegister(Int8 Register, SlotType)
+			{
+
+			}
+			virtual void EmitNotMemoryViaImmediate(Int8 Register, SlotType)
+			{
+
+			}
+			virtual void EmitNotMemoryViaRegister(Int8 Register, SlotType)
+			{
+
 			}
 		};
 	}

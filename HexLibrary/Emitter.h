@@ -118,6 +118,7 @@ namespace HL::System::Runtime::JIT::Emit
 		virtual Pointer::ptr<Interfaces::OSToEE::IExecutablePage> const& GetExecutablePage() {
 			return m_page;
 		}
+		//Memory/Register operation
 
 		virtual void EmitStoreImmediateToRegister(Int8 Register, Int64 Imm, SlotType) = 0;
 		virtual void EmitStoreImmediateToMemoryViaRegister(Int8 Register, Int64 Imm, SlotType) = 0;
@@ -128,6 +129,8 @@ namespace HL::System::Runtime::JIT::Emit
 		virtual void EmitLoadRegisterToRegister(Int8 DestinationRegister, Int8 SourceRegister, SlotType) = 0;
 		virtual void EmitLoadMemoryToRegisterViaImmediate(Int8 Register, Int64 AddressImm, SlotType) = 0;
 		virtual void EmitLoadMemoryToRegisterViaRegister(Int8 DestinationRegister, Int8 SourceRegister, SlotType) = 0;
+
+		//Arithmetic operation
 
 		virtual void EmitAddRegisterToRegister(Int8 DestinationRegister, Int8 SourceRegister, SlotType, ArithmeticType) = 0;
 		virtual void EmitAddImmediateToRegister(Int8 Register, Int64 Imm, SlotType, ArithmeticType) = 0;
@@ -146,6 +149,8 @@ namespace HL::System::Runtime::JIT::Emit
 		virtual void EmitCompareRegisterWithRegister(Int8 LeftRegister, Int8 RightRegister, SlotType) = 0;
 		virtual void EmitCompareRegisterWithImmediate(Int8 Register, Int64 Imm, SlotType) = 0;
 
+		//Stack operation
+
 		virtual void EmitPopToRegister(Int8 Rgister, SlotType Slot) = 0;
 		virtual void EmitPopToMemoryViaRegister(Int8 Rgister, SlotType Slot) = 0;
 		virtual void EmitPopToMemoryViaImmediate(Int64 Imm, SlotType Slot) = 0;
@@ -155,6 +160,8 @@ namespace HL::System::Runtime::JIT::Emit
 		virtual void EmitPushMemoryViaRegister(Int8 Register, SlotType Slot) = 0;
 		virtual void EmitPushMemoryViaImmediate(Int64 Imm, SlotType Slot) = 0;
 
+		//Flow control
+
 		virtual void EmitReturn() = 0;
 		virtual void EmitJmpViaImmediate(Int64 Imm, SlotType, RedirectSemantic) = 0;
 		virtual void EmitJmpViaRegister(Int8 Register, SlotType, RedirectSemantic) = 0;
@@ -162,6 +169,27 @@ namespace HL::System::Runtime::JIT::Emit
 
 		virtual void EmitCallViaRegister(Int8 Register, SlotType, RedirectSemantic) = 0;
 		virtual void EmitCallViaImmediate(Int64 Imm, SlotType, RedirectSemantic) = 0;
+
+		//Bit operation
+
+		virtual void EmitLShiftRegisterByImmediateTimes(Int8 Register, Int64 Imm, SlotType, ArithmeticType) = 0;
+		virtual void EmitLShiftRegisterByRegisterTimes(Int8 Register, Int8 SourceRegister, SlotType, ArithmeticType) = 0;
+
+		virtual void EmitRShiftRegisterByImmediateTimes(Int8 Register, Int64 Imm, SlotType, ArithmeticType) = 0;
+		virtual void EmitRShiftRegisterByRegisterTimes(Int8 Register, Int8 SourceRegister, SlotType, ArithmeticType) = 0;
+
+		virtual void EmitOrRegisterToRegister(Int8 Register, Int8 SourceRegister, SlotType) = 0;
+		virtual void EmitOrImmediateToRegister(Int8 Register, Int64 Imm, SlotType) = 0;
+
+		virtual void EmitAndRegisterToRegister(Int8 Register, Int8 SourceRegister, SlotType) = 0;
+		virtual void EmitAndImmediateToRegister(Int8 Register, Int64 Imm, SlotType) = 0;
+
+		virtual void EmitXorRegisterToRegister(Int8 Register, Int8 SourceRegister, SlotType) = 0;
+		virtual void EmitXorImmediateToRegister(Int8 Register, Int64 Imm, SlotType) = 0;
+
+		virtual void EmitNotRegister(Int8 Register, SlotType) = 0;
+		virtual void EmitNotMemoryViaImmediate(Int8 Register, SlotType) = 0;
+		virtual void EmitNotMemoryViaRegister(Int8 Register, SlotType) = 0;
 
 		virtual ~INativeEmitter(){}
 	};
