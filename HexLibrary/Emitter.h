@@ -87,11 +87,21 @@ namespace HL::System::Runtime::JIT::Emit
 					return i;
 			return -1;
 		}
-		inline void SetRegisterAvailable(Int8 Register) {
-			GeneralRegisterUsage |= (1 << Register);
+		template<class...Args>
+		inline void SetRegisterAvailable(Args&&...registers)
+		{
+			Utility::Eval(SetRegisterAvailable(registers)...);
 		}
-		inline void SetRegisterOccupied(Int8 Register) {			
-			GeneralRegisterUsage &= ~(1 << Register);
+		template<class...Args>
+		inline void SetRegisterOccupied(Args&&...registers)
+		{
+			Utility::Eval(SetRegisterOccupied(registers)...);
+		}
+		inline Int32 SetRegisterAvailable(Int8 Register) {
+			return GeneralRegisterUsage |= (1 << Register);
+		}
+		inline Int32 SetRegisterOccupied(Int8 Register) {
+			return GeneralRegisterUsage &= ~(1 << Register);
 		}
 	};
 
@@ -117,6 +127,14 @@ namespace HL::System::Runtime::JIT::Emit
 		}
 		virtual Pointer::ptr<Interfaces::OSToEE::IExecutablePage> const& GetExecutablePage() {
 			return m_page;
+		}
+		virtual Int32 CurrentPosition()
+		{
+			return m_page->Current();
+		}
+		virtual Int8* CurrentPointer()
+		{
+			return m_page->Current() + m_page->GetRawPage();
 		}
 		//Memory/Register operation
 
@@ -188,7 +206,7 @@ namespace HL::System::Runtime::JIT::Emit
 		virtual void EmitXorImmediateToRegister(Int8 Register, Int64 Imm, SlotType) = 0;
 
 		virtual void EmitNotRegister(Int8 Register, SlotType) = 0;
-		virtual void EmitNotMemoryViaImmediate(Int8 Register, SlotType) = 0;
+		virtual void EmitNotMemoryViaImmediate(Int64 Imm, SlotType) = 0;
 		virtual void EmitNotMemoryViaRegister(Int8 Register, SlotType) = 0;
 
 		virtual ~INativeEmitter(){}

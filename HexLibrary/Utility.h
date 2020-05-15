@@ -105,6 +105,8 @@ namespace HL
 				left = std::move(right);
 				right = { 0 };
 			}
+			template<class...Args>
+			inline constexpr void Eval(Args&&...) {}
 		}
 	}
 }

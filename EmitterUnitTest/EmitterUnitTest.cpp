@@ -278,5 +278,74 @@ namespace EmitterUnitTest
 			Assert::AreEqual(2, value);
 			Logger::WriteMessage(L"pop [eax]");
 		}
+
+		TEST_METHOD(LShiftRBImm)
+		{
+			Assert::AreEqual(0b100, EmitAs<Int32>([&, this]() {
+				emitter.EmitStoreImmediateToRegister(Register::AX, 0b001, SlotType::Int32);
+				emitter.EmitLShiftRegisterByImmediateTimes(Register::AX, 2, SlotType::Int32, ArithmeticType::Signed);
+				emitter.EmitReturn();
+				}));
+			Logger::WriteMessage(L"shl eax, 2");
+		}
+
+		TEST_METHOD(LShiftRB1)
+		{
+			Assert::AreEqual(0b10, EmitAs<Int32>([&, this]() {
+				emitter.EmitStoreImmediateToRegister(Register::AX, 0b01, SlotType::Int32);
+				emitter.EmitLShiftRegisterByImmediateTimes(Register::AX, 1, SlotType::Int32, ArithmeticType::Signed);
+				emitter.EmitReturn();
+				}));
+			Logger::WriteMessage(L"shl eax, 1");
+		}
+
+		TEST_METHOD(LShiftRBR)
+		{
+			Assert::AreEqual(0b10, EmitAs<Int32>([&, this]() {
+				emitter.EmitStoreImmediateToRegister(Register::AX, 0b01, SlotType::Int32);
+				emitter.EmitStoreImmediateToRegister(Register::BX, 1, SlotType::Int32);
+				emitter.EmitLShiftRegisterByRegisterTimes(Register::AX, Register::BX, SlotType::Int32, ArithmeticType::Signed);
+				emitter.EmitReturn();
+				}));
+			Logger::WriteMessage(L"shl eax, ebx");
+		}
+
+		TEST_METHOD(RShiftRBImm)
+		{
+			Assert::AreEqual(0b001, EmitAs<Int32>([&, this]() {
+				emitter.EmitStoreImmediateToRegister(Register::AX, 0b100, SlotType::Int32);
+				emitter.EmitRShiftRegisterByImmediateTimes(Register::AX, 2, SlotType::Int32, ArithmeticType::Signed);
+				emitter.EmitReturn();
+				}));
+			Logger::WriteMessage(L"shr eax, 2");
+		}
+
+		TEST_METHOD(RShiftRB1)
+		{
+			Assert::AreEqual(0b01, EmitAs<Int32>([&, this]() {
+				emitter.EmitStoreImmediateToRegister(Register::AX, 0b10, SlotType::Int32);
+				emitter.EmitRShiftRegisterByImmediateTimes(Register::AX, 1, SlotType::Int32, ArithmeticType::Signed);
+				emitter.EmitReturn();
+				}));
+			Logger::WriteMessage(L"shr eax, 1");
+		}
+
+		TEST_METHOD(RShiftRBR)
+		{
+			Assert::AreEqual(0b01, EmitAs<Int32>([&, this]() {
+				emitter.EmitStoreImmediateToRegister(Register::AX, 0b10, SlotType::Int32);
+				emitter.EmitStoreImmediateToRegister(Register::BX, 1, SlotType::Int32);
+				emitter.EmitRShiftRegisterByRegisterTimes(Register::AX, Register::BX, SlotType::Int32, ArithmeticType::Signed);
+				emitter.EmitReturn();
+				}));
+			Logger::WriteMessage(L"shr eax, ebx");
+		}
+
+		TEST_METHOD(JmpVImm)
+		{
+			EmitAs<Int32>([&, this]() {
+				
+				});
+		}
 	};
 }

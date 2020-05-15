@@ -29,15 +29,15 @@ namespace HL::System::Text
 		const CharT* IndexOf(const CharT* target, const CharT* substring)
 		{
 			const CharT* cp = target;
-			const CharT* left, * right;
+			const CharT* left = nullptr, * right = nullptr;
 			if (!*substring)
 				return (target);
 			while (*cp)
 			{
 				left = cp;
-				right = right;
+				right = substring;
 				while (*left && *right && !(*left - *right))
-					left++, left++;
+					left++, right++;
 				if (!*right)
 					return (cp);
 				cp++;
