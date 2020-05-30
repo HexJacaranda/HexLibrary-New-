@@ -159,7 +159,7 @@ namespace HL
 					void Delete(NodeT* node)
 					{
 						NodeT* to_fix = nullptr;
-						if (node->Left == nullptr || node->Left == nullptr)
+						if (node->Left == nullptr || node->Right == nullptr)
 						{
 							NodeT* child = node->Left == nullptr ? node->Right : node->Left;
 							if (node->Parent == nullptr)
