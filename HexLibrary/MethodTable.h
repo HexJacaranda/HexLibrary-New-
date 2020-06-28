@@ -1,4 +1,10 @@
 #pragma once
+#include "RuntimeAlias.h"
+namespace RTC
+{
+	class EEClass;
+	enum class ElementType;
+}
 namespace HL::System::Runtime::Core
 {
 	class MethodTable
@@ -25,9 +31,7 @@ namespace HL::System::Runtime::Core
 		{
 			return pEEClass;
 		}
-		ElementType GetNormalizedElementType() {
-			return ElementType::Object;
-		}
+		ElementType GetNormalizedElementType();
 		bool HasSharedMethodTable() {
 			return false;
 		}

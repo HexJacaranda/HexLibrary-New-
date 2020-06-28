@@ -46,7 +46,7 @@
 #include "NormalizedType.h"
 #include "TypeDescriptor.h"
 
-
+#include "ClassLoader.h"
 #include "TypeHandle.h"
 #include "EEClass.h"
 #include "ArrayClass.h"

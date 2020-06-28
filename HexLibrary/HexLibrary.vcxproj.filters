@@ -118,6 +118,9 @@
     <Filter Include="头文件\System\Runtime\Descriptor">
       <UniqueIdentifier>{7f4164a2-24b8-46dd-b883-b96b83be1098}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\System\Runtime\Loader">
+      <UniqueIdentifier>{73c3f429-77c4-4ac2-ba36-d6bd58a8365e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include.h">
@@ -303,6 +306,9 @@
     <ClInclude Include="FieldDescriptor.h">
       <Filter>头文件\System\Runtime\Descriptor</Filter>
     </ClInclude>
+    <ClInclude Include="ClassLoader.h">
+      <Filter>头文件\System\Runtime\Loader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -315,6 +321,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="TypeDescriptor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MethodTable.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

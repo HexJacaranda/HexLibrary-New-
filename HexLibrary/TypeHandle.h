@@ -1,7 +1,15 @@
 #pragma once
-#include "TypeDescriptor.h"
+namespace RTD
+{
+	class TypeDescriptor;
+}
+namespace RTC
+{
+	class MethodTable;
+}
 namespace HL::System::Runtime::Core
 {
+	//To represent all kinds of types
 	class TypeHandle
 	{
 	private:
@@ -9,11 +17,21 @@ namespace HL::System::Runtime::Core
 			IntPtr mAsInt;
 			void* mAsPtr;
 			MethodTable* mAsMethodTable;
-			Descriptor::TypeDescriptor* mAsTypeDescriptor;
+			RTD::TypeDescriptor* mAsTypeDescriptor;
 		};
 	public:
-		Descriptor::TypeDescriptor* AsTypeDescriptor()const {
-			return (Descriptor::TypeDescriptor*)(mAsInt & ~2);
+		TypeHandle() {
+			mAsPtr = nullptr;
+		}
+		TypeHandle(MethodTable* MT) {
+			mAsMethodTable = MT;
+		}
+		TypeHandle(EEClass* Class);
+		TypeHandle(RTD::TypeDescriptor* Type) {
+			mAsTypeDescriptor = Type;
+		}
+		RTD::TypeDescriptor* AsTypeDescriptor()const {
+			return (RTD::TypeDescriptor*)(mAsInt & ~2);
 		}
 		IntPtr AsInt()const {
 			return mAsInt;
@@ -28,7 +46,7 @@ namespace HL::System::Runtime::Core
 			return mAsPtr == nullptr;
 		}
 		__forceinline bool IsUnsharedMT()const {
-			return mAsInt & 2 == 0;
+			return (mAsInt & 2) == 0;
 		}
 		bool IsTypeDescriptor()const {
 			return !IsUnsharedMT();

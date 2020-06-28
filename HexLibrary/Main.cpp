@@ -43,6 +43,5 @@ using namespace HL::System::Text::StandardJson;
 
 void Main()
 {
-	std::pair x{ "","" };
-	//Pair y{ "","" };
+	while (true);
 }

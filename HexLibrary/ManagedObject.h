@@ -1,11 +1,14 @@
 #pragma once
-#include "MethodTable.h"
-#include "EEClass.h"
-#include "NormalizedType.h"
+
+namespace RTC
+{
+	class MethodTable;
+	class EEClass;
+	class TypeHandle;
+}
 
 namespace HL::System::Runtime::Core::ManagedObject
 {
-
 	class Object
 	{
 	private:
@@ -20,9 +23,7 @@ namespace HL::System::Runtime::Core::ManagedObject
 		void SetMethodTable(MethodTable* value) {
 			pMethodTable = value;
 		}
-		EEClass* GetClass()const {
-			return GetMethodTable()->GetEEClass();
-		}
+		EEClass* GetClass()const;
 		UInt32 GetComponentCount();
 		UInt32 GetSize();
 	};
@@ -33,21 +34,8 @@ namespace HL::System::Runtime::Core::ManagedObject
 	private:
 		Int32 mComponentCount;
 	public:
-		bool IsMultiDimensionalArray() const {
-			return GetMethodTable()->GetNormalizedElementType() == ElementType::Array;
-		}
-		const Int32* GetBoundsPtr()const
-		{
-			if (IsMultiDimensionalArray())
-			{
-				const Int32* ret = (const Int32*)(this + 1);
-				if (GetMethodTable()->HasSharedMethodTable())
-					ret = (const Int32*)(((Int8*)ret) + sizeof(IntPtr));
-				return ret;
-			}
-			else
-				return &mComponentCount;
-		}
+		bool IsMultiDimensionalArray()const;
+		const Int32* GetBoundsPtr()const;
 		const Int32* GetLowerBoundsPtr()const
 		{
 			static Int32 zeroBased = 0;

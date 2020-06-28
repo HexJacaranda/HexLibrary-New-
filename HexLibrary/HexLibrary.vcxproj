@@ -135,6 +135,7 @@
     <ClInclude Include="BloomFilter.h" />
     <ClInclude Include="CharSet.h" />
     <ClInclude Include="Class.h" />
+    <ClInclude Include="ClassLoader.h" />
     <ClInclude Include="ConcurrentStack.h" />
     <ClInclude Include="ConditionVariable.h" />
     <ClInclude Include="Definition.h" />
@@ -192,6 +193,7 @@
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ManagedObject.cpp" />
+    <ClCompile Include="MethodTable.cpp" />
     <ClCompile Include="TypeDescriptor.cpp" />
     <ClCompile Include="TypeHandle.cpp" />
   </ItemGroup>
