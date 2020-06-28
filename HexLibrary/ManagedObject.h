@@ -1,6 +1,11 @@
 #pragma once
+#include "MethodTable.h"
+#include "EEClass.h"
+#include "NormalizedType.h"
+
 namespace HL::System::Runtime::Core::ManagedObject
 {
+
 	class Object
 	{
 	private:
@@ -18,11 +23,13 @@ namespace HL::System::Runtime::Core::ManagedObject
 		EEClass* GetClass()const {
 			return GetMethodTable()->GetEEClass();
 		}
+		UInt32 GetComponentCount();
+		UInt32 GetSize();
 	};
 
 	class ArrayObject : public Object
 	{
-		Object* AllocateArray(Int32 elementType, Int32* args, Int32 argsCount, bool LOHAllocation);
+		Object* AllocateArray(TypeHandle elementType, Int32* args, Int32 argsCount, bool LOHAllocation);
 	private:
 		Int32 mComponentCount;
 	public:

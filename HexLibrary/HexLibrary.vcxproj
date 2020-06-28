@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClInclude Include="Algorithm.h" />
     <ClInclude Include="Array.h" />
+    <ClInclude Include="ArrayClass.h" />
     <ClInclude Include="AVLTree.h" />
     <ClInclude Include="Binary.h" />
     <ClInclude Include="BloomFilter.h" />
@@ -138,20 +139,23 @@
     <ClInclude Include="ConditionVariable.h" />
     <ClInclude Include="Definition.h" />
     <ClInclude Include="Delegate.h" />
+    <ClInclude Include="DelegateClass.h" />
     <ClInclude Include="Dictionary.h" />
     <ClInclude Include="EEClass.h" />
     <ClInclude Include="Emitter.h" />
     <ClInclude Include="Exception.h" />
     <ClInclude Include="ExecutablePage.h" />
+    <ClInclude Include="FieldDescriptor.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="GarbageCollector.h" />
     <ClInclude Include="Hash.h" />
     <ClInclude Include="ManagedObject.h" />
-    <ClInclude Include="MethodDescriptor.h" />
+    <ClInclude Include="MethodDescritpor.h" />
     <ClInclude Include="MethodTable.h" />
     <ClInclude Include="NormalizedType.h" />
     <ClInclude Include="ObjectHeader.h" />
     <ClInclude Include="RuntimeAlias.h" />
+    <ClInclude Include="TypeDescriptor.h" />
     <ClInclude Include="TypeHandle.h" />
     <ClInclude Include="WindowsExecutablePage.h" />
     <ClInclude Include="X86Emitter.h" />
@@ -188,6 +192,8 @@
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="ManagedObject.cpp" />
+    <ClCompile Include="TypeDescriptor.cpp" />
+    <ClCompile Include="TypeHandle.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

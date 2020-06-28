@@ -109,14 +109,14 @@
     <Filter Include="头文件\System\Runtime\JIT\Emit">
       <UniqueIdentifier>{ed1dc752-89df-4fab-b21c-636ef1067c6a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\System\Runtime\JIT\Descriptor">
-      <UniqueIdentifier>{74d74951-7329-4e24-a367-85151c6500f6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="头文件\System\Runtime\JIT\BinaryWriter">
       <UniqueIdentifier>{c4e8c378-a42b-4aee-8b91-e4341eb50872}</UniqueIdentifier>
     </Filter>
     <Filter Include="头文件\System\Runtime\JIT\Interfaces">
       <UniqueIdentifier>{2e7a02a3-f869-4969-a809-9bfd4ed4500c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Runtime\Descriptor">
+      <UniqueIdentifier>{7f4164a2-24b8-46dd-b883-b96b83be1098}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -258,9 +258,6 @@
     <ClInclude Include="X86Emitter.h">
       <Filter>头文件\System\Runtime\JIT\Emit</Filter>
     </ClInclude>
-    <ClInclude Include="MethodDescriptor.h">
-      <Filter>头文件\System\Runtime\JIT\Descriptor</Filter>
-    </ClInclude>
     <ClInclude Include="Binary.h">
       <Filter>头文件\System\Runtime\JIT\BinaryWriter</Filter>
     </ClInclude>
@@ -291,12 +288,33 @@
     <ClInclude Include="TypeHandle.h">
       <Filter>头文件\System\Runtime</Filter>
     </ClInclude>
+    <ClInclude Include="TypeDescriptor.h">
+      <Filter>头文件\System\Runtime\Descriptor</Filter>
+    </ClInclude>
+    <ClInclude Include="ArrayClass.h">
+      <Filter>头文件\System\Runtime\MetaData</Filter>
+    </ClInclude>
+    <ClInclude Include="DelegateClass.h">
+      <Filter>头文件\System\Runtime\MetaData</Filter>
+    </ClInclude>
+    <ClInclude Include="MethodDescritpor.h">
+      <Filter>头文件\System\Runtime\Descriptor</Filter>
+    </ClInclude>
+    <ClInclude Include="FieldDescriptor.h">
+      <Filter>头文件\System\Runtime\Descriptor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="ManagedObject.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="TypeHandle.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="TypeDescriptor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

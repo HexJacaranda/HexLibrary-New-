@@ -17,5 +17,6 @@ namespace HL::System::Runtime
 
 #define RT HL::System::Runtime
 #define RTC HL::System::Runtime::Core
+#define RTD HL::System::Runtime::Core::Descriptor
 #define RTO HL::System::Runtime::Core::ManagedObject
 }
