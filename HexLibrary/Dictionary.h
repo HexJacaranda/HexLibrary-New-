@@ -55,42 +55,52 @@ namespace HL
 					TKey Key;
 					TValue Value;
 				public:
-					template<typename = std::enable_if_t<std::conjunction_v<
-						std::is_default_constructible<TKey>,
-						std::is_default_constructible<TValue>,
-						std::_Is_implicitly_default_constructible<TKey>,
-						std::_Is_implicitly_default_constructible<TValue>>, int>>
-						constexpr Pair() noexcept(std::is_nothrow_default_constructible_v<TKey>
-							&&std::is_nothrow_constructible_v<TValue>)
+					template<class UTKey = TKey, class UTValue = TValue,
+						typename = std::enable_if_t<std::conjunction_v<
+						std::is_default_constructible<UTKey>,
+						std::is_default_constructible<UTValue>,
+						std::_Is_implicitly_default_constructible<UTKey>,
+						std::_Is_implicitly_default_constructible<UTValue>>, int>>
+						constexpr Pair() noexcept(std::is_nothrow_default_constructible_v<UTKey>
+							&&std::is_nothrow_constructible_v<UTValue>)
 						:Key(), Value() { }
-					template<typename = std::enable_if_t<std::conjunction_v<
-						std::is_copy_constructible<TKey>,
-						std::is_copy_constructible<TValue>>, int>>
-						constexpr Pair(TKey const&key, TValue const&value) noexcept(std::is_nothrow_copy_constructible_v<TKey>
-							&&std::is_nothrow_copy_constructible_v<TValue>)
+					template<class UTKey = TKey, class UTValue = TValue, 
+						typename = std::enable_if_t<std::conjunction_v<
+						std::is_copy_constructible<UTKey>,
+						std::is_copy_constructible<UTValue>>, int>>
+						constexpr Pair(TKey const&key, TValue const&value) noexcept(std::is_nothrow_copy_constructible_v<UTKey>
+							&&std::is_nothrow_copy_constructible_v<UTValue>)
 						: Key(key), Value(value) {}
-					template<typename = std::enable_if_t<std::conjunction_v<
+					template<class UTKey = TKey, class UTValue = TValue, 
+						typename = std::enable_if_t<std::conjunction_v<
 						std::is_move_constructible<TKey>,
 						std::is_move_constructible<TValue>>, int>>
 						constexpr Pair(TKey &&key, TValue &&value) noexcept(std::is_nothrow_move_constructible_v<TKey>
 							&&std::is_nothrow_move_constructible_v<TValue>)
 						: Key(std::move(key)), Value(std::move(value)) {}
-					template<class OtherL, class OtherR,
-						typename = std::enable_if_t<std::conjunction_v<
-						std::is_constructible<TKey, OtherL>,
-						std::is_constructible<TValue, OtherR>
-						>, int>>
-						constexpr Pair(OtherL&& left, OtherR&& right) noexcept(std::is_nothrow_constructible_v<TKey, OtherL>
-							&&std::is_nothrow_constructible_v<TValue, OtherR>)
-						:Key(std::forward<OtherL>(left)), Value(std::forward<OtherR>(right)) {}
+					//template<class OtherL, class OtherR,
+					//	typename = std::enable_if_t<std::conjunction_v<
+					//	std::is_constructible<TKey, OtherL>,
+					//	std::is_constructible<TValue, OtherR>
+					//	>, int>>
+					//	constexpr Pair(OtherL&& left, OtherR&& right) noexcept(std::is_nothrow_constructible_v<TKey, OtherL>
+					//		&&std::is_nothrow_constructible_v<TValue, OtherR>)
+					//	:Key(std::forward<OtherL>(left)), Value(std::forward<OtherR>(right)) {}
 					template<class OtherL, class OtherR,
 						typename = std::enable_if_t<std::conjunction_v<
 						std::is_constructible<TKey, OtherL const&>,
 						std::is_constructible<TValue, OtherR const&>
 						>, int>>
-						constexpr Pair(Pair<OtherL, OtherR> const& other) noexcept(std::is_nothrow_constructible_v<TKey, OtherL const&>
+						constexpr explicit(!std::is_convertible_v<OtherL, TKey> || !std::is_convertible_v<OtherR, TValue>)
+						Pair(Pair<OtherL, OtherR> const& other) noexcept(std::is_nothrow_constructible_v<TKey, OtherL const&>
 							&&std::is_nothrow_constructible_v<TValue, OtherR const&>)
 						:Key(std::forward<OtherL>(other.Key)), Value(std::forward<OtherR>(other.Value)) {}
+					template <class _Other1, class _Other2,
+						std::enable_if_t<std::conjunction_v<std::is_constructible<TKey, _Other1>, std::is_constructible<TValue, _Other2>>, int> = 0>
+						constexpr explicit(!std::is_convertible_v<_Other1, TKey> || !std::is_convertible_v<_Other2, TValue>)
+						Pair(_Other1&& _Val1, _Other2&& _Val2) noexcept(
+							std::is_nothrow_constructible_v<TKey, _Other1>&& std::is_nothrow_constructible_v<TValue, _Other2>) // strengthened
+						: Key(std::forward<_Other1>(_Val1)), Value(std::forward<_Other2>(_Val2)) {}
 					Pair(Pair const&) = default;
 					Pair(Pair &&) = default;
 					Pair& operator=(Pair const&) = default;

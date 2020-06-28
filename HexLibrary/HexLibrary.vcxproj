@@ -118,6 +118,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -138,14 +139,20 @@
     <ClInclude Include="Definition.h" />
     <ClInclude Include="Delegate.h" />
     <ClInclude Include="Dictionary.h" />
+    <ClInclude Include="EEClass.h" />
     <ClInclude Include="Emitter.h" />
     <ClInclude Include="Exception.h" />
     <ClInclude Include="ExecutablePage.h" />
     <ClInclude Include="File.h" />
     <ClInclude Include="GarbageCollector.h" />
     <ClInclude Include="Hash.h" />
+    <ClInclude Include="ManagedObject.h" />
     <ClInclude Include="MethodDescriptor.h" />
-    <ClInclude Include="TypeAlias.h" />
+    <ClInclude Include="MethodTable.h" />
+    <ClInclude Include="NormalizedType.h" />
+    <ClInclude Include="ObjectHeader.h" />
+    <ClInclude Include="RuntimeAlias.h" />
+    <ClInclude Include="TypeHandle.h" />
     <ClInclude Include="WindowsExecutablePage.h" />
     <ClInclude Include="X86Emitter.h" />
     <ClInclude Include="HexJIT.h" />
@@ -158,7 +165,6 @@
     <ClInclude Include="List.h" />
     <ClInclude Include="Lock.h" />
     <ClInclude Include="Memory.h" />
-    <ClInclude Include="MetaDataDescriptor.h" />
     <ClInclude Include="NewRegex.h" />
     <ClInclude Include="Nullable.h" />
     <ClInclude Include="Diagnosis.h" />
@@ -181,6 +187,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="ManagedObject.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

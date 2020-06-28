@@ -34,8 +34,16 @@
 #include "CharSet.h"
 #include "String.h"
 #include "TextWriter.h"
+#include "File.h"
+#include "Json.h"
+#include "JsonForStandard.h"
+#include "RegexParser.h"
+#include "Regex.h"
+#include "NewRegex.h"
 
-#include "TypeAlias.h"
+//Runtime Part 
+#include "RuntimeAlias.h"
+
 #include "MethodDescriptor.h"
 #include "MetaDataDescriptor.h"
 #include "OpCode.h"
@@ -48,11 +56,11 @@
 #include "X86Emitter.h"
 #include "JIT.h"
 #include "HexJIT.h"
+#include "NormalizedType.h"
+#include "TypeHandle.h"
+#include "EEClass.h"
+#include "MethodTable.h"
+#include "ManagedObject.h"
 
 
-#include "File.h"
-#include "Json.h"
-#include "JsonForStandard.h"
-#include "RegexParser.h"
-#include "Regex.h"
-#include "NewRegex.h"
+

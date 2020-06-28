@@ -249,9 +249,6 @@
     <ClInclude Include="OpCode.h">
       <Filter>头文件\System\Runtime\JIT</Filter>
     </ClInclude>
-    <ClInclude Include="MetaDataDescriptor.h">
-      <Filter>头文件\System\Runtime\MetaData</Filter>
-    </ClInclude>
     <ClInclude Include="HexJIT.h">
       <Filter>头文件\System\Runtime\JIT</Filter>
     </ClInclude>
@@ -267,18 +264,39 @@
     <ClInclude Include="Binary.h">
       <Filter>头文件\System\Runtime\JIT\BinaryWriter</Filter>
     </ClInclude>
-    <ClInclude Include="TypeAlias.h">
-      <Filter>头文件\System\Runtime\JIT</Filter>
-    </ClInclude>
     <ClInclude Include="ExecutablePage.h">
       <Filter>头文件\System\Runtime\JIT\Interfaces</Filter>
     </ClInclude>
     <ClInclude Include="WindowsExecutablePage.h">
       <Filter>头文件\System\Runtime\JIT\Interfaces</Filter>
     </ClInclude>
+    <ClInclude Include="ManagedObject.h">
+      <Filter>头文件\System\Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="MethodTable.h">
+      <Filter>头文件\System\Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="RuntimeAlias.h">
+      <Filter>头文件\System\Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="EEClass.h">
+      <Filter>头文件\System\Runtime\MetaData</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectHeader.h">
+      <Filter>头文件\System\Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="NormalizedType.h">
+      <Filter>头文件\System\Runtime</Filter>
+    </ClInclude>
+    <ClInclude Include="TypeHandle.h">
+      <Filter>头文件\System\Runtime</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ManagedObject.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -37,10 +37,12 @@ using namespace HL::System::Runtime;
 using namespace HL::System::Runtime::JIT::Emit;
 using namespace HL::System::Runtime::JIT::Emit::X86;
 using namespace HL::System::Runtime::Interfaces;
+using namespace HL::System::Text::StandardJson;
 
-typedef int(__fastcall *Fn)();
+
 
 void Main()
 {
-
+	std::pair x{ "","" };
+	//Pair y{ "","" };
 }
