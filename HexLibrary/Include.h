@@ -41,28 +41,5 @@
 #include "Regex.h"
 #include "NewRegex.h"
 
-//Runtime Part 
-#include "RuntimeAlias.h"
-#include "NormalizedType.h"
-#include "TypeDescriptor.h"
-
-#include "ClassLoader.h"
-#include "TypeHandle.h"
-#include "EEClass.h"
-#include "ArrayClass.h"
-#include "DelegateClass.h"
-
-#include "MethodTable.h"
-#include "ManagedObject.h"
-
-
-#include "OpCode.h"
-#include "ExecutablePage.h"
-#include "WindowsExecutablePage.h"
-#include "Emitter.h"
-#include "Binary.h"
-#include "X86Emitter.h"
-#include "JIT.h"
-#include "HexJIT.h"
 
 

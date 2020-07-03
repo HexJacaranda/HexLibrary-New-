@@ -1,5 +1,6 @@
 #pragma once
-namespace HL::System::Runtime::JIT
+#include "RuntimeAlias.h"
+namespace RTJ
 {
 	class MethodInfo
 	{

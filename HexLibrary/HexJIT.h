@@ -1,9 +1,15 @@
 #pragma once
-namespace HL::System::Runtime::JIT
+#include "RuntimeAlias.h"
+#include "JIT.h"
+namespace RTE
+{
+	class INativeEmitter;
+}
+namespace RTJ
 {
 	class HexJIT :public INativeJIT
 	{
-		Emit::INativeEmitter* m_il;
+		RTE::INativeEmitter* m_emitter;
 
 	public:
 		virtual void* Compile(MethodInfo) {

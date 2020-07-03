@@ -1,15 +1,18 @@
 #pragma once
 #pragma warning(disable : 4200)
-namespace HL::System::Runtime::JIT::Emit
-{
-	class EmitException :public Exception::IException
-	{
-		Text::WString m_message;
-	public:
-		EmitException(wchar_t const* text) :Exception::IException(text) {}
-		EmitException(Text::WString const& text) :Exception::IException(text.GetNativePtr()) {}
-	};
+#include "RuntimeAlias.h"
+#include "Include.h"
 
+namespace RTIOS2EE
+{
+	class IExecutablePage;
+}
+namespace RTJE
+{
+	class EmitContext;
+}
+namespace RTJE
+{
 	enum class SlotType :Int8
 	{
 		Int8,
@@ -90,12 +93,12 @@ namespace HL::System::Runtime::JIT::Emit
 		template<class...Args>
 		inline void SetRegisterAvailable(Args&&...registers)
 		{
-			Utility::Eval(SetRegisterAvailable(registers)...);
+			HL::System::Utility::Eval(SetRegisterAvailable(registers)...);
 		}
 		template<class...Args>
 		inline void SetRegisterOccupied(Args&&...registers)
 		{
-			Utility::Eval(SetRegisterOccupied(registers)...);
+			HL::System::Utility::Eval(SetRegisterOccupied(registers)...);
 		}
 		inline Int32 SetRegisterAvailable(Int8 Register) {
 			return GeneralRegisterUsage |= (1 << Register);
@@ -110,7 +113,7 @@ namespace HL::System::Runtime::JIT::Emit
 	class INativeEmitter
 	{
 	protected:
-		Pointer::ptr<Interfaces::OSToEE::IExecutablePage> m_page;
+		RTIOS2EE::IExecutablePage* m_page;
 		EmitContext* m_context = nullptr;
 	public:
 		virtual void StartEmitting() = 0;
@@ -119,23 +122,11 @@ namespace HL::System::Runtime::JIT::Emit
 		virtual void SetEmitContext(EmitContext* value) {
 			m_context = value;
 		}
-		virtual EmitContext* GetEmitContext() {
-			return m_context;
-		}
-		virtual void SetExecutablePage(Pointer::ptr<Interfaces::OSToEE::IExecutablePage> const& value) {
-			m_page = value;
-		}
-		virtual Pointer::ptr<Interfaces::OSToEE::IExecutablePage> const& GetExecutablePage() {
-			return m_page;
-		}
-		virtual Int32 CurrentPosition()
-		{
-			return m_page->Current();
-		}
-		virtual Int8* CurrentPointer()
-		{
-			return m_page->Current() + m_page->GetRawPage();
-		}
+		virtual EmitContext* GetEmitContext();
+		virtual void SetExecutablePage(RTIOS2EE::IExecutablePage* value);
+		virtual RTIOS2EE::IExecutablePage* GetExecutablePage(); 
+		virtual Int32 CurrentPosition();
+		virtual Int8* CurrentPointer();
 		//Memory/Register operation
 
 		virtual void EmitStoreImmediateToRegister(Int8 Register, Int64 Imm, SlotType) = 0;

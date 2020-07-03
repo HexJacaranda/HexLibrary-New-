@@ -1,6 +1,8 @@
 #pragma once
-namespace HL::System::Runtime
+namespace Runtime
 {
+//Provide well-defined alias for runtime
+
 	using Int8 = __int8;
 	using Int16 = __int16;
 	using Int32 = __int32;
@@ -9,14 +11,25 @@ namespace HL::System::Runtime
 	using UInt16 = unsigned __int16;
 	using UInt32 = unsigned __int32;
 	using UInt64 = unsigned __int64;
+
+	
 #ifdef _M_AMD64
 	using IntPtr = Int64;
+	using Int = Int64;
 #else
 	using IntPtr = Int32;
+	using Int = Int32;
 #endif
+	using RTString = const wchar_t*;
+#define Text(T) L##T
 
-#define RT HL::System::Runtime
-#define RTC HL::System::Runtime::Core
-#define RTD HL::System::Runtime::Core::Descriptor
-#define RTO HL::System::Runtime::Core::ManagedObject
+#define RT  Runtime
+#define RTC Runtime::Core
+#define RTD Runtime::Core::Descriptor
+#define RTO Runtime::Core::ManagedObject
+#define RTE Runtime::Exception
+#define RTGC Runtime::Core::GC
+#define RTJ Runtime::Core::JIT
+#define RTJE Runtime::Core::JIT::Emit
+#define RTIOS2EE Runtime::Core::Interfaces::OSToEE
 }

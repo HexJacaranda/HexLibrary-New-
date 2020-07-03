@@ -1,15 +1,17 @@
 #pragma once
+#include "RuntimeAlias.h"
+namespace RTC
+{
+	class MethodTable;
+}
 namespace RTD
 {
 	class TypeDescriptor;
 }
 namespace RTC
 {
-	class MethodTable;
-}
-namespace HL::System::Runtime::Core
-{
-	//To represent all kinds of types
+	//TypeHandle represents and accommodates all kinds of type 
+	//representation (i.e. MethodTable,TypeDescriptor,...)
 	class TypeHandle
 	{
 	private:
@@ -26,12 +28,8 @@ namespace HL::System::Runtime::Core
 		TypeHandle(MethodTable* MT) {
 			mAsMethodTable = MT;
 		}
-		TypeHandle(EEClass* Class);
 		TypeHandle(RTD::TypeDescriptor* Type) {
 			mAsTypeDescriptor = Type;
-		}
-		RTD::TypeDescriptor* AsTypeDescriptor()const {
-			return (RTD::TypeDescriptor*)(mAsInt & ~2);
 		}
 		IntPtr AsInt()const {
 			return mAsInt;
@@ -42,17 +40,11 @@ namespace HL::System::Runtime::Core
 		MethodTable* AsMethodTable()const {
 			return mAsMethodTable;
 		}
+		RTD::TypeDescriptor* AsTypeDescriptor()const {
+			return mAsTypeDescriptor;
+		}
 		bool IsNull() const {
 			return mAsPtr == nullptr;
 		}
-		__forceinline bool IsUnsharedMT()const {
-			return (mAsInt & 2) == 0;
-		}
-		bool IsTypeDescriptor()const {
-			return !IsUnsharedMT();
-		}
-		MethodTable* GetMethodTable();
 	};
-
-
 }

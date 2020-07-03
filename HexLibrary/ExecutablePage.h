@@ -1,5 +1,6 @@
 #pragma once
-namespace HL::System::Runtime::Interfaces::OSToEE
+#include "RuntimeAlias.h"
+namespace RTIOS2EE
 {
 	class IExecutablePage
 	{

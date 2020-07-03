@@ -1,12 +1,14 @@
 #include "pch.h"
 #include "CppUnitTest.h"
+#include "../HexLibrary/Emitter.h"
+#include "../HexLibrary/X86Emitter.h"
 #include "../HexLibrary/Include.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
-using namespace HL::System::Runtime;
-using namespace HL::System::Runtime::JIT::Emit;
-using namespace HL::System::Runtime::JIT::Emit::X86;
-using namespace HL::System::Runtime::Interfaces;
+using namespace Runtime;
+using namespace Runtime::Core::JIT::Emit;
+using namespace Runtime::Core::JIT::Emit::X86;
+using namespace Runtime::Core::Interfaces;
 using namespace HL::System::Pointer;
 using namespace HL::System::Pointer::Reference;
 

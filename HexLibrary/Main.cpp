@@ -33,15 +33,7 @@ int main() {
 	return 0;
 }
 
-using namespace HL::System::Runtime;
-using namespace HL::System::Runtime::JIT::Emit;
-using namespace HL::System::Runtime::JIT::Emit::X86;
-using namespace HL::System::Runtime::Interfaces;
-using namespace HL::System::Text::StandardJson;
-
-
-
 void Main()
 {
-	while (true);
+
 }
