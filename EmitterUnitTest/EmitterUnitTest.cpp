@@ -1,8 +1,15 @@
 #include "pch.h"
 #include "CppUnitTest.h"
+#include "../HexLibrary/RuntimeAlias.h"
 #include "../HexLibrary/Emitter.h"
 #include "../HexLibrary/X86Emitter.h"
+#include "../HexLibrary/RuntimeException.h"
+#include "../HexLibrary/WindowsExecutablePage.h"
 #include "../HexLibrary/Include.h"
+#include "../HexLibrary/Emitter.cpp"
+#include "../HexLibrary/X86Emitter.cpp"
+#include "../HexLibrary/WindowsExecutablePage.cpp"
+#include "../HexLibrary/RuntimeException.cpp"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace Runtime;
@@ -26,8 +33,8 @@ namespace EmitterUnitTest
 		template<class R,class...Args,class Fn>
 		R EmitAs(Fn&& fn)
 		{
-			auto page = newptr<OSToEE::Windows::ExecutablePage>(32);
-			emitter.SetExecutablePage(page);
+			auto page = newptr<RTIOS2EE::Windows::ExecutablePage>(32);
+			emitter.SetExecutablePage(page.GetObjectPtr());
 			emitter.StartEmitting();
 			std::forward<Fn>(fn)();
 			emitter.CommitEmitting();
@@ -37,12 +44,12 @@ namespace EmitterUnitTest
 
 		TEST_METHOD(SImm2R)
 		{		
-			Assert::AreEqual(10,
-				EmitAs<Int32>([this]() {
-					emitter.EmitStoreImmediateToRegister(Register::AX, 10, SlotType::Int32);
+			Assert::AreEqual(10ll,
+				EmitAs<Int64>([this]() {
+					emitter.EmitStoreImmediateToRegister(Register::AX, 10ll, SlotType::Int64);
 					emitter.EmitReturn();
 				}));
-			Logger::WriteMessage(L"mov eax,Imm");
+			Logger::WriteMessage(L"mov rax,Imm");
 		}
 
 		TEST_METHOD(SR2R)
@@ -58,35 +65,35 @@ namespace EmitterUnitTest
 
 		TEST_METHOD(SImm2MVR)
 		{
-			Int32 value = 0;
+			Int64 value = 0;
 			EmitAs<void>([&, this]() {
-				emitter.EmitStoreImmediateToRegister(Register::AX, (Int64)&value, SlotType::Int32);
-				emitter.EmitStoreImmediateToMemoryViaRegister(Register::AX, 10, SlotType::Int32);
+				emitter.EmitStoreImmediateToRegister(Register::AX, (Int64)&value, SlotType::Int64);
+				emitter.EmitStoreImmediateToMemoryViaRegister(Register::AX, 10ll, SlotType::Int64);
 				emitter.EmitReturn();
 					});		
-			Assert::AreEqual(10,value);
+			Assert::AreEqual(10ll, value);
 			Logger::WriteMessage(L"mov [eax],Imm");
 		}
 
 
 		TEST_METHOD(SImm2MVImm)
 		{
-			Int32 value = 0;
+			Int64 value = 0;
 			EmitAs<void>([&, this]() {
-				emitter.EmitStoreImmediateToMemoryViaImmediate((Int64)&value, 10, SlotType::Int32);
+				emitter.EmitStoreImmediateToMemoryViaImmediate((Int64)&value, 10, SlotType::Int64);
 				emitter.EmitReturn();
 				});
-			Assert::AreEqual(10, value);
+			Assert::AreEqual(10ll, value);
 			Logger::WriteMessage(L"mov [Addr],Imm");
 		}
 
 		TEST_METHOD(SM2RVR)
 		{
-			Int32 value = 10;
-			Assert::AreEqual(10,
-				EmitAs<Int32>([&,this]() {				
-					emitter.EmitStoreImmediateToRegister(Register::BX, (Int64)&value, SlotType::Int32);
-					emitter.EmitLoadMemoryToRegisterViaRegister(Register::AX, Register::BX, SlotType::Int32);
+			Int64 value = 10ll;
+			Assert::AreEqual(10ll,
+				EmitAs<Int64>([&,this]() {				
+					emitter.EmitStoreImmediateToRegister(Register::BX, (Int64)&value, SlotType::Int64);
+					emitter.EmitLoadMemoryToRegisterViaRegister(Register::AX, Register::BX, SlotType::Int64);
 					emitter.EmitReturn();
 					}));
 			Logger::WriteMessage(L"mov eax,[ebx]");
@@ -95,14 +102,13 @@ namespace EmitterUnitTest
 
 		TEST_METHOD(SM2RVImm)
 		{
-			Int32 value = 10;
-			Assert::AreEqual(10,
-				EmitAs<Int32>([&, this]() {
-					emitter.EmitLoadMemoryToRegisterViaImmediate(Register::AX, (Int64)&value, SlotType::Int32);
+			Int64 value = 10ll;
+			Assert::AreEqual(10ll,
+				EmitAs<Int64>([&, this]() {
+					emitter.EmitLoadMemoryToRegisterViaImmediate(Register::AX, (Int64)&value, SlotType::Int64);
 					emitter.EmitReturn();
 					}));
-			Logger::WriteMessage(L"mov eax,[Imm]");
-			
+			Logger::WriteMessage(L"mov eax,[Imm]");			
 		}
 
 		TEST_METHOD(AddR2R)
@@ -222,11 +228,11 @@ namespace EmitterUnitTest
 
 		TEST_METHOD(PushMVImm)
 		{
-			Int32 value = 2;
-			Assert::AreEqual(2,
-				EmitAs<Int32>([&, this]() {
-					emitter.EmitPushMemoryViaImmediate((Int64)&value, SlotType::Int32);
-					emitter.EmitPopToRegister(Register::AX, SlotType::Int32);
+			Int64 value = 2ll;
+			Assert::AreEqual(2ll,
+				EmitAs<Int64>([&, this]() {
+					emitter.EmitPushMemoryViaImmediate((Int64)&value, SlotType::Int64);
+					emitter.EmitPopToRegister(Register::AX, SlotType::Int64);
 					emitter.EmitReturn();
 					}));
 			Logger::WriteMessage(L"push [Addr]");
@@ -234,12 +240,12 @@ namespace EmitterUnitTest
 
 		TEST_METHOD(PushMVR)
 		{
-			Int32 value = 2;
-			Assert::AreEqual(2,
-				EmitAs<Int32>([&, this]() {
-					emitter.EmitStoreImmediateToRegister(Register::AX, (Int64)&value, SlotType::Int32);
-					emitter.EmitPushMemoryViaRegister(Register::AX, SlotType::Int32);
-					emitter.EmitPopToRegister(Register::AX, SlotType::Int32);
+			Int64 value = 2ll;
+			Assert::AreEqual(2ll,
+				EmitAs<Int64>([&, this]() {
+					emitter.EmitStoreImmediateToRegister(Register::AX, (Int64)&value, SlotType::Int64);
+					emitter.EmitPushMemoryViaRegister(Register::AX, SlotType::Int64);
+					emitter.EmitPopToRegister(Register::AX, SlotType::Int64);
 					emitter.EmitReturn();
 					}));
 			Logger::WriteMessage(L"push [eax]");
@@ -258,26 +264,26 @@ namespace EmitterUnitTest
 
 		TEST_METHOD(Pop2MVImm)
 		{
-			Int32 value = 0;
+			Int64 value = 0;
 			EmitAs<void>([&, this]() {
-				emitter.EmitPushImmediate(2, SlotType::Int32);
-				emitter.EmitPopToMemoryViaImmediate((Int64)&value, SlotType::Int32);
+				emitter.EmitPushImmediate(2, SlotType::Int64);
+				emitter.EmitPopToMemoryViaImmediate((Int64)&value, SlotType::Int64);
 				emitter.EmitReturn();
 				});
-			Assert::AreEqual(2,value);
+			Assert::AreEqual(2ll, value);
 			Logger::WriteMessage(L"pop [Addr]");
 		}
 
 		TEST_METHOD(Pop2MVR)
 		{
-			Int32 value = 0;
+			Int64 value = 0;
 			EmitAs<void>([&, this]() {
-				emitter.EmitPushImmediate(2, SlotType::Int32);
-				emitter.EmitStoreImmediateToRegister(Register::AX, (Int64)&value, SlotType::Int32);
-				emitter.EmitPopToMemoryViaRegister(Register::AX, SlotType::Int32);
+				emitter.EmitPushImmediate(2, SlotType::Int64);
+				emitter.EmitStoreImmediateToRegister(Register::AX, (Int64)&value, SlotType::Int64);
+				emitter.EmitPopToMemoryViaRegister(Register::AX, SlotType::Int64);
 				emitter.EmitReturn();
 				});
-			Assert::AreEqual(2, value);
+			Assert::AreEqual(2ll, value);
 			Logger::WriteMessage(L"pop [eax]");
 		}
 
@@ -345,9 +351,7 @@ namespace EmitterUnitTest
 
 		TEST_METHOD(JmpVImm)
 		{
-			EmitAs<Int32>([&, this]() {
-				
-				});
+
 		}
 	};
 }

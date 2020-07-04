@@ -6,14 +6,14 @@ void RTJE::X86::X86Emitter::WriteImmediate(SlotType Slot, Int64 Imm)
 {
 	switch (Slot)
 	{
-	case SlotType::Int8:Write((Int8)Imm); break;
-	case SlotType::Int16:Write((Int16)Imm); break;
+	case SlotType::Int8:WriteByBigEndianness((Int8)Imm); break;
+	case SlotType::Int16:WriteByBigEndianness((Int16)Imm); break;
 	case SlotType::Int32:
 	case SlotType::Float:
-		Write((Int32)Imm); break;
+		WriteByBigEndianness((Int32)Imm); break;
 	case SlotType::Int64:
 	case SlotType::Double:
-		Write((Int64)Imm); break;
+		WriteByBigEndianness((Int64)Imm); break;
 	}
 }
 
@@ -22,17 +22,17 @@ void RTJE::X86::X86Emitter::WriteImmediate(Int8* Target, SlotType Slot, Int64 Im
 	switch (Slot)
 	{
 	case SlotType::Int8:
-		Binary::WriteByBigEndianess(
+		Binary::WriteByLittleEndianness(
 		Target, (Int8)Imm); break;
-	case SlotType::Int16:Binary::WriteByBigEndianess(
+	case SlotType::Int16:Binary::WriteByLittleEndianness(
 		Target, (Int16)Imm); break;
 	case SlotType::Int32:
 	case SlotType::Float:
-		Binary::WriteByBigEndianess(
+		Binary::WriteByLittleEndianness(
 			Target, (Int32)Imm); break;
 	case SlotType::Int64:
 	case SlotType::Double:
-		Binary::WriteByBigEndianess(
+		Binary::WriteByLittleEndianness(
 			Target, (Int64)Imm); break;
 	}
 }
@@ -110,23 +110,53 @@ void RTJE::X86::X86Emitter::EmitStoreImmediateToRegister(Int8 Register, Int64 Im
 void RTJE::X86::X86Emitter::EmitStoreImmediateToMemoryViaRegister(Int8 Register, Int64 Imm, SlotType Slot)
 {
 	WriteREX(Slot);
-	Write(X86OpCodes::MovImmToM[(int)Slot]);
-	Write(ModRM(AddressingMode::RegisterAddressing, 0b000, Register));
-	WriteImmediate(Slot, Imm);
+	if (Slot == SlotType::Int64)
+	{
+		GetEmitContext()->SetRegisterOccupied(Register);
+		Int8 ephemeralRegister = GetEmitContext()->AvailableRegister();
+		if (ephemeralRegister == -1)
+			RTE::Throw(Text("All registers unavailable"));
+		EmitStoreImmediateToRegister(ephemeralRegister, Imm, Slot);
+		EmitStoreRegisterToMemoryViaRegister(ephemeralRegister, Register, Slot);
+		GetEmitContext()->SetRegisterAvailable(Register);
+	}
+	else
+	{
+		Write(X86OpCodes::MovImmToM[(int)Slot]);
+		Write(ModRM(AddressingMode::RegisterAddressing, 0b000, Register));
+		WriteImmediate(Slot, Imm);
+	}
 }
 
 void RTJE::X86::X86Emitter::EmitStoreImmediateToMemoryViaImmediate(Int64 AddressImm, Int64 Imm, SlotType Slot)
 {
 	WriteREX(Slot);
-	Write(X86OpCodes::MovImmToM[(int)Slot]);
-	Write(ModRM(AddressingMode::RegisterAddressing, 0b000, RegisterOrMemory::Offset32bit));
-	WriteImmediate(Slot, AddressImm);
 	if (Slot == SlotType::Int64)
 	{
-		Slot = SlotType::Int32;
-		Context::OperandSlice(GetEmitContext(), Slot);
+		Int8 firstEphemeralRegister = GetEmitContext()->AvailableRegister();
+		if (firstEphemeralRegister == -1)
+			RTE::Throw(Text("All registers unavailable"));
+		GetEmitContext()->SetRegisterOccupied(firstEphemeralRegister);
+		Int8 secondEphemeralRegister = GetEmitContext()->AvailableRegister();
+		if (secondEphemeralRegister == -1)
+			RTE::Throw(Text("All registers unavailable"));
+		GetEmitContext()->SetRegisterOccupied(secondEphemeralRegister);
+
+		EmitStoreImmediateToRegister(firstEphemeralRegister, Imm, Slot);
+		EmitStoreImmediateToRegister(secondEphemeralRegister, AddressImm, Slot);
+
+		EmitStoreRegisterToMemoryViaRegister(firstEphemeralRegister, secondEphemeralRegister, Slot);
+
+		GetEmitContext()->SetRegisterAvailable(firstEphemeralRegister);
+		GetEmitContext()->SetRegisterAvailable(secondEphemeralRegister);
 	}
-	WriteImmediate(Slot, Imm);
+	else
+	{
+		Write(X86OpCodes::MovImmToM[(int)Slot]);
+		Write(ModRM(AddressingMode::RegisterAddressing, 0b000, RegisterOrMemory::Offset32bit));
+		WriteImmediate(Slot, AddressImm);
+		WriteImmediate(Slot, Imm);
+	}
 }
 
 void RTJE::X86::X86Emitter::EmitStoreRegisterToMemoryViaImmediate(Int8 Register, Int64 AddressImm, SlotType Slot)
@@ -242,11 +272,11 @@ void RTJE::X86::X86Emitter::EmitDivRegisterToRegister(Int8 DestinationRegister, 
 	{
 		if (SourceRegister == Register::AX)
 		{
-			Int8 ephemeral_register = GetEmitContext()->AvailableRegister();
-			if (ephemeral_register == -1)
+			Int8 ephemeralRegister = GetEmitContext()->AvailableRegister();
+			if (ephemeralRegister == -1)
 				RTE::Throw(Text("All registers unavailable"));
-			EmitLoadRegisterToRegister(ephemeral_register, Register::AX, Slot);
-			SourceRegister = ephemeral_register;
+			EmitLoadRegisterToRegister(ephemeralRegister, Register::AX, Slot);
+			SourceRegister = ephemeralRegister;
 		}
 		EmitLoadRegisterToRegister(Register::AX, DestinationRegister, Slot);
 	}
@@ -270,10 +300,10 @@ void RTJE::X86::X86Emitter::EmitDivImmediateToRegister(Int8 Register, Int64 Imm,
 	GetEmitContext()->SetRegisterOccupied(Register::AX);
 	GetEmitContext()->SetRegisterOccupied(Register);
 
-	Int8 ephemeral_register = GetEmitContext()->AvailableRegister();
-	if (ephemeral_register == -1)
+	Int8 ephemeralRegister = GetEmitContext()->AvailableRegister();
+	if (ephemeralRegister == -1)
 		RTE::Throw(Text("All registers unavailable"));
-	EmitStoreImmediateToRegister(ephemeral_register, Imm, Slot);
+	EmitStoreImmediateToRegister(ephemeralRegister, Imm, Slot);
 
 	if (Register != Register::AX)
 		EmitLoadRegisterToRegister(Register::AX, Register, Slot);
@@ -282,9 +312,9 @@ void RTJE::X86::X86Emitter::EmitDivImmediateToRegister(Int8 Register, Int64 Imm,
 	WriteREX(Slot);
 	Write(X86OpCodes::DivRMToR[(int)Slot]);
 	if (Type == ArithmeticType::Signed)
-		Write(ModRM(AddressingMode::Register, 0b111, ephemeral_register));
+		Write(ModRM(AddressingMode::Register, 0b111, ephemeralRegister));
 	else if (Type == ArithmeticType::Unsigned)
-		Write(ModRM(AddressingMode::Register, 0b110, ephemeral_register));
+		Write(ModRM(AddressingMode::Register, 0b110, ephemeralRegister));
 
 	if (Register != Register::AX)
 		EmitLoadRegisterToRegister(Register, Register::AX, Slot);
@@ -333,14 +363,20 @@ void RTJE::X86::X86Emitter::EmitCompareRegisterWithImmediate(Int8 Register, Int6
 void RTJE::X86::X86Emitter::EmitPopToRegister(Int8 Register, SlotType Slot)
 {
 	if (Slot == SlotType::Int8)
+	{
 		Slot = SlotType::Int16;
+		Context::OperandPromote(GetEmitContext(), Slot);
+	}		
 	Write((Int8)(X86OpCodes::PopToR[(int)Slot] + Register));
 }
 
 void RTJE::X86::X86Emitter::EmitPopToMemoryViaRegister(Int8 Register, SlotType Slot)
 {
 	if (Slot == SlotType::Int8)
+	{
 		Slot = SlotType::Int16;
+		Context::OperandPromote(GetEmitContext(), Slot);
+	}
 	Write(X86OpCodes::PopToM[(int)Slot]);
 	Write(ModRM(AddressingMode::RegisterAddressing, 0b000, Register));
 }
@@ -348,10 +384,26 @@ void RTJE::X86::X86Emitter::EmitPopToMemoryViaRegister(Int8 Register, SlotType S
 void RTJE::X86::X86Emitter::EmitPopToMemoryViaImmediate(Int64 Imm, SlotType Slot)
 {
 	if (Slot == SlotType::Int8)
+	{
 		Slot = SlotType::Int16;
-	Write(X86OpCodes::PopToM[(int)Slot]);
-	Write(ModRM(AddressingMode::RegisterAddressing, 0b000, RegisterOrMemory::Offset32bit));
-	WriteImmediate(Slot, Imm);
+		Context::OperandPromote(GetEmitContext(), Slot);
+	}
+	
+	if (Slot == SlotType::Int64)
+	{
+		Int8 ephemeralRegister = GetEmitContext()->AvailableRegister();
+		if (ephemeralRegister == -1)
+			RTE::Throw(Text("All registers unavailable"));
+		EmitStoreImmediateToRegister(ephemeralRegister, Imm, Slot);
+		Write(X86OpCodes::PopToM[(int)Slot]);
+		Write(ModRM(AddressingMode::RegisterAddressing, 0b000, ephemeralRegister));
+	}
+	else
+	{
+		Write(X86OpCodes::PopToM[(int)Slot]);
+		Write(ModRM(AddressingMode::RegisterAddressing, 0b000, RegisterOrMemory::Offset32bit));
+		WriteImmediate(Slot, Imm);
+	}
 }
 
 void RTJE::X86::X86Emitter::EmitPushRegister(Int8 Register, SlotType Slot)
@@ -388,25 +440,43 @@ void RTJE::X86::X86Emitter::EmitPushMemoryViaImmediate(Int64 Imm, SlotType Slot)
 	}
 	if (Slot == SlotType::Int16)
 		WriteREX(Slot);
-	Write(X86OpCodes::PushM[(int)Slot]);
-	Write(ModRM(AddressingMode::RegisterAddressing, 0b110, RegisterOrMemory::Offset32bit));
-	WriteImmediate(Slot, Imm);
+	if (Slot == SlotType::Int64)
+	{
+		Int8 ephemeralRegister = GetEmitContext()->AvailableRegister();
+		if (ephemeralRegister == -1)
+			RTE::Throw(Text("All registers unavailable"));
+		EmitStoreImmediateToRegister(ephemeralRegister, Imm, Slot);
+		Write(X86OpCodes::PushM[(int)Slot]);
+		Write(ModRM(AddressingMode::RegisterAddressing, 0b110, ephemeralRegister));
+	}
+	else
+	{
+		Write(X86OpCodes::PushM[(int)Slot]);
+		Write(ModRM(AddressingMode::RegisterAddressing, 0b110, RegisterOrMemory::Offset32bit));
+		WriteImmediate(Slot, Imm);
+	}
 }
 
 void RTJE::X86::X86Emitter::EmitPushImmediate(Int64 Imm, SlotType Slot)
 {
-	if (Slot == SlotType::Int64)
-	{
-		Slot = SlotType::Int32;
-		Context::OperandSlice(GetEmitContext(), Slot);
-	}
-	else if (Slot == SlotType::Int16)
+	if (Slot == SlotType::Int16)
 	{
 		Slot = SlotType::Int32;
 		Context::OperandPromote(GetEmitContext(), Slot);
 	}
-	Write(X86OpCodes::PushImm[(int)Slot]);
-	WriteImmediate(Slot, Imm);
+	if (Slot == SlotType::Int64)
+	{
+		Int8 ephemeralRegister = GetEmitContext()->AvailableRegister();
+		if (ephemeralRegister == -1)
+			RTE::Throw(Text("All registers unavailable"));
+		EmitStoreImmediateToRegister(ephemeralRegister, Imm, Slot);
+		EmitPushRegister(ephemeralRegister, Slot);
+	}
+	else
+	{
+		Write(X86OpCodes::PushImm[(int)Slot]);
+		WriteImmediate(Slot, Imm);
+	}
 }
 
 void RTJE::X86::X86Emitter::EmitReturn()

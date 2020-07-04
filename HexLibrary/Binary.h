@@ -17,15 +17,15 @@ namespace RTC
 		static Endianness Host;	
 	public:
 		template<class IntT>
-		static void WriteByLittleEndianess(Int8* Target, IntT Value);
+		static void WriteByLittleEndianness(Int8* Target, IntT Value);
 		template<class IntT>
-		static void WriteByBigEndianess(Int8* Target, IntT Value);
+		static void WriteByBigEndianness(Int8* Target, IntT Value);
 	};
 
 	Endianness Binary::Host = Endianness::Little;
 
 	template<class IntT>
-	inline void Binary::WriteByLittleEndianess(Int8* Target, IntT Value)
+	inline void Binary::WriteByLittleEndianness(Int8* Target, IntT Value)
 	{
 		if (Host == Endianness::Little)
 			*(IntT*)Target = Value;
@@ -41,7 +41,7 @@ namespace RTC
 		}
 	}
 	template<class IntT>
-	inline void Binary::WriteByBigEndianess(Int8* Target, IntT Value)
+	inline void Binary::WriteByBigEndianness(Int8* Target, IntT Value)
 	{
 		if (Host == Endianness::Big)
 			*(IntT*)Target = Value;

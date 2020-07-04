@@ -219,7 +219,13 @@ namespace RTJE::X86
 
 		template<class IntT>
 		void Write(IntT value) {
-			Binary::WriteByLittleEndianess(
+			Binary::WriteByLittleEndianness(
+				GetExecutablePage()->PrepareWrite(sizeof(IntT)), value);
+			GetExecutablePage()->CommitWrite(sizeof(IntT));
+		}
+		template<class IntT>
+		void WriteByBigEndianness(IntT value) {
+			Binary::WriteByLittleEndianness(
 				GetExecutablePage()->PrepareWrite(sizeof(IntT)), value);
 			GetExecutablePage()->CommitWrite(sizeof(IntT));
 		}

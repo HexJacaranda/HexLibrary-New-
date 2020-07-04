@@ -199,6 +199,7 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="RuntimeException.cpp" />
     <ClCompile Include="TypeDescriptor.cpp" />
+    <ClCompile Include="WindowsExecutablePage.cpp" />
     <ClCompile Include="X86Emitter.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

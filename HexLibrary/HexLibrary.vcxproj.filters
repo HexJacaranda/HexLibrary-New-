@@ -344,5 +344,8 @@
     <ClCompile Include="TypeDescriptor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="WindowsExecutablePage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
