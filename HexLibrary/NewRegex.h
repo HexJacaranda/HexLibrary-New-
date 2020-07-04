@@ -184,6 +184,19 @@ namespace HL
 				public:
 					static void Print(Collection::Generic::List<OpCode> const& opcodes) {
 						for (size_t i = 0; i < opcodes.Count(); ++i) {
+#if _LIB_X64
+							printf_s("%3llu ", i);
+							switch (opcodes[i].Ins)
+							{
+							case Instruction::Jmp:
+								printf_s("jmp %3llu", opcodes[i].Target); break;
+							case Instruction::Target:
+								printf_s("target: %llu", opcodes[i].Target); break;
+							case Instruction::Split:
+								printf_s("split"); break;
+							case Instruction::ToMatch:
+								printf_s("to match address: 0x%llx", opcodes[i].Target); break;
+#else
 							printf_s("%3u ", i);
 							switch (opcodes[i].Ins)
 							{
@@ -195,6 +208,7 @@ namespace HL
 								printf_s("split"); break;
 							case Instruction::ToMatch:
 								printf_s("to match address: 0x%x", opcodes[i].Target); break;
+#endif				
 							case Instruction::Nop:
 								printf_s("nop"); break;
 							case Instruction::Matched:

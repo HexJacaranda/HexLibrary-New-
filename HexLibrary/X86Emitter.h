@@ -3,6 +3,8 @@
 #include "Emitter.h"
 #include "RuntimeException.h"
 #include "Binary.h"
+#include "Include.h"
+
 namespace RTJE::X86
 {
 	class Prefix
@@ -213,21 +215,10 @@ namespace RTJE::X86
 
 	class X86Emitter :public INativeEmitter
 	{
-		AddressFixUp* m_fixups;
-
-		template<class IntT>
-		void WriteOpCode(IntT value) {
-
-		}
+		HL::System::Collection::Generic::List<AddressFixUp> m_fixups;
 
 		template<class IntT>
 		void Write(IntT value) {
-			Binary::WriteByBigEndianess(
-				GetExecutablePage()->PrepareWrite(sizeof(IntT)), value);
-			GetExecutablePage()->CommitWrite(sizeof(IntT));
-		}
-		template<class IntT>
-		void WriteLittleEndian(IntT value) {
 			Binary::WriteByLittleEndianess(
 				GetExecutablePage()->PrepareWrite(sizeof(IntT)), value);
 			GetExecutablePage()->CommitWrite(sizeof(IntT));

@@ -9,7 +9,7 @@ namespace RTIOS2EE
 }
 namespace RTJE
 {
-	class EmitContext;
+	struct EmitContext;
 }
 namespace RTJE
 {

@@ -63,12 +63,12 @@ void RTJE::X86::X86Emitter::WriteREX(SlotType Slot)
 
 inline void RTJE::X86::X86Emitter::NeedFixup(SlotType Slot, AddressFixUpType Type, Int16 Offset)
 {
-	/*m_fixups.Add({ GetExecutablePage()->Current(),Slot,Type,Offset });*/
+	m_fixups.Add({ GetExecutablePage()->Current(),Slot,Type,Offset });
 }
 
 inline void RTJE::X86::X86Emitter::NeedFixup(SlotType Slot, Int32 Index, AddressFixUpType Type, Int16 Offset)
 {
-	/*m_fixups.Add({ Index,Slot,Type,Offset });*/
+	m_fixups.Add({ Index,Slot,Type,Offset });
 }
 
 void RTJE::X86::X86Emitter::StartEmitting()
@@ -80,7 +80,7 @@ void RTJE::X86::X86Emitter::CommitEmitting()
 	Int8* base = GetExecutablePage()->GetRawPage();
 	//Fix up work
 	{
-		/*for (auto&& fixup : m_fixups)
+		for (auto&& fixup : m_fixups)
 		{
 			Int64 value = ReadAsImmediate(base + fixup.Index, fixup.Slot);
 			if (fixup.Type == AddressFixUpType::AbsoluteToRelative)
@@ -88,7 +88,7 @@ void RTJE::X86::X86Emitter::CommitEmitting()
 			else if (fixup.Type == AddressFixUpType::RelativeToAbsolute)
 				value = value + ((Int64)base + (Int64)fixup.Index + (Int64)fixup.Offset);
 			WriteImmediate(base + fixup.Index, fixup.Slot, value);
-		}*/
+		}
 	}
 
 	//Fill the remain blank with int3
