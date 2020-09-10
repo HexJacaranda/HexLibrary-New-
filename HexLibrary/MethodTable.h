@@ -1,19 +1,19 @@
 #pragma once
 #include "RuntimeAlias.h"
-#include "StandardType.h"
 namespace RTC
 {
-	class EEClass;
+	class Type;
 }
 namespace RTC
 {
+	struct MethodSlot
+	{
+
+		UInt8* Entry;
+	};
 	class MethodTable
 	{
-	public:
-		CoreType GetCoreType();
-		EEClass* GetClass();
-		UInt32 GetComponentSize();
-		UInt32 GetBaseSize();
-		bool HasSharedMethodTable();
+		Type* mType;
+		MethodTable* mParent;
 	};
 }

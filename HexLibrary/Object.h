@@ -1,11 +1,8 @@
 #pragma once
 #include "RuntimeAlias.h"
-
 namespace RTC
 {
-	class MethodTable;
-	class EEClass;
-	class TypeHandle;
+	class Type;
 }
 
 namespace RTO
@@ -16,18 +13,9 @@ namespace RTO
 	class Object
 	{
 	private:
-		MethodTable* pMethodTable;
-	protected:
-		Object() { pMethodTable = nullptr; }
-		~Object() {}
+		Type* mType;
 	public:
-		MethodTable* GetMethodTable()const {
-			return pMethodTable;
-		}
-		void SetMethodTable(MethodTable* value) {
-			pMethodTable = value;
-		}
-		UInt32 GetComponentCount();
+		inline Type* GetType();
 	};
 	using ObjectRef = Object*;
 }
