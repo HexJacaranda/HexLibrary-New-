@@ -32,4 +32,6 @@ namespace Runtime
 #define RTJ Runtime::Core::JIT
 #define RTJE Runtime::Core::JIT::Emit
 #define RTIOS2EE Runtime::Core::Interfaces::OSToEE
+	
+#define ForcedInline __forceinline
 }

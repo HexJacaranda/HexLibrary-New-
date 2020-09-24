@@ -124,8 +124,8 @@
     <Filter Include="头文件\System\Runtime\Core\Type">
       <UniqueIdentifier>{154eb1d2-1075-40ef-9fbb-3c6de3f97e5c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\System\Runtime\Core\TypeRepresentation">
-      <UniqueIdentifier>{d5999e9d-2865-4a0a-ba49-b73bc93f2548}</UniqueIdentifier>
+    <Filter Include="头文件\System\Runtime\Core\Builders">
+      <UniqueIdentifier>{d038c493-6c92-4b43-af08-6a072b9f1cd8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -294,8 +294,32 @@
     <ClInclude Include="FieldTable.h">
       <Filter>头文件\System\Runtime\Core</Filter>
     </ClInclude>
+    <ClInclude Include="Accessibility.h">
+      <Filter>头文件\System\Runtime\Core</Filter>
+    </ClInclude>
     <ClInclude Include="TypeRepresentation.h">
-      <Filter>头文件\System\Runtime\Core\TypeRepresentation</Filter>
+      <Filter>头文件\System\Runtime\Core\Type</Filter>
+    </ClInclude>
+    <ClInclude Include="AssemblyContext.h">
+      <Filter>头文件\System\Runtime\Core\Type</Filter>
+    </ClInclude>
+    <ClInclude Include="InterfaceDispatchTable.h">
+      <Filter>头文件\System\Runtime\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="TypeBuilder.h">
+      <Filter>头文件\System\Runtime\Core\Builders</Filter>
+    </ClInclude>
+    <ClInclude Include="MethodTableBuilder.h">
+      <Filter>头文件\System\Runtime\Core\Builders</Filter>
+    </ClInclude>
+    <ClInclude Include="FieldTableBuilder.h">
+      <Filter>头文件\System\Runtime\Core\Builders</Filter>
+    </ClInclude>
+    <ClInclude Include="InterfaceTableBuilder.h">
+      <Filter>头文件\System\Runtime\Core\Builders</Filter>
+    </ClInclude>
+    <ClInclude Include="ArrayObject.h">
+      <Filter>头文件\System\Runtime\Core\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -324,6 +348,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Object.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="FieldTable.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="AssemblyContext.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MethodTable.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

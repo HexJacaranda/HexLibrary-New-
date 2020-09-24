@@ -3,6 +3,8 @@
 namespace RTC
 {
 	class Type;
+	class FieldTable;
+	class MethodTable;
 }
 
 namespace RTO
@@ -15,7 +17,9 @@ namespace RTO
 	private:
 		Type* mType;
 	public:
-		inline Type* GetType();
+		inline Type* GetType()const;
+		inline FieldTable* GetFieldTable()const;
+		inline MethodTable* GetMethodTable()const;
 	};
 	using ObjectRef = Object*;
 }

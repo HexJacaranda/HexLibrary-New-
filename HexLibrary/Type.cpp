@@ -1,4 +1,5 @@
 #include "Type.h"
+#include "AssemblyContext.h"
 
 inline RT::Int32 RTC::Type::GetBaseSize() const
 {
@@ -45,7 +46,22 @@ inline RTC::FieldTable* RTC::Type::GetFieldTable() const
     return mFieldTable;
 }
 
+inline RTC::InterfaceDispatchTable* RTC::Type::GetInterfaceDispatchTable() const
+{
+    return mInterfaceTable;
+}
+
 inline RT::RTString RTC::Type::GetTypeName() const
 {
     return mUnicodeName;
+}
+
+inline RT::UInt32 RTC::Type::GetLoadingLevel() const
+{
+    return mFlag & TypeLoadingLevel::Mask;
+}
+
+void RTC::Type::LoadFully()
+{
+    mContext->LoadType(this);
 }
