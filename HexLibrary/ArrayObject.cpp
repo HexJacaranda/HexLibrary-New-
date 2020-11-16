@@ -2,5 +2,5 @@
 
 ForcedInline RT::UInt32 RTO::ArrayObject::GetCount() const
 {
-    return UInt32();
+    return mCount;
 }
