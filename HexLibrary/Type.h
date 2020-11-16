@@ -69,7 +69,8 @@ namespace RTC
 		inline InterfaceDispatchTable* GetInterfaceDispatchTable()const;
 		inline RTString GetTypeName()const;
 		inline UInt32 GetLoadingLevel()const;
-
+		inline Type** GetTypeArguments()const;
+		inline Type* GetSingleTypeArgument()const;
 		void LoadFully();
 	};
 }

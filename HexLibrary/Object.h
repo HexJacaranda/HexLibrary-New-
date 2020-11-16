@@ -5,6 +5,7 @@ namespace RTC
 	class Type;
 	class FieldTable;
 	class MethodTable;
+	class ArrayObject;
 }
 
 namespace RTO
@@ -20,6 +21,7 @@ namespace RTO
 		inline Type* GetType()const;
 		inline FieldTable* GetFieldTable()const;
 		inline MethodTable* GetMethodTable()const;
+		inline UInt32 GetObjectSize()const;
 	};
 	using ObjectRef = Object*;
 }

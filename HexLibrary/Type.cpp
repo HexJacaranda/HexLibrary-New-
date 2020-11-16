@@ -61,6 +61,16 @@ inline RT::UInt32 RTC::Type::GetLoadingLevel() const
     return mFlag & TypeLoadingLevel::Mask;
 }
 
+inline RTC::Type** RTC::Type::GetTypeArguments() const
+{
+    return mTypeArguments;
+}
+
+inline RTC::Type* RTC::Type::GetSingleTypeArgument() const
+{
+    return mSingleTypeArgument;
+}
+
 void RTC::Type::LoadFully()
 {
     mContext->LoadType(this);
