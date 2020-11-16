@@ -193,6 +193,7 @@
     <ClInclude Include="X86Emitter.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ArrayObject.cpp" />
     <ClCompile Include="AssemblyContext.cpp" />
     <ClCompile Include="Emitter.cpp" />
     <ClCompile Include="FieldTable.cpp" />
