@@ -67,7 +67,7 @@ namespace RTC
 				union 
 				{
 					UInt32 Level;
-					UInt32 TypeIndex;
+					UInt32 Index;
 				};
 				UInt64 GenericParameterRepresentation;
 			};		
