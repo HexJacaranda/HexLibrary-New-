@@ -13,5 +13,7 @@ namespace RTO
 		UInt32 mCount;
 	public:
 		ForcedInline UInt32 GetCount()const;
+		ForcedInline Int8* GetElementAddress()const;
+		inline Type* GetElementType()const;
 	};
 }

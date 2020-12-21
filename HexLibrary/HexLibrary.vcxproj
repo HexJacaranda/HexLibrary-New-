@@ -197,12 +197,15 @@
     <ClCompile Include="AssemblyContext.cpp" />
     <ClCompile Include="Emitter.cpp" />
     <ClCompile Include="FieldTable.cpp" />
+    <ClCompile Include="FieldTableBuilder.cpp" />
     <ClCompile Include="GCInterface.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MethodTable.cpp" />
+    <ClCompile Include="MethodTableBuilder.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="RuntimeException.cpp" />
     <ClCompile Include="Type.cpp" />
+    <ClCompile Include="TypeBuilder.cpp" />
     <ClCompile Include="TypeRepresentation.cpp" />
     <ClCompile Include="WindowsExecutablePage.cpp" />
     <ClCompile Include="X86Emitter.cpp" />

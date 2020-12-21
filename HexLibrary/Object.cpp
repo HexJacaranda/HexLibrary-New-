@@ -23,7 +23,7 @@ inline RT::UInt32 RTO::Object::GetObjectSize() const
     if (mType->IsArray())
     {
         ArrayObject* array = (ArrayObject*)this;
-        return array->GetCount() * array->GetType()->GetSingleTypeArgument()->GetBaseSize();
+        return array->GetCount() * array->GetElementType()->GetBaseSize();
     }
     return GetType()->GetBaseSize();
 }

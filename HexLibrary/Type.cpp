@@ -71,7 +71,7 @@ inline RTC::Type* RTC::Type::GetSingleTypeArgument() const
     return mSingleTypeArgument;
 }
 
-void RTC::Type::LoadFully()
+void RTC::Type::PrepareType(UInt32 loadingLevel)
 {
-    mContext->LoadType(this);
+
 }

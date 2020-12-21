@@ -362,5 +362,14 @@
     <ClCompile Include="ArrayObject.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="TypeBuilder.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MethodTableBuilder.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="FieldTableBuilder.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

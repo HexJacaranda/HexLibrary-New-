@@ -7,6 +7,10 @@ namespace RTC
 	class InterfaceDispatchTable;
 	class AssemblyContext;
 }
+namespace RTB
+{
+	class TypeBuilder;
+}
 
 namespace RTC
 {
@@ -56,6 +60,9 @@ namespace RTC
 		Int16 mTypeArgumentsTotal;
 		Int16 mTypeArgumentsCount;
 	public:
+		//Friend to builder
+		friend class TypeBuilder;
+	public:
 		//Get basic size for type
 		inline Int32 GetBaseSize()const;
 		inline bool IsPrimitiveType()const;
@@ -63,6 +70,7 @@ namespace RTC
 		inline bool IsClosedType()const;
 		inline bool IsArray()const;
 		inline bool IsString()const;
+		//Is it a normal type or fully open generic type
 		inline bool IsCanonicalType()const;
 		inline MethodTable* GetMethodTable()const;
 		inline FieldTable* GetFieldTable()const;
@@ -71,6 +79,7 @@ namespace RTC
 		inline UInt32 GetLoadingLevel()const;
 		inline Type** GetTypeArguments()const;
 		inline Type* GetSingleTypeArgument()const;
-		void LoadFully();
+		//Load type from context
+		void PrepareType(UInt32 loadingLevel);
 	};
 }
