@@ -2,20 +2,11 @@
 #include "ArrayObject.h"
 #include "MethodTable.h"
 #include "Type.h"
+#include "ObjectStorage.h"
 
 inline RTC::Type* RTO::Object::GetType()const
 {
     return mType;
-}
-
-inline RTC::FieldTable* RTO::Object::GetFieldTable()const
-{
-    return mType->GetFieldTable();
-}
-
-inline RTC::MethodTable* RTO::Object::GetMethodTable()const
-{
-    return mType->GetMethodTable();
 }
 
 inline RT::UInt32 RTO::Object::GetObjectSize() const
@@ -26,4 +17,9 @@ inline RT::UInt32 RTO::Object::GetObjectSize() const
         return array->GetCount() * array->GetElementType()->GetBaseSize();
     }
     return GetType()->GetBaseSize();
+}
+
+inline RTO::ObjectStorage* RTO::Object::GetStorage() const
+{
+    return (RTO::ObjectStorage*)this - 1;
 }

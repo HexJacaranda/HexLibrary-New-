@@ -29,6 +29,7 @@ namespace RTC
 	{
 		UInt8 CallingConvention;
 		UInt8 SlotType;
+		UInt16 Flags;
 		UInt8* Entry;
 	};
 

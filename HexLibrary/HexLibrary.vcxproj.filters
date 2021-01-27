@@ -321,6 +321,12 @@
     <ClInclude Include="ArrayObject.h">
       <Filter>头文件\System\Runtime\Core\Object</Filter>
     </ClInclude>
+    <ClInclude Include="ObjectStorage.h">
+      <Filter>头文件\System\Runtime\Core\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="StringObject.h">
+      <Filter>头文件\System\Runtime\Core\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -369,6 +375,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="FieldTableBuilder.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="InterfaceTableBuilder.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectStorage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="StringObject.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

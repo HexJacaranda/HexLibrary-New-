@@ -16,6 +16,7 @@ namespace Runtime
 #ifdef _M_AMD64
 	using IntPtr = Int64;
 	using Int = Int64;
+#define X64
 #else
 	using IntPtr = Int32;
 	using Int = Int32;

@@ -10,6 +10,12 @@ namespace RTC
 
 namespace RTO
 {
+	class ObjectStorage;
+}
+
+namespace RTO
+{
+	
 	static constexpr Int32 BigObjectThreshold = 0xFFFF;
 	static constexpr UInt32 BigObjectThresholdU = 0xFFFFu;
 	
@@ -19,9 +25,8 @@ namespace RTO
 		Type* mType;
 	public:
 		inline Type* GetType()const;
-		inline FieldTable* GetFieldTable()const;
-		inline MethodTable* GetMethodTable()const;
 		inline UInt32 GetObjectSize()const;
+		inline ObjectStorage* GetStorage()const;
 	};
 	using ObjectRef = Object*;
 }

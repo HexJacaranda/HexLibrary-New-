@@ -15,3 +15,13 @@ inline RTC::Type* RTO::ArrayObject::GetElementType() const
 {
     return GetType()->GetSingleTypeArgument();
 }
+
+inline bool RTO::ArrayObject::IsMultiDimensionalArray() const
+{
+    return mDimension > 1;
+}
+
+inline bool RTO::ArrayObject::IsSZArray() const
+{
+    return mDimension == 1 && mLowerBounds == 0;
+}
