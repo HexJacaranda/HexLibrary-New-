@@ -22,8 +22,6 @@ namespace RTC
 		static void WriteByBigEndianness(Int8* Target, IntT Value);
 	};
 
-	Endianness Binary::Host = Endianness::Little;
-
 	template<class IntT>
 	inline void Binary::WriteByLittleEndianness(Int8* Target, IntT Value)
 	{

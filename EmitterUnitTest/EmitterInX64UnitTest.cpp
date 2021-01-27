@@ -3,13 +3,11 @@
 #include "../HexLibrary/Runtime/RuntimeAlias.h"
 #include "../HexLibrary/Runtime/Core/Exception/RuntimeException.h"
 #include "../HexLibrary/Runtime/Core/JIT/Emitter/Emitter.h"
+#include "../HexLibrary/Runtime/Core/JIT/Emitter/X86Emitter.h"
 #include "../HexLibrary/Runtime/Core/JIT/Emitter/Page/ExecutablePage.h"
 #include "../HexLibrary/Runtime/Core/JIT/Emitter/Page/WindowsExecutablePage.h"
 #include "../HexLibrary/Include.h"
-#include "../HexLibrary/Runtime/Core/JIT/Emitter/Emitter.cpp"
-#include "../HexLibrary/Runtime/Core/JIT/Emitter/X86Emitter.cpp"
-#include "../HexLibrary/Runtime/Core/JIT/Emitter/Page/WindowsExecutablePage.cpp"
-#include "../HexLibrary/Runtime/Core/Exception/RuntimeException.cpp"
+
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 using namespace Runtime;
@@ -21,12 +19,12 @@ using namespace HL::System::Pointer::Reference;
 
 namespace EmitterUnitTest
 {
-	TEST_CLASS(EmitterUnitTest)
+	TEST_CLASS(EmitteInX64UnitTest)
 	{
 	public:
 		X86Emitter emitter;
 		ptr<EmitContext> context = newptr<EmitContext>();
-		EmitterUnitTest() {
+		EmitteInX64UnitTest() {
 			emitter.SetEmitContext(context.GetObjectPtr());
 		}
 
@@ -291,7 +289,7 @@ namespace EmitterUnitTest
 		{
 			Assert::AreEqual(0b100, EmitAs<Int32>([&, this]() {
 				emitter.EmitStoreImmediateToRegister(Register::AX, 0b001, SlotType::Int32);
-				emitter.EmitLShiftRegisterByImmediateTimes(Register::AX, 2, SlotType::Int32, ArithmeticType::Signed);
+				emitter.EmitLShiftRegisterByImmediateTimes(Register::AX, 2, SlotType::Int8, ArithmeticType::Signed);
 				emitter.EmitReturn();
 				}));
 			Logger::WriteMessage(L"shl eax, 2");
@@ -301,7 +299,7 @@ namespace EmitterUnitTest
 		{
 			Assert::AreEqual(0b10, EmitAs<Int32>([&, this]() {
 				emitter.EmitStoreImmediateToRegister(Register::AX, 0b01, SlotType::Int32);
-				emitter.EmitLShiftRegisterByImmediateTimes(Register::AX, 1, SlotType::Int32, ArithmeticType::Signed);
+				emitter.EmitLShiftRegisterByImmediateTimes(Register::AX, 1, SlotType::Int8, ArithmeticType::Signed);
 				emitter.EmitReturn();
 				}));
 			Logger::WriteMessage(L"shl eax, 1");
@@ -322,7 +320,7 @@ namespace EmitterUnitTest
 		{
 			Assert::AreEqual(0b001, EmitAs<Int32>([&, this]() {
 				emitter.EmitStoreImmediateToRegister(Register::AX, 0b100, SlotType::Int32);
-				emitter.EmitRShiftRegisterByImmediateTimes(Register::AX, 2, SlotType::Int32, ArithmeticType::Signed);
+				emitter.EmitRShiftRegisterByImmediateTimes(Register::AX, 2, SlotType::Int8, ArithmeticType::Signed);
 				emitter.EmitReturn();
 				}));
 			Logger::WriteMessage(L"shr eax, 2");
@@ -332,7 +330,7 @@ namespace EmitterUnitTest
 		{
 			Assert::AreEqual(0b01, EmitAs<Int32>([&, this]() {
 				emitter.EmitStoreImmediateToRegister(Register::AX, 0b10, SlotType::Int32);
-				emitter.EmitRShiftRegisterByImmediateTimes(Register::AX, 1, SlotType::Int32, ArithmeticType::Signed);
+				emitter.EmitRShiftRegisterByImmediateTimes(Register::AX, 1, SlotType::Int8, ArithmeticType::Signed);
 				emitter.EmitReturn();
 				}));
 			Logger::WriteMessage(L"shr eax, 1");
@@ -351,7 +349,16 @@ namespace EmitterUnitTest
 
 		TEST_METHOD(JmpVImm)
 		{
-
+			Assert::AreEqual(2, EmitAs<Int32>([&, this]() {
+				auto entry = emitter.EmitJmpViaImmediate(0, SlotType::Int8, RedirectSemantic::Relative);
+				auto nowPosition = emitter.CurrentPosition();
+				emitter.EmitStoreImmediateToRegister(Register::AX, 1, SlotType::Int32);
+				emitter.EmitReturn();
+				emitter.UpdateFlowControlTo((Int64)emitter.CurrentPosition() - nowPosition, entry);
+				emitter.EmitStoreImmediateToRegister(Register::AX, 2, SlotType::Int32);
+				emitter.EmitReturn();
+				}));
+			Logger::WriteMessage(L"jmp short imm");
 		}
 	};
 }

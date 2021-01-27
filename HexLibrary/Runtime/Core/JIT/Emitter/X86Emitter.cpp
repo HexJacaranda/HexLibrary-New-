@@ -100,6 +100,11 @@ void RTJE::X86::X86Emitter::CommitEmitting()
 	}
 }
 
+void RTJE::X86::X86Emitter::UpdateFlowControlTo(Int64 Imm, FlowControlReplaceEntry const& Entry)
+{
+	WriteImmediate(Entry.Address, Entry.AllowedSlot, Imm);
+}
+
 void RTJE::X86::X86Emitter::EmitStoreImmediateToRegister(Int8 Register, Int64 Imm, SlotType Slot)
 {
 	WriteREX(Slot);
@@ -484,7 +489,7 @@ void RTJE::X86::X86Emitter::EmitReturn()
 	Write(X86OpCodes::Ret[0]);
 }
 
-void RTJE::X86::X86Emitter::EmitJmpViaImmediate(Int64 Imm, SlotType Slot, RedirectSemantic Sem)
+RTJE::FlowControlReplaceEntry RTJE::X86::X86Emitter::EmitJmpViaImmediate(Int64 Imm, SlotType Slot, RedirectSemantic Sem)
 {
 	if (Sem == RedirectSemantic::Absolute && Slot == SlotType::Int8)
 	{
@@ -499,7 +504,9 @@ void RTJE::X86::X86Emitter::EmitJmpViaImmediate(Int64 Imm, SlotType Slot, Redire
 	const Int8* OpCodes =
 		Sem == RedirectSemantic::Relative ? X86OpCodes::JmpImmRel : X86OpCodes::JmpImmAbs;
 	Write(OpCodes[(int)Slot]);
+	Int8* address = CurrentPointer();
 	WriteImmediate(Slot, Imm);
+	return FlowControlReplaceEntry{ address, Slot };
 }
 
 void RTJE::X86::X86Emitter::EmitJmpViaRegister(Int8 Register, SlotType Slot, RedirectSemantic Sem)
@@ -518,7 +525,7 @@ void RTJE::X86::X86Emitter::EmitJmpViaRegister(Int8 Register, SlotType Slot, Red
 	Write(ModRM(AddressingMode::Register, 0b100, Register));
 }
 
-void RTJE::X86::X86Emitter::EmitJcc(Condition Cond, Int64 Imm, SlotType Slot, RedirectSemantic Sem)
+RTJE::FlowControlReplaceEntry RTJE::X86::X86Emitter::EmitJcc(Condition Cond, Int64 Imm, SlotType Slot, RedirectSemantic Sem)
 {
 	if (Slot == SlotType::Int8 || Slot == SlotType::Int16)
 		Context::OperandPromote(GetEmitContext(), SlotType::Int32);
@@ -527,7 +534,9 @@ void RTJE::X86::X86Emitter::EmitJcc(Condition Cond, Int64 Imm, SlotType Slot, Re
 	Write(X86OpCodes::JccImmRel[(int)Cond]);
 	if (Sem == RedirectSemantic::Absolute)
 		NeedFixup(SlotType::Int32, AddressFixUpType::AbsoluteToRelative);
+	Int8* address = CurrentPointer();
 	WriteImmediate(SlotType::Int32, Imm);
+	return FlowControlReplaceEntry{ address, Slot };
 }
 
 void RTJE::X86::X86Emitter::EmitCallViaRegister(Int8 Register, SlotType Slot, RedirectSemantic Sem)

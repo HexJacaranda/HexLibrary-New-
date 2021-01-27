@@ -196,6 +196,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Runtime\Binary.cpp" />
     <ClCompile Include="Runtime\Core\Builders\FieldTableBuilder.cpp" />
     <ClCompile Include="Runtime\Core\Builders\InterfaceTableBuilder.cpp" />
     <ClCompile Include="Runtime\Core\Builders\MethodTableBuilder.cpp" />

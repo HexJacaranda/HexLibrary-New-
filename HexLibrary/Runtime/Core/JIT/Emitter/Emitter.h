@@ -74,6 +74,9 @@ namespace RTJE
 		NotSupported
 	};
 
+	/// <summary>
+	/// Record the necessary and other emit state
+	/// </summary>
 	struct EmitContext
 	{
 		//This field may be used by some implementations to implicitly use extra register
@@ -108,12 +111,19 @@ namespace RTJE
 		}
 	};
 
-
+	/// <summary>
+	/// For lazy replacement on address in flow control instructions.
+	/// </summary>
+	struct FlowControlReplaceEntry
+	{
+		Int8* Address;
+		SlotType AllowedSlot;
+	};
 
 	class INativeEmitter
 	{
 	protected:
-		RTIOS2EE::IExecutablePage* m_page;
+		RTIOS2EE::IExecutablePage* m_page = nullptr;
 		EmitContext* m_context = nullptr;
 	public:
 		virtual void StartEmitting() = 0;
@@ -127,6 +137,8 @@ namespace RTJE
 		virtual RTIOS2EE::IExecutablePage* GetExecutablePage(); 
 		virtual Int32 CurrentPosition();
 		virtual Int8* CurrentPointer();
+		//Flow control fix up writing
+		virtual void UpdateFlowControlTo(Int64 Imm, FlowControlReplaceEntry const& Entry) = 0;
 		//Memory/Register operation
 
 		virtual void EmitStoreImmediateToRegister(Int8 Register, Int64 Imm, SlotType) = 0;
@@ -172,9 +184,9 @@ namespace RTJE
 		//Flow control
 
 		virtual void EmitReturn() = 0;
-		virtual void EmitJmpViaImmediate(Int64 Imm, SlotType, RedirectSemantic) = 0;
+		virtual FlowControlReplaceEntry EmitJmpViaImmediate(Int64 Imm, SlotType, RedirectSemantic) = 0;
 		virtual void EmitJmpViaRegister(Int8 Register, SlotType, RedirectSemantic) = 0;
-		virtual void EmitJcc(Condition, Int64 Imm, SlotType, RedirectSemantic) = 0;
+		virtual FlowControlReplaceEntry EmitJcc(Condition, Int64 Imm, SlotType, RedirectSemantic) = 0;
 
 		virtual void EmitCallViaRegister(Int8 Register, SlotType, RedirectSemantic) = 0;
 		virtual void EmitCallViaImmediate(Int64 Imm, SlotType, RedirectSemantic) = 0;

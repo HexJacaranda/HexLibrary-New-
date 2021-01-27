@@ -47,6 +47,7 @@ namespace RTJE::X86
 	public:
 		static constexpr Int32 PlatformMask = 0b10;
 		static void OperandSlice(EmitContext* context, SlotType To) {
+			throw std::exception("Oops! Operand slice hanppened!");
 			context->EmitState |= (Int8)To;
 		}
 		static void OperandPromote(EmitContext* context, SlotType To) {
@@ -239,6 +240,8 @@ namespace RTJE::X86
 	public:
 		virtual void StartEmitting();
 		virtual void CommitEmitting();
+		//Flow control fix up writing
+		virtual void UpdateFlowControlTo(Int64 Imm, FlowControlReplaceEntry const& Entry);
 		//Memory/Register operation
 
 		virtual void EmitStoreImmediateToRegister(Int8 Register, Int64 Imm, SlotType Slot);
@@ -285,10 +288,10 @@ namespace RTJE::X86
 
 		virtual void EmitReturn();
 
-		virtual void EmitJmpViaImmediate(Int64 Imm, SlotType Slot, RedirectSemantic Sem);
+		virtual FlowControlReplaceEntry EmitJmpViaImmediate(Int64 Imm, SlotType Slot, RedirectSemantic Sem);
 		virtual void EmitJmpViaRegister(Int8 Register, SlotType Slot, RedirectSemantic Sem);
 
-		virtual void EmitJcc(Condition Cond, Int64 Imm, SlotType Slot, RedirectSemantic Sem);
+		virtual FlowControlReplaceEntry EmitJcc(Condition Cond, Int64 Imm, SlotType Slot, RedirectSemantic Sem);
 
 		virtual void EmitCallViaRegister(Int8 Register, SlotType Slot, RedirectSemantic Sem);
 
