@@ -3,25 +3,25 @@
 
 RTJE::EmitContext* RTJE::INativeEmitter::GetEmitContext()
 {
-    return m_context;
+    return mContext;
 }
 
 void RTJE::INativeEmitter::SetExecutablePage(RTIOS2EE::IExecutablePage* value)
 {
-    m_page = value;
+    mPage = value;
 }
 
 RTIOS2EE::IExecutablePage* RTJE::INativeEmitter::GetExecutablePage()
 {
-    return m_page;
+    return mPage;
 }
 
 RT::Int32 RTJE::INativeEmitter::CurrentPosition()
 {
-    return m_page->Current();
+    return mPage->Current();
 }
 
 RT::Int8* RTJE::INativeEmitter::CurrentPointer()
 {
-    return m_page->Current() + m_page->GetRawPage();
+    return mPage->Current() + mPage->GetRawPage();
 }

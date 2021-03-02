@@ -327,6 +327,9 @@
     <ClInclude Include="Runtime\Core\JIT\Emitter\Page\WindowsExecutablePage.h">
       <Filter>头文件\System\Runtime\Core\JIT\Emitter\Page</Filter>
     </ClInclude>
+    <ClInclude Include="Runtime\Core\JIT\OpCodes.h">
+      <Filter>头文件\System\Runtime\Core\JIT</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">

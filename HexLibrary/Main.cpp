@@ -38,4 +38,33 @@ int main() {
 
 void Main()
 {
+	int x = 0;
+	std::cin >> x;
+	if (x < 1)
+	{
+		std::wcout << L"L" << std::endl;
+	}
+	if (x > 2)
+	{
+		std::wcout << L"G" << std::endl;
+	}
+	if (x == 0)
+	{
+		std::wcout << L"E" << std::endl;
+	}
+
+	if (x != 0)
+	{
+		std::wcout << L"NE" << std::endl;
+	}
+
+	if (x <= 0)
+	{
+		std::wcout << L"LE" << std::endl;
+	}
+
+	if (x >= 0)
+	{
+		std::wcout << L"GE" << std::endl;
+	}
 }

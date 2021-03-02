@@ -217,14 +217,19 @@ namespace RTJE::X86
 	{
 		HL::System::Collection::Generic::List<AddressFixUp> m_fixups;
 
+		/// <summary>
+		/// Write by big endianness, mostly used for op
+		/// </summary>
+		/// <typeparam name="IntT"></typeparam>
+		/// <param name="value"></param>
 		template<class IntT>
 		void Write(IntT value) {
-			Binary::WriteByLittleEndianness(
+			Binary::WriteByBigEndianness(
 				GetExecutablePage()->PrepareWrite(sizeof(IntT)), value);
 			GetExecutablePage()->CommitWrite(sizeof(IntT));
 		}
 		template<class IntT>
-		void WriteByBigEndianness(IntT value) {
+		void WriteByLittleEndianness(IntT value) {
 			Binary::WriteByLittleEndianness(
 				GetExecutablePage()->PrepareWrite(sizeof(IntT)), value);
 			GetExecutablePage()->CommitWrite(sizeof(IntT));

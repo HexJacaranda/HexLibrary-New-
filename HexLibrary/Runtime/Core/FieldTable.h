@@ -45,9 +45,11 @@ namespace RTC
 	{
 		static constexpr Int32 OffsetUnSet = -1;
 		RTString FieldName;
+		//Offset relative to start of the type
 		Int32 Offset;
+		//Reference members are always equal to sizeof(void*)
 		Int32 FieldSize;
-		//Token can be split into <UInt16,UInt16> representation
+		//Token can be split into <UInt16, UInt16> representation
 		//which is useful when JIT need to decide what code to emit
 		//according to field information(i.e. WriteBarrier)
 		union

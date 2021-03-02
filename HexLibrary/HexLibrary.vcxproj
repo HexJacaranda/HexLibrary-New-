@@ -154,6 +154,7 @@
     <ClInclude Include="Runtime\Core\JIT\Emitter\X86Emitter.h" />
     <ClInclude Include="Runtime\Core\JIT\HexJIT.h" />
     <ClInclude Include="Runtime\Core\JIT\JIT.h" />
+    <ClInclude Include="Runtime\Core\JIT\OpCodes.h" />
     <ClInclude Include="Runtime\Core\MethodTable.h" />
     <ClInclude Include="Runtime\Core\Object\ArrayObject.h" />
     <ClInclude Include="Runtime\Core\Object\Object.h" />

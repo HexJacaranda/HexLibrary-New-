@@ -42,35 +42,67 @@ namespace RTC
 
 	class Type
 	{
+		/// <summary>
+		/// Unicode name
+		/// </summary>
 		RTString mUnicodeName;
 		Int32 mId;
+		/// <summary>
+		/// The base size of object of this type. Special types like array and string
+		/// do not represent the real object size in heap.
+		/// </summary>
 		Int32 mBaseSize;
 		UInt32 mFlag;
 		Type* mParent;
+		/// <summary>
+		/// Only valid when this is an enclosed type.
+		/// </summary>
+		Type* mEnclosingParent;
+		/// <summary>
+		/// If this is a half open or concrete generic type, this field points to the  
+		/// origin generic type. Otherwise, it's null.
+		/// </summary>
 		Type* mPureGenericSource;
 		MethodTable* mMethTable;
 		FieldTable* mFieldTable;
 		InterfaceDispatchTable* mInterfaceTable;
 		AssemblyContext* mContext;
 		union {
+			/// <summary>
+			/// If any item is null, then the corresponding type argument is unfilled.
+			/// </summary>
 			Type** mTypeArguments;
-			//Inline storage for single type
+			/// <summary>
+			/// Inline storage for single type argument
+			/// </summary>
 			Type* mSingleTypeArgument;
 		};
+		/// <summary>
+		/// Total number of type arguments
+		/// </summary>
 		Int16 mTypeArgumentsTotal;
+		/// <summary>
+		/// The number of filled type arguments
+		/// </summary>
 		Int16 mTypeArgumentsCount;
 	public:
 		//Friend to builder
 		friend class TypeBuilder;
 	public:
-		//Get basic size for type
+		/// <summary>
+		/// Get basic size for type
+		/// </summary>
+		/// <returns></returns>
 		inline Int32 GetBaseSize()const;
 		inline bool IsPrimitiveType()const;
 		inline bool IsOpenType()const;
 		inline bool IsClosedType()const;
 		inline bool IsArray()const;
 		inline bool IsString()const;
-		//Is it a normal type or fully open generic type
+		/// <summary>
+		/// Is it a normal type or fully open generic type
+		/// </summary>
+		/// <returns></returns>
 		inline bool IsCanonicalType()const;
 		inline MethodTable* GetMethodTable()const;
 		inline FieldTable* GetFieldTable()const;

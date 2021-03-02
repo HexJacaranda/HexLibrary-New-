@@ -6,14 +6,14 @@ void RTJE::X86::X86Emitter::WriteImmediate(SlotType Slot, Int64 Imm)
 {
 	switch (Slot)
 	{
-	case SlotType::Int8:WriteByBigEndianness((Int8)Imm); break;
-	case SlotType::Int16:WriteByBigEndianness((Int16)Imm); break;
+	case SlotType::Int8:WriteByLittleEndianness((Int8)Imm); break;
+	case SlotType::Int16:WriteByLittleEndianness((Int16)Imm); break;
 	case SlotType::Int32:
 	case SlotType::Float:
-		WriteByBigEndianness((Int32)Imm); break;
+		WriteByLittleEndianness((Int32)Imm); break;
 	case SlotType::Int64:
 	case SlotType::Double:
-		WriteByBigEndianness((Int64)Imm); break;
+		WriteByLittleEndianness((Int64)Imm); break;
 	}
 }
 

@@ -360,5 +360,88 @@ namespace EmitterUnitTest
 				}));
 			Logger::WriteMessage(L"jmp short imm");
 		}
+
+		TEST_METHOD(Jcc)
+		{
+			//Rel32 Imm
+
+			Assert::AreEqual(2, EmitAs<Int32>([&, this]() {
+				emitter.EmitStoreImmediateToRegister(Register::AX, 0, SlotType::Int32);
+				emitter.EmitCompareRegisterWithImmediate(Register::AX, 0, SlotType::Int32);
+				auto entry = emitter.EmitJcc(Condition::EqualTo, 0, SlotType::Int32, RedirectSemantic::Relative);
+				auto nowPosition = emitter.CurrentPosition();
+				emitter.EmitStoreImmediateToRegister(Register::AX, 1, SlotType::Int32);
+				emitter.EmitReturn();
+				emitter.UpdateFlowControlTo((Int64)emitter.CurrentPosition() - nowPosition, entry);
+				emitter.EmitStoreImmediateToRegister(Register::AX, 2, SlotType::Int32);
+				emitter.EmitReturn();
+				}));
+			Logger::WriteMessage(L"je imm");
+
+			Assert::AreEqual(2, EmitAs<Int32>([&, this]() {
+				emitter.EmitStoreImmediateToRegister(Register::AX, 0, SlotType::Int32);
+				emitter.EmitCompareRegisterWithImmediate(Register::AX, -1, SlotType::Int32);
+				auto entry = emitter.EmitJcc(Condition::GreaterThan, 0, SlotType::Int32, RedirectSemantic::Relative);
+				auto nowPosition = emitter.CurrentPosition();
+				emitter.EmitStoreImmediateToRegister(Register::AX, 1, SlotType::Int32);
+				emitter.EmitReturn();
+				emitter.UpdateFlowControlTo((Int64)emitter.CurrentPosition() - nowPosition, entry);
+				emitter.EmitStoreImmediateToRegister(Register::AX, 2, SlotType::Int32);
+				emitter.EmitReturn();
+				}));
+			Logger::WriteMessage(L"jg imm");
+
+			Assert::AreEqual(2, EmitAs<Int32>([&, this]() {
+				emitter.EmitStoreImmediateToRegister(Register::AX, 0, SlotType::Int32);
+				emitter.EmitCompareRegisterWithImmediate(Register::AX, 1, SlotType::Int32);
+				auto entry = emitter.EmitJcc(Condition::LessThan, 0, SlotType::Int32, RedirectSemantic::Relative);
+				auto nowPosition = emitter.CurrentPosition();
+				emitter.EmitStoreImmediateToRegister(Register::AX, 1, SlotType::Int32);
+				emitter.EmitReturn();
+				emitter.UpdateFlowControlTo((Int64)emitter.CurrentPosition() - nowPosition, entry);
+				emitter.EmitStoreImmediateToRegister(Register::AX, 2, SlotType::Int32);
+				emitter.EmitReturn();
+				}));
+			Logger::WriteMessage(L"jl imm");
+
+			Assert::AreEqual(2, EmitAs<Int32>([&, this]() {
+				emitter.EmitStoreImmediateToRegister(Register::AX, 0, SlotType::Int32);
+				emitter.EmitCompareRegisterWithImmediate(Register::AX, 0, SlotType::Int32);
+				auto entry = emitter.EmitJcc(Condition::GreaterThanOrEqualTo, 0, SlotType::Int32, RedirectSemantic::Relative);
+				auto nowPosition = emitter.CurrentPosition();
+				emitter.EmitStoreImmediateToRegister(Register::AX, 1, SlotType::Int32);
+				emitter.EmitReturn();
+				emitter.UpdateFlowControlTo((Int64)emitter.CurrentPosition() - nowPosition, entry);
+				emitter.EmitStoreImmediateToRegister(Register::AX, 2, SlotType::Int32);
+				emitter.EmitReturn();
+				}));
+			Logger::WriteMessage(L"jge imm");
+
+			Assert::AreEqual(2, EmitAs<Int32>([&, this]() {
+				emitter.EmitStoreImmediateToRegister(Register::AX, 0, SlotType::Int32);
+				emitter.EmitCompareRegisterWithImmediate(Register::AX, 0, SlotType::Int32);
+				auto entry = emitter.EmitJcc(Condition::LessThanOrEqualTo, 0, SlotType::Int32, RedirectSemantic::Relative);
+				auto nowPosition = emitter.CurrentPosition();
+				emitter.EmitStoreImmediateToRegister(Register::AX, 1, SlotType::Int32);
+				emitter.EmitReturn();
+				emitter.UpdateFlowControlTo((Int64)emitter.CurrentPosition() - nowPosition, entry);
+				emitter.EmitStoreImmediateToRegister(Register::AX, 2, SlotType::Int32);
+				emitter.EmitReturn();
+				}));
+			Logger::WriteMessage(L"jle imm");
+
+			Assert::AreEqual(2, EmitAs<Int32>([&, this]() {
+				emitter.EmitStoreImmediateToRegister(Register::AX, 0, SlotType::Int32);
+				emitter.EmitCompareRegisterWithImmediate(Register::AX, 3, SlotType::Int32);
+				auto entry = emitter.EmitJcc(Condition::NotEqualTo, 0, SlotType::Int32, RedirectSemantic::Relative);
+				auto nowPosition = emitter.CurrentPosition();
+				emitter.EmitStoreImmediateToRegister(Register::AX, 1, SlotType::Int32);
+				emitter.EmitReturn();
+				emitter.UpdateFlowControlTo((Int64)emitter.CurrentPosition() - nowPosition, entry);
+				emitter.EmitStoreImmediateToRegister(Register::AX, 2, SlotType::Int32);
+				emitter.EmitReturn();
+				}));
+			Logger::WriteMessage(L"jne imm");
+		}
 	};
 }

@@ -123,14 +123,14 @@ namespace RTJE
 	class INativeEmitter
 	{
 	protected:
-		RTIOS2EE::IExecutablePage* m_page = nullptr;
-		EmitContext* m_context = nullptr;
+		RTIOS2EE::IExecutablePage* mPage = nullptr;
+		EmitContext* mContext = nullptr;
 	public:
 		virtual void StartEmitting() = 0;
 		virtual void CommitEmitting() = 0;
 
 		virtual void SetEmitContext(EmitContext* value) {
-			m_context = value;
+			mContext = value;
 		}
 		virtual EmitContext* GetEmitContext();
 		virtual void SetExecutablePage(RTIOS2EE::IExecutablePage* value);

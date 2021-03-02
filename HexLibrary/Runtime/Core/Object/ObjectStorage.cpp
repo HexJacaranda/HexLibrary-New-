@@ -3,5 +3,5 @@
 
 RTO::Object* RTO::ObjectStorage::GetObject() const
 {
-    return (RTO::Object*)(this - 1);
+    return (RTO::Object*)(this + 1);
 }
