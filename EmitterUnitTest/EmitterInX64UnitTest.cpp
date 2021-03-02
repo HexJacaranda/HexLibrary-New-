@@ -363,8 +363,6 @@ namespace EmitterUnitTest
 
 		TEST_METHOD(Jcc)
 		{
-			//Rel32 Imm
-
 			Assert::AreEqual(2, EmitAs<Int32>([&, this]() {
 				emitter.EmitStoreImmediateToRegister(Register::AX, 0, SlotType::Int32);
 				emitter.EmitCompareRegisterWithImmediate(Register::AX, 0, SlotType::Int32);
