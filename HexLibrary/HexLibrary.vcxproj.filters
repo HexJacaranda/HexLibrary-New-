@@ -127,6 +127,15 @@
     <Filter Include="头文件\System\Runtime\Core\Builders">
       <UniqueIdentifier>{d038c493-6c92-4b43-af08-6a072b9f1cd8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\System\Runtime\Core\JIT\HexJIT">
+      <UniqueIdentifier>{4bc11571-0128-46de-bfd6-23f2e2c37ac3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Runtime\Core\JIT\HexJIT\Frontend">
+      <UniqueIdentifier>{8914b804-c2c1-4cce-8569-37e3bd1af482}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\System\Runtime\Core\JIT\HexJIT\Backend">
+      <UniqueIdentifier>{4edc8160-6781-453e-bcef-b6a9307a0646}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include.h">
@@ -309,9 +318,6 @@
     <ClInclude Include="Runtime\Core\Object\StringObject.h">
       <Filter>头文件\System\Runtime\Core\Object</Filter>
     </ClInclude>
-    <ClInclude Include="Runtime\Core\JIT\HexJIT.h">
-      <Filter>头文件\System\Runtime\Core\JIT</Filter>
-    </ClInclude>
     <ClInclude Include="Runtime\Core\JIT\JIT.h">
       <Filter>头文件\System\Runtime\Core\JIT</Filter>
     </ClInclude>
@@ -329,6 +335,15 @@
     </ClInclude>
     <ClInclude Include="Runtime\Core\JIT\OpCodes.h">
       <Filter>头文件\System\Runtime\Core\JIT</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Core\JIT\JITContext.h">
+      <Filter>头文件\System\Runtime\Core\JIT</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Core\JIT\HexJIT\HexJIT.h">
+      <Filter>头文件\System\Runtime\Core\JIT\HexJIT</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Core\JIT\HexJIT\Frontend\Transformer.h">
+      <Filter>头文件\System\Runtime\Core\JIT\HexJIT\Frontend</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -390,6 +405,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Runtime\Binary.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Core\JIT\HexJIT\Frontend\Transformer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

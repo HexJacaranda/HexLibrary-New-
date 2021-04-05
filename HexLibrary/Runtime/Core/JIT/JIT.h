@@ -1,16 +1,11 @@
 #pragma once
 #include "..\..\RuntimeAlias.h"
+#include "JITContext.h"
 namespace RTJ
 {
-	class MethodInfo
-	{
-	public:
-
-	};
-	
 	class INativeJIT
 	{
 	public:
-		virtual void* Compile(MethodInfo) = 0;
+		virtual void* Compile(JITContext) = 0;
 	};
 }

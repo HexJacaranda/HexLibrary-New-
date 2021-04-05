@@ -42,7 +42,6 @@ namespace RTC
 	class MethodTable
 	{
 		Type* mType;
-		MethodTable* mParent;
 	public:
 		inline Type* GetOwningType()const;
 		inline MethodSlotBundle* GetStartBundle()const;

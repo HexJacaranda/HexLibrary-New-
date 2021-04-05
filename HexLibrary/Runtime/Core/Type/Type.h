@@ -63,6 +63,10 @@ namespace RTC
 		/// origin generic type. Otherwise, it's null.
 		/// </summary>
 		Type* mPureGenericSource;
+		/// <summary>
+		/// Interfaces that this type implements or reabstracts.
+		/// </summary>
+		Type** mInterfaces;
 		MethodTable* mMethTable;
 		FieldTable* mFieldTable;
 		InterfaceDispatchTable* mInterfaceTable;

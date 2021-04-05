@@ -45,7 +45,7 @@ namespace RTC
 	{
 		static constexpr Int32 OffsetUnSet = -1;
 		RTString FieldName;
-		//Offset relative to start of the type
+		//Offset relative to the start of object.
 		Int32 Offset;
 		//Reference members are always equal to sizeof(void*)
 		Int32 FieldSize;

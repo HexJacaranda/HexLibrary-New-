@@ -152,8 +152,10 @@
     <ClInclude Include="Runtime\Core\JIT\Emitter\Page\ExecutablePage.h" />
     <ClInclude Include="Runtime\Core\JIT\Emitter\Page\WindowsExecutablePage.h" />
     <ClInclude Include="Runtime\Core\JIT\Emitter\X86Emitter.h" />
-    <ClInclude Include="Runtime\Core\JIT\HexJIT.h" />
+    <ClInclude Include="Runtime\Core\JIT\HexJIT\Frontend\Transformer.h" />
+    <ClInclude Include="Runtime\Core\JIT\HexJIT\HexJIT.h" />
     <ClInclude Include="Runtime\Core\JIT\JIT.h" />
+    <ClInclude Include="Runtime\Core\JIT\JITContext.h" />
     <ClInclude Include="Runtime\Core\JIT\OpCodes.h" />
     <ClInclude Include="Runtime\Core\MethodTable.h" />
     <ClInclude Include="Runtime\Core\Object\ArrayObject.h" />
@@ -208,6 +210,7 @@
     <ClCompile Include="Runtime\Core\JIT\Emitter\Emitter.cpp" />
     <ClCompile Include="Runtime\Core\JIT\Emitter\Page\WindowsExecutablePage.cpp" />
     <ClCompile Include="Runtime\Core\JIT\Emitter\X86Emitter.cpp" />
+    <ClCompile Include="Runtime\Core\JIT\HexJIT\Frontend\Transformer.cpp" />
     <ClCompile Include="Runtime\Core\MethodTable.cpp" />
     <ClCompile Include="Runtime\Core\Object\ArrayObject.cpp" />
     <ClCompile Include="Runtime\Core\Object\Object.cpp" />
