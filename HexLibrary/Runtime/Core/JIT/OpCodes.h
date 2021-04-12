@@ -1,115 +1,249 @@
 #pragma once
 #include "..\..\RuntimeAlias.h"
+#include "..\Type\CoreTypes.h"
 
 namespace RTJ
 {
+//Define one-byte il instruction
+#define IL(Name, Value, BaeValue) static constexpr UInt8 Name = Value; \
+							 static constexpr UInt8 Name##Bae = BaeValue
+
+//Define extended il instruction with 0x00 leading byte (ext)
+#define IL_EX(Name, Value, BaeValue) static constexpr UInt8 Name = Value; \
+							 static constexpr UInt8 Name##Bae = BaeValue
+	//Opcodes with BAE encoding
+	//[Opcodes(8 bit)][Extended(8 bit optional with leading 0x00)][Consumed Items(4 bit)][Produced Items(4 bit)]
+	//[CI extended(16 bit with leading 0xF)][PI extended(16 bit with leading 0xF)]
+
 	/// <summary>
 	/// Number of opcodes may increases with time. Currently we support up to 255 different opcodes(8 bit).
-	/// <para>1. The opcode of value 0 is reserved for extension </para>
-	/// <para>2. Other opcodes are all one-byte length</para>
-	/// <para>The encoding of instruction:</para>
-	/// <para>[OpCode(8 Bit)][Other data]</para>
-	/// <para>Necessary data followed:</para>
-	/// <para>[OpCode][Number of consumed stack items(4 Bit)][Number of produced stack items(4 Bit)]</para>
-	/// <para>Specially, value 0b1111 in slot means variable stack items, which depends on the context.</para>
 	/// </summary>
 	class OpCodes
 	{
 	public:
-		static constexpr UInt8 LdFld = 0x01;
-		static constexpr UInt8 LdFldBae = 0xF1;
+		/// <summary>
+		/// Special for extended instruction.
+		/// </summary>
+		IL(Ext, 0x00, 0x00);
 
-		static constexpr UInt8 StFld = 0x02;
-		static constexpr UInt8 StFldBae = 0x1F;
+		//-----------------------------------------------------
+		//Load related instructions, 0x01 ~ 0x1F space reserved
+		//-----------------------------------------------------
+	public:
+		/// <summary>
+		/// Followed by uint32 field reference token
+		/// </summary>
+		IL(LdFld, 0x01, 0xF1);
 
-		static constexpr UInt8 LdLoc = 0x03;
-		static constexpr UInt8 LdLocBae = 0x01;
+		/// <summary>
+		/// Followed by uint32 field reference token
+		/// </summary>
+		IL(LdFldA, 0x02, 0xF1);
 
-		static constexpr UInt8 StLoc = 0x04;
-		static constexpr UInt8 StLocBae = 0x10;
+		/// <summary>
+		/// Followed by int16 local index
+		/// </summary>
+		IL(LdLoc, 0x03, 0x01);
 
-		static constexpr UInt8 LdArg = 0x05;
-		static constexpr UInt8 LdArgBae = 0x01;
+		/// <summary>
+		/// Followed by uint16 local index
+		/// </summary>
+		IL(LdLocA, 0x04, 0x01);
 
-		static constexpr UInt8 StArg = 0x06;
-		static constexpr UInt8 StArgBae = 0x10;
+		/// <summary>
+		/// Followed by int16 argument index
+		/// </summary>
+		IL(LdArg, 0x05, 0x01);
 
-		static constexpr UInt8 LdFn = 0x07;
-		static constexpr UInt8 LdFnBae = 0x01;
+		/// <summary>
+		/// Followed by int16 argument index
+		/// </summary>
+		IL(LdArgA, 0x06, 0x01);
 
-		static constexpr UInt8 LdFldA = 0x08;
-		static constexpr UInt8 LdFldABae = 0xF1;
+		/// <summary>
+		/// Load element of szarray
+		/// </summary>
+		IL(LdElem, 0x07, 0x21);
 
-		static constexpr UInt8 LdLocA = 0x09;
-		static constexpr UInt8 LdLocABae = 0x01;
+		/// <summary>
+		/// Load address of element of szarray
+		/// </summary>
+		IL(LdElemA, 0x08, 0x21);
 
-		static constexpr UInt8 StTA = 0x0A;
-		static constexpr UInt8 StTABae = 0x11;
+		/// <summary>
+		/// Load string, followed by uint32 string token
+		/// </summary>
+		IL(LdStr, 0x09, 0x01);
 
-		static constexpr UInt8 Add = 0x0B;
-		static constexpr UInt8 AddBae = 0x21;
+		/// <summary>
+		/// Load constant literal, followed by uint8 valid CoreType and its corresponding value.
+		/// </summary>
+		IL(LdC, 0x0A, 0x01);
 
-		static constexpr UInt8 Sub = 0x0C;
-		static constexpr UInt8 SubBae = 0x21;
+		/// <summary>
+		/// Followed by uint32 method reference token
+		/// </summary>
+		IL(LdFn, 0x0B, 0x01);
 
-		static constexpr UInt8 Mul = 0x0D;
-		static constexpr UInt8 MulBae = 0x21;
+		//------------------------------------------------------
+		//Store related instructions, 0x20 ~ 0x2F space reserved
+		//------------------------------------------------------
+	public:
+		/// <summary>
+		/// Followed by uint32 field reference token
+		/// </summary>
+		IL(StFld, 0x20, 0x1F);
 
-		static constexpr UInt8 Div = 0x0E;
-		static constexpr UInt8 DivBae = 0x21;
+		/// <summary>
+		/// Followed by int16 local index
+		/// </summary>
+		IL(StLoc, 0x21, 0x10);
 
-		static constexpr UInt8 Conv = 0x0F;
-		static constexpr UInt8 DivBae = 0x11;
+		/// <summary>
+		/// Followed by int16 argument index
+		/// </summary>
+		IL(StArg, 0x22, 0x10);
 
-		static constexpr UInt8 Call = 0x10;
-		static constexpr UInt8 CallBae = 0xFF;
+		/// <summary>
+		/// Store element to szarray
+		/// </summary>
+		IL(StElem, 0x23, 0x30);
+	
+		/// <summary>
+		/// Followed by uint32 type reference token
+		/// </summary>
+		IL(StTA, 0x24, 0x11);
 
-		static constexpr UInt8 CallVirt = 0x11;
-		static constexpr UInt8 CallVirtBae = 0xFF;
+		//---------------------------------------------------
+		//Arithmetic instructions, 0x30 ~ 0x3F space reserved
+		//---------------------------------------------------
+	public:
+		
+		/// <summary>
+		/// Followed by uint8 operand type
+		/// </summary>
+		IL(Add, 0x30, 0x21);
+		
+		/// <summary>
+		/// Followed by uint8 operand type
+		/// </summary>
+		IL(Sub, 0x31, 0x21);
+		
+		/// <summary>
+		/// Followed by uint8 operand type
+		/// </summary>
+		IL(Mul, 0x32, 0x21);
+		
+		/// <summary>
+		/// Followed by uint8 operand type
+		/// </summary>
+		IL(Div, 0x33, 0x21);
+		
+		/// <summary>
+		/// Followed by uint8(from), uint8(to) operand type
+		/// </summary>
+		IL(Conv, 0x34, 0x11);
+		
+		//-----------------------------------------------------
+		//Flow control instructions, 0x40 ~ 0x4F space reserved
+		//-----------------------------------------------------
+	public:
+		/// <summary>
+		/// Followed by uint32 method reference
+		/// </summary>
+		IL(Call, 0x40, 0xFF);
+		
+		/// <summary>
+		/// Followed by uint32 method reference
+		/// </summary>
+		IL(CallVirt, 0x41, 0xFF);
+		
+		/// <summary>
+		/// Return from current method
+		/// </summary>
+		IL(Ret, 0x42, 0x11);
 
-		static constexpr UInt8 Ret = 0x12;
-		static constexpr UInt8 RetBae = 0x11;
+		/// <summary>
+		/// Followed by uint8 condition
+		/// </summary>
+		IL(Cmp, 0x43, 0x21);
+		
+		/// <summary>
+		/// Conditional, followed by uint16 il offset
+		/// </summary>
+		IL(Jcc, 0x44, 0x10);
+		
+		/// <summary>
+		/// Unconditional, followed by uint16 il offset
+		/// </summary>
+		IL(Jmp, 0x45, 0x00);
+		
+		/// <summary>
+		/// Throw an exception
+		/// </summary>
+		IL(Throw, 0x46, 0x00);
+		
+		/// <summary>
+		/// Try block, followed by uint16 il offset
+		/// </summary>
+		IL(Try, 0x47, 0x00);
+		
+		/// <summary>
+		/// Catch block, followed by uint16 il offset
+		/// </summary>
+		IL(Catch, 0x48, 0x00);
+		
+		/// <summary>
+		/// Finally block, followed by uint16 il offset
+		/// </summary>
+		IL(Finally, 0x49, 0x00);
 
-		static constexpr UInt8 Jcc = 0x13;
-		static constexpr UInt8 JccBae = 0x10;
+		//-----------------------------------------------------
+		//Accessory instructions, 0x50 ~ 0x5F space reserved
+		//-----------------------------------------------------	
+	public:
+		/// <summary>
+		/// Ensure R/W memory order
+		/// </summary>
+		IL(Volatile, 0x50, 0x00);
 
-		static constexpr UInt8 Jmp = 0x14;
-		static constexpr UInt8 JccBae = 0x00;
+		/// <summary>
+		/// Indicate the jcc possibility
+		/// </summary>
+		IL(LikelyFail, 0x51, 0x00);
 
-		static constexpr UInt8 Throw = 0x15;
-		static constexpr UInt8 ThrowBae = 0x00;
+		/// <summary>
+		/// Indicate the jcc possibility
+		/// </summary>
+		IL(LikelySuccess, 0x51, 0x00);
 
-		static constexpr UInt8 Try = 0x16;
-		static constexpr UInt8 TryBae = 0x00;
+		//-----------------------------------------------------
+		//Other instructions, 0xF0 ~ 0xFE space reserved
+		//-----------------------------------------------------	
+	public:
+		IL(Dup, 0xF0, 0x01);
 
-		static constexpr UInt8 Catch = 0x17;
-		static constexpr UInt8 CatchBae = 0x00;
-
-		static constexpr UInt8 Finally = 0x18;
-		static constexpr UInt8 FinallyBae = 0x00;
-
-		static constexpr UInt8 LdElem = 0x19;
-		static constexpr UInt8 LdElemBae = 0x21;
-
-		static constexpr UInt8 StElem = 0x1A;
-		static constexpr UInt8 StElemBae = 0x30;
-
-		static constexpr UInt8 LdElemA = 0x1B;
-		static constexpr UInt8 LdElemABae = 0x21;
+	public:
+		/// <summary>
+		/// Doing nothing, usually as invalid operation.
+		/// </summary>
+		IL(Nop, 0xFF, 0x00);
 	};
+#undef IL
+#undef IL_EX
 
 	/// <summary>
-	/// Condition constant is encoded in 4 bits following the stack item slot.
+	/// Condition constant is encoded in 8 bits following the stack item slot.
 	/// </summary>
-	class OpCodeJccConstant
+	class OpCodeCmpCondition
 	{
 	public:
-		static constexpr UInt8 EqualTo = 0b0000;
-		static constexpr UInt8 NotEqualTo = 0b0001;
-		static constexpr UInt8 GreaterThan = 0b0010;
-		static constexpr UInt8 LessThan = 0b0011;
-		static constexpr UInt8 GreaterThanOrEqualTo = 0b0100;
-		static constexpr UInt8 LessThanOrEqualTo = 0b0101;
+		static constexpr UInt8 EQ = 0b0000;
+		static constexpr UInt8 NE = 0b0001;
+		static constexpr UInt8 GT = 0b0010;
+		static constexpr UInt8 LT = 0b0011;
+		static constexpr UInt8 GE = 0b0100;
+		static constexpr UInt8 LE = 0b0101;
 
 		/// <summary>
 		/// Offset integer of up to 15 bytes is supported.
@@ -117,33 +251,8 @@ namespace RTJ
 		static constexpr UInt8 OffsetSizeMask = 0b1111;
 	};
 
-	/// <summary>
-	/// Indicating opcode operand type.
-	/// </summary>
-	class OpCodeOperandTypeConstant
+	class OpCodeOperandTypeConstant : public CoreTypes
 	{
-	public:
-		static constexpr UInt8 I1 = 0x00;
-		static constexpr UInt8 I2 = 0x01;
-		static constexpr UInt8 I4 = 0x02;
-		static constexpr UInt8 I8 = 0x03;
 
-		static constexpr UInt8 U1 = 0x04;
-		static constexpr UInt8 U2 = 0x05;
-		static constexpr UInt8 U4 = 0x06;
-		static constexpr UInt8 U8 = 0x07;
-
-		/// <summary>
-		/// Half
-		/// </summary>
-		static constexpr UInt8 R2 = 0x08;
-		/// <summary>
-		/// Single
-		/// </summary>
-		static constexpr UInt8 R4 = 0x09;
-		/// <summary>
-		/// Double
-		/// </summary>
-		static constexpr UInt8 R8 = 0x0A;
 	};
 }

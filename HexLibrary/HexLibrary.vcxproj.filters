@@ -136,6 +136,9 @@
     <Filter Include="头文件\System\Runtime\Core\JIT\HexJIT\Backend">
       <UniqueIdentifier>{4edc8160-6781-453e-bcef-b6a9307a0646}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\System\Runtime\Core\Meta">
+      <UniqueIdentifier>{2a94cd55-d7e5-4d6c-b5e5-576eac809437}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Include.h">
@@ -345,6 +348,21 @@
     <ClInclude Include="Runtime\Core\JIT\HexJIT\Frontend\Transformer.h">
       <Filter>头文件\System\Runtime\Core\JIT\HexJIT\Frontend</Filter>
     </ClInclude>
+    <ClInclude Include="Runtime\Core\JIT\HexJIT\Frontend\IR.h">
+      <Filter>头文件\System\Runtime\Core\JIT\HexJIT\Frontend</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Core\JIT\HexJIT\Frontend\EvaluationStack.h">
+      <Filter>头文件\System\Runtime\Core\JIT\HexJIT\Frontend</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Core\Type\CoreTypes.h">
+      <Filter>头文件\System\Runtime\Core\Type</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Core\Meta\MetaManager.h">
+      <Filter>头文件\System\Runtime\Core\Meta</Filter>
+    </ClInclude>
+    <ClInclude Include="Runtime\Core\Meta\Table.h">
+      <Filter>头文件\System\Runtime\Core\Meta</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -408,6 +426,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Runtime\Core\JIT\HexJIT\Frontend\Transformer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Core\JIT\HexJIT\Frontend\EvaluationStack.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Core\Meta\MetaManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

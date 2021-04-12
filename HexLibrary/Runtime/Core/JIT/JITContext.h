@@ -3,6 +3,17 @@
 
 namespace RTJ
 {
+	struct LocalVariableInfo
+	{
+		UInt32 TypeReference;
+	};
+
+	struct ArgumentInfo
+	{
+		UInt32 TypeReference;
+		UInt64 DefaultValue;
+	};
+
 	class JITContext
 	{
 	public:
@@ -27,5 +38,13 @@ namespace RTJ
 		/// Segment length
 		/// </summary>
 		Int32 SegmentLength;
+		/// <summary>
+		/// Local variable
+		/// </summary>
+		LocalVariableInfo* LocalVariables;
+		/// <summary>
+		/// Arguments
+		/// </summary>
+		ArgumentInfo* Arguments;
 	};
 }

@@ -1,5 +1,6 @@
 #include "Type.h"
 #include "AssemblyContext.h"
+#include "CoreTypes.h"
 
 inline RT::Int32 RTC::Type::GetBaseSize() const
 {
@@ -8,7 +9,7 @@ inline RT::Int32 RTC::Type::GetBaseSize() const
 
 inline bool RTC::Type::IsPrimitiveType() const
 {
-    return (mFlag & TypeFlag::DetailedMask) == TypeFlag::PrimitiveType;
+    return GetCoreType() < CoreTypes::Struct;
 }
 
 inline bool RTC::Type::IsOpenType() const
@@ -23,12 +24,17 @@ inline bool RTC::Type::IsClosedType() const
 
 inline bool RTC::Type::IsArray() const
 {
-    return (mFlag & TypeFlag::DetailedMask) == TypeFlag::Array;
+    return GetCoreType() == CoreTypes::Array;
 }
 
 inline bool RTC::Type::IsString() const
 {
-    return (mFlag & TypeFlag::DetailedMask) == TypeFlag::String;
+    return GetCoreType() == CoreTypes::String;
+}
+
+inline RT::UInt8 RTC::Type::GetCoreType() const
+{
+    return ((mFlag & TypeFlag::DetailedMask) >> 4);
 }
 
 inline bool RTC::Type::IsCanonicalType() const

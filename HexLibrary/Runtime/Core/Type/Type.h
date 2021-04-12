@@ -23,11 +23,8 @@ namespace RTC
 		static constexpr UInt32 RefStruct = 0x00000003;
 
 		//Reserved for 4 - 11 bit
+		//Use CoreTypes to represent.
 		static constexpr UInt32 DetailedMask = 0x00000FF0;
-		static constexpr UInt32 PrimitiveType = 0x00000010;
-		static constexpr UInt32 Object = 0x00000020;
-		static constexpr UInt32 String = 0x00000030;
-		static constexpr UInt32 Array = 0x00000040;
 	};
 
 	class TypeLoadingLevel {
@@ -46,7 +43,7 @@ namespace RTC
 		/// Unicode name
 		/// </summary>
 		RTString mUnicodeName;
-		Int32 mId;
+		UInt32 mToken;
 		/// <summary>
 		/// The base size of object of this type. Special types like array and string
 		/// do not represent the real object size in heap.
@@ -103,6 +100,7 @@ namespace RTC
 		inline bool IsClosedType()const;
 		inline bool IsArray()const;
 		inline bool IsString()const;
+		inline UInt8 GetCoreType()const;
 		/// <summary>
 		/// Is it a normal type or fully open generic type
 		/// </summary>
