@@ -138,11 +138,36 @@ namespace RTJ
 		/// Followed by uint8 operand type
 		/// </summary>
 		IL(Div, 0x33, 0x21);
+
+		/// <summary>
+		/// And
+		/// </summary>
+		IL(And, 0x34, 0x21);
+
+		/// <summary>
+		/// Or
+		/// </summary>
+		IL(Or, 0x35, 0x21);
 		
+		/// <summary>
+		/// Xor
+		/// </summary>
+		IL(Xor, 0x36, 0x21);
+
+		/// <summary>
+		/// Not
+		/// </summary>
+		IL(Not, 0x37, 0x11);
+
+		/// <summary>
+		/// Negative
+		/// </summary>
+		IL(Neg, 0x38, 0x11);
+
 		/// <summary>
 		/// Followed by uint8(from), uint8(to) operand type
 		/// </summary>
-		IL(Conv, 0x34, 0x11);
+		IL(Conv, 0x39, 0x11);
 		
 		//-----------------------------------------------------
 		//Flow control instructions, 0x40 ~ 0x4F space reserved
@@ -161,7 +186,7 @@ namespace RTJ
 		/// <summary>
 		/// Return from current method
 		/// </summary>
-		IL(Ret, 0x42, 0x11);
+		IL(Ret, 0x42, 0xF0);
 
 		/// <summary>
 		/// Followed by uint8 condition
@@ -198,9 +223,9 @@ namespace RTJ
 		/// </summary>
 		IL(Finally, 0x49, 0x00);
 
-		//-----------------------------------------------------
+		//--------------------------------------------------
 		//Accessory instructions, 0x50 ~ 0x5F space reserved
-		//-----------------------------------------------------	
+		//--------------------------------------------------
 	public:
 		/// <summary>
 		/// Ensure R/W memory order
@@ -208,24 +233,40 @@ namespace RTJ
 		IL(Volatile, 0x50, 0x00);
 
 		/// <summary>
-		/// Indicate the jcc possibility
+		/// Ensure arithmetic operation won't go wild (overflow or underflow)
 		/// </summary>
-		IL(LikelyFail, 0x51, 0x00);
+		IL(ArC, 0x51, 0x00);
+
+		//--------------------------------------------------
+		//GC instructions, 0x60 ~ 0x6F space reserved
+		//--------------------------------------------------
+	public:
+		/// <summary>
+		/// New object, followed by uint32 type reference.
+		/// </summary>
+		IL(New, 0x60, 0x01);
 
 		/// <summary>
-		/// Indicate the jcc possibility
+		/// New array, followed by uint32 type reference.
 		/// </summary>
-		IL(LikelySuccess, 0x51, 0x00);
+		IL(NewArr, 0x61, 0xF1);
 
 		//-----------------------------------------------------
 		//Other instructions, 0xF0 ~ 0xFE space reserved
 		//-----------------------------------------------------	
 	public:
+		/// <summary>
+		/// Duplicate the value on the top of eval-stack
+		/// </summary>
 		IL(Dup, 0xF0, 0x01);
 
+		/// <summary>
+		/// Pop out the value on the top of eval-stack
+		/// </summary>
+		IL(Pop, 0xF1, 0x10);
 	public:
 		/// <summary>
-		/// Doing nothing, usually as invalid operation.
+		/// Doing nothing
 		/// </summary>
 		IL(Nop, 0xFF, 0x00);
 	};

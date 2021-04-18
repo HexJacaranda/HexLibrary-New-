@@ -3,9 +3,15 @@
 #include "..\..\JITContext.h"
 #include "IR.h"
 #include "EvaluationStack.h"
+#include <vector>
 
 namespace RTJ::Hex
 {
+	struct BasicBlockPartition
+	{
+		Int32 ILOffset;
+		TreeNode* Value;
+	};
 	/// <summary>
 	/// Transform the opcode to basic block expression tree.
 	/// </summary>
@@ -39,7 +45,7 @@ namespace RTJ::Hex
 		/// <param name="in">Bae group bringing in value</param>
 		/// <param name="out">Bae group bringing out value</param>
 		ForcedInline void DecodeInstruction(UInt8& opcode);
-		CallNode* GenerateCallNode();
+		CallNode* GenerateCall();
 		TreeNode* GenerateLoadLocalVariable(UInt8 SLMode);
 		TreeNode* GenerateLoadArgument(UInt8 SLMode);
 		TreeNode* GenerateLoadField(UInt8 SLMode);
@@ -49,7 +55,11 @@ namespace RTJ::Hex
 		StoreNode* GenerateStoreLocal();
 		StoreNode* GenerateStoreArrayElement();
 		StoreNode* GenerateStoreToAddress();
+		NewNode* GenerateNew();
+		NewArrayNode* GenerateNewArray();
+		CompareNode* GenerateCompare();
 		DuplicateNode* GenerateDuplicate();
+		ReturnNode* GenerateReturn();
 
 		/// <summary>
 		/// The key standard for generating a statement is that eval stack is empty(balanced).
@@ -60,6 +70,13 @@ namespace RTJ::Hex
 		/// <param name="isBalancedCritical"></param>
 		/// <returns></returns>
 		Statement* TryGenerateStatement(TreeNode* value, bool isBalancedCritical = false);
+		/// <summary>
+		/// Firstly translate IL to a single basic block then partition it according to the
+		/// information we collected
+		/// </summary>
+		/// <returns></returns>
+		Statement* TransformToUnpartitionedStatements(std::vector<BasicBlockPartition> & partitions);
+		BasicBlock* PartitionToBB();
 	public:
 		ILTransformer(JITContext const&);
 		BasicBlock* TransformILFrom();

@@ -3,6 +3,15 @@
 
 namespace RTJ::Hex
 {
+	//Standard procedure for releasing pointer
+	template<class T>
+	constexpr static inline void ReleaseNode(T*& target) {
+		if (target != nullptr) { 
+			delete target; 
+			target = nullptr; 
+		}
+	}
+
 	enum class NodeKinds : UInt8
 	{
 		Constant,
@@ -17,7 +26,11 @@ namespace RTJ::Hex
 		Convert,
 		Arithmetic,
 		Compare,
-		Duplicate
+		Duplicate,
+		New,
+		NewArray,
+		Return,
+		Arithmetic
 	};
 
 	struct TreeNode
@@ -35,6 +48,8 @@ namespace RTJ::Hex
 		ForcedInline T* As() {
 			return (T*)this;
 		}
+
+		virtual ~TreeNode() = default;
 	};
 
 	struct UnaryNode : TreeNode {
@@ -86,6 +101,15 @@ namespace RTJ::Hex
 		UInt32 MethodReference;
 		TreeNode** Arguments;
 		Int32 ArgumentCount;
+
+		virtual ~CallNode() {
+			if (Arguments != nullptr)
+			{
+				for (Int32 i = 0; i < ArgumentCount; ++i)
+					delete Arguments[i];
+				Arguments = nullptr;
+			}
+		}
 	};
 
 	/// <summary>
@@ -105,6 +129,11 @@ namespace RTJ::Hex
 			Source(source) {}
 		TreeNode* Destination = nullptr;
 		TreeNode* Source = nullptr;
+
+		virtual ~StoreNode() {
+			ReleaseNode(Destination);
+			ReleaseNode(Source);
+		}
 	};
 
 	/// <summary>
@@ -118,11 +147,14 @@ namespace RTJ::Hex
 			:UnaryNode(NodeKinds::Load),
 			Source(source)
 		{}
-		UInt8 LoadType = SLMode::Direct;
+		UInt8 LoadType = SLMode::Indirect;
 		/// <summary>
 		/// Only allows array element, field, argument and local
 		/// </summary>
 		TreeNode* Source = nullptr;
+		virtual ~LoadNode() {
+			ReleaseNode(Source);
+		}
 	};
 
 	struct ArrayElementNode : BinaryNode
@@ -133,6 +165,10 @@ namespace RTJ::Hex
 			Index(index) {}
 		TreeNode* Array;
 		TreeNode* Index;
+		virtual ~ArrayElementNode() {
+			ReleaseNode(Array);
+			ReleaseNode(Index);
+		}
 	};
 
 	struct StaticFieldNode : UnaryNode
@@ -151,6 +187,37 @@ namespace RTJ::Hex
 			Source(source) {}
 		UInt32 FieldReference;
 		TreeNode* Source;
+		virtual ~InstanceFieldNode() {
+			ReleaseNode(Source);
+		}
+	};
+
+	struct NewNode : UnaryNode
+	{
+		NewNode(UInt32 ctor)
+			:UnaryNode(NodeKinds::New),
+			MethodReference(ctor) {}
+		UInt32 MethodReference;
+	};
+
+	struct NewArrayNode : TreeNode
+	{
+		NewArrayNode(UInt32 type, TreeNode** dimensions, UInt32 dimensionCount)
+			:TreeNode(NodeKinds::NewArray),
+			TypeReference(type),
+			Dimensions(dimensions),
+			DimensionCount(dimensionCount) {}
+		UInt32 TypeReference;
+		TreeNode** Dimensions;
+		UInt32 DimensionCount;
+		virtual ~NewArrayNode() {
+			if (Dimensions != nullptr)
+			{
+				for (UInt32 i = 0; i < DimensionCount; ++i)
+					delete Dimensions[i];
+				Dimensions = nullptr;
+			}
+		}
 	};
 
 	struct CompareNode : BinaryNode
@@ -163,6 +230,23 @@ namespace RTJ::Hex
 		UInt8 Condition;
 		TreeNode* Left;
 		TreeNode* Right;
+		virtual ~CompareNode() {
+			ReleaseNode(Left);
+			ReleaseNode(Right);
+		}
+	};
+
+	struct ReturnNode : UnaryNode
+	{
+		ReturnNode(TreeNode* ret)
+			:UnaryNode(NodeKinds::Return),
+			Ret(ret) {}
+		TreeNode* Ret;
+	};
+
+	struct ArithmeticNode : BinaryNode
+	{
+		ArithmeticNode() : BinaryNode(NodeKinds::Arithmetic) {}
 	};
 
 	/// <summary>
@@ -174,14 +258,26 @@ namespace RTJ::Hex
 		DuplicateNode(TreeNode* target)
 			:UnaryNode(NodeKinds::Duplicate),
 			Target(target) {}
+		/// <summary>
+		/// Ref from current duplicate node, increment count
+		/// </summary>
+		/// <returns></returns>
+		ForcedInline DuplicateNode* Duplicate() {
+			Count++;
+			return this;
+		}
 		TreeNode* Target;
+		Int32 Count = 0;
 	};
 
 	struct Statement
 	{
-		Statement(TreeNode* target) :Now(target) {}
+		Statement(TreeNode* target, Int32 offset)
+			:Now(target),
+			ILOffset(offset) {}
 		//IL sequential connection
 	public:
+		Int32 ILOffset;
 		Statement* Next = nullptr;
 		Statement* Prev = nullptr;
 		TreeNode* Now;

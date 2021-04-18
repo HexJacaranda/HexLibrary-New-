@@ -12,13 +12,13 @@ ForcedInline void RTJ::Hex::ILTransformer::DecodeInstruction(UInt8& opcode)
 	mCodePtr++;
 }
 
-RTJ::Hex::CallNode* RTJ::Hex::ILTransformer::GenerateCallNode()
+RTJ::Hex::CallNode* RTJ::Hex::ILTransformer::GenerateCall()
 {
 	TreeNode** arguments = nullptr;
 	UInt16 argumentsCount = mBaeIn;
 	if (mBaeIn > 0)
 	{	
-		//Overceed 7 arguments, Extended uint16 will be used
+		//Overceed 14 arguments, Extended uint16 will be used
 		if (mBaeIn == 0xF)
 			argumentsCount = ReadAs<UInt16>();
 		arguments = new TreeNode * [argumentsCount];
@@ -32,7 +32,7 @@ RTJ::Hex::CallNode* RTJ::Hex::ILTransformer::GenerateCallNode()
 
 RTJ::Hex::TreeNode* RTJ::Hex::ILTransformer::GenerateLoadLocalVariable(UInt8 SLMode)
 {
-	LocalVariableNode* local = new LocalVariableNode(OpCodeOperandTypeConstant::I1, ReadAs<Int16>());
+	auto local = new LocalVariableNode(OpCodeOperandTypeConstant::I1, ReadAs<Int16>());
 	if (SLMode == SLMode::Indirect)
 		return new LoadNode(SLMode::Indirect, local);
 	else
@@ -41,8 +41,7 @@ RTJ::Hex::TreeNode* RTJ::Hex::ILTransformer::GenerateLoadLocalVariable(UInt8 SLM
 
 RTJ::Hex::TreeNode* RTJ::Hex::ILTransformer::GenerateLoadArgument(UInt8 SLMode)
 {
-	auto local = nullptr;
-	ArgumentNode* local = new ArgumentNode(OpCodeOperandTypeConstant::I1, ReadAs<Int16>());
+	auto local = new ArgumentNode(OpCodeOperandTypeConstant::I1, ReadAs<Int16>());
 	if (SLMode == SLMode::Indirect)
 		return new LoadNode(SLMode::Indirect, local);
 	else
@@ -71,7 +70,7 @@ RTJ::Hex::TreeNode* RTJ::Hex::ILTransformer::GenerateLoadArrayElement(UInt8 SLMo
 {
 	auto index = mEvalStack.Pop();
 	auto array = mEvalStack.Pop();
-	ArrayElementNode* arrayElement = new ArrayElementNode(array, index);
+	auto arrayElement = new ArrayElementNode(array, index);
 	if (SLMode == SLMode::Indirect)
 		return new LoadNode(SLMode::Indirect, arrayElement);
 	else
@@ -128,22 +127,61 @@ RTJ::Hex::StoreNode* RTJ::Hex::ILTransformer::GenerateStoreToAddress()
 	return new StoreNode(address, value);
 }
 
+RTJ::Hex::NewNode* RTJ::Hex::ILTransformer::GenerateNew()
+{
+	return new NewNode(ReadAs<UInt32>());
+}
+
+RTJ::Hex::NewArrayNode* RTJ::Hex::ILTransformer::GenerateNewArray()
+{
+	TreeNode** dimensions = nullptr;
+	UInt32 dimensionCount = mBaeIn;
+	if (mBaeIn > 0)
+	{
+		//Overceed 14 dimensions, Extended uint32 will be used
+		if (mBaeIn == 0xF)
+			dimensionCount = ReadAs<UInt32>();
+		dimensions = new TreeNode * [dimensionCount];
+		for (int i = 0; i < dimensionCount; ++i)
+			dimensions[i] = mEvalStack.Pop();
+	}
+	//Read method reference token
+	UInt32 typeRef = ReadAs<UInt32>();
+	return new NewArrayNode(typeRef, dimensions, dimensionCount);
+}
+
+RTJ::Hex::CompareNode* RTJ::Hex::ILTransformer::GenerateCompare()
+{
+	auto right = mEvalStack.Pop();
+	auto left = mEvalStack.Pop();
+	return new CompareNode(ReadAs<UInt8>(), left, right);
+}
+
 RTJ::Hex::DuplicateNode* RTJ::Hex::ILTransformer::GenerateDuplicate()
 {
-	TreeNode* target = mEvalStack.Top();
+	auto target = mEvalStack.Top();
 	if (target->Is(NodeKinds::Duplicate))
 	{
-		//To avoid a second wrapping, we return target directly
-		return target->As<DuplicateNode>();
+		//To avoid a second wrapping and allocation, we return target directly
+		//and increment its count to ensure duplicate node won't be released multiple times.
+		return target->As<DuplicateNode>()->Duplicate();
 	}
 	return new DuplicateNode(target);
+}
+
+RTJ::Hex::ReturnNode* RTJ::Hex::ILTransformer::GenerateReturn()
+{
+	TreeNode* ret = nullptr;
+	if (mBaeIn == 1)
+		ret = mEvalStack.Pop();
+	return new ReturnNode(ret);
 }
 
 RTJ::Hex::Statement* RTJ::Hex::ILTransformer::TryGenerateStatement(TreeNode* value, bool isBalancedCritical)
 {
 	//Is eval stack already balanced?
 	if (mEvalStack.IsBalanced())
-		return new Statement(value);
+		return new Statement(value, mCodePtr - mJITContext.CodeSegment);
 	else
 	{
 		if (!isBalancedCritical)
@@ -152,17 +190,8 @@ RTJ::Hex::Statement* RTJ::Hex::ILTransformer::TryGenerateStatement(TreeNode* val
 	}
 }
 
-RTJ::Hex::ILTransformer::ILTransformer(JITContext const& context) :mJITContext(context) {
-	mCodePtr = mJITContext.CodeSegment;
-	mCodePtrBound = mJITContext.CodeSegment + mJITContext.SegmentLength;
-}
-
-RTJ::Hex::BasicBlock* RTJ::Hex::ILTransformer::TransformILFrom()
+RTJ::Hex::Statement* RTJ::Hex::ILTransformer::TransformToUnpartitionedStatements(std::vector<BasicBlockPartition>& partitions)
 {
-	BasicBlock* basicBlockHead = nullptr;
-	BasicBlock* basicBlockPrevious = nullptr;
-	BasicBlock* basicBlockCurrent = nullptr;
-
 	Statement* stmtHead = nullptr;
 	Statement* stmtPrevious = nullptr;
 	Statement* stmtCurrent = nullptr;
@@ -177,13 +206,14 @@ RTJ::Hex::BasicBlock* RTJ::Hex::ILTransformer::TransformILFrom()
 			previous = current;
 		}
 	};
-	//Try generate statement for store operation and thread it if possible
-#define IL_TRY_GEN_ST_STMT(OP) auto node = OP; \
-							stmtCurrent = TryGenerateStatement(node); \
+#define IL_TRY_GEN_STMT_CRITICAL(OP, CRITICAL) auto node = OP; \
+							stmtCurrent = TryGenerateStatement(node, CRITICAL); \
 							if (stmtCurrent == nullptr) { mEvalStack.Push(node); } \
 							else threadLinkList(stmtHead, stmtPrevious, stmtCurrent)
 
-	bool generateBB = false;
+	//Try generate statement for operation and thread it if possible
+#define IL_TRY_GEN_STMT(OP) IL_TRY_GEN_STMT_CRITICAL(OP, false)
+
 	UInt8 instruction = OpCodes::Nop;
 	while (mCodePtr < mCodePtrBound)
 	{
@@ -193,35 +223,46 @@ RTJ::Hex::BasicBlock* RTJ::Hex::ILTransformer::TransformILFrom()
 		case OpCodes::Call:
 		case OpCodes::CallVirt:
 		{
-			auto node = GenerateCallNode();
-			stmtCurrent = TryGenerateStatement(node, mBaeOut == 0);
-			//Has return value
-			if (mBaeOut == 1) mEvalStack.Push(node);
+			IL_TRY_GEN_STMT_CRITICAL(GenerateCall(), mBaeOut == 0);
 			break;
 		}
+		case OpCodes::Ret:
+		{
+			IL_TRY_GEN_STMT_CRITICAL(GenerateReturn(), true);
+			break;
+		}
+		case OpCodes::Jmp:
+		{
+
+		}
+		case OpCodes::Jcc:
+		{
+
+		}
+
 		case OpCodes::StArg:
 		{
-			IL_TRY_GEN_ST_STMT(GenerateStoreArgument());
+			IL_TRY_GEN_STMT(GenerateStoreArgument());
 			break;
 		}
 		case OpCodes::StElem:
 		{
-			IL_TRY_GEN_ST_STMT(GenerateStoreArrayElement());
+			IL_TRY_GEN_STMT(GenerateStoreArrayElement());
 			break;
 		}
 		case OpCodes::StFld:
 		{
-			IL_TRY_GEN_ST_STMT(GenerateStoreField());
+			IL_TRY_GEN_STMT(GenerateStoreField());
 			break;
 		}
 		case OpCodes::StLoc:
 		{
-			IL_TRY_GEN_ST_STMT(GenerateStoreLocal());
+			IL_TRY_GEN_STMT(GenerateStoreLocal());
 			break;
 		}
 		case OpCodes::StTA:
 		{
-			IL_TRY_GEN_ST_STMT(GenerateStoreToAddress());
+			IL_TRY_GEN_STMT(GenerateStoreToAddress());
 			break;
 		}
 
@@ -246,26 +287,67 @@ RTJ::Hex::BasicBlock* RTJ::Hex::ILTransformer::TransformILFrom()
 
 		case OpCodes::Dup:
 			mEvalStack.Push(GenerateDuplicate());
+			break;
+		case OpCodes::Pop:
+		{
+			// Pop is a special instruction that may be introduced in scenario
+			// where the result of expression is discarded (usually method call with return). 
+			// So there is no need for a real 'PopNode' to exist. We will just treat this as
+			// a way to balance eval stack.
+
+			// In another word, pop means eval stack must be balanced after this operation
+			// and this does impose limitations on some special and unregulated IL arrangements
+			// For example:
+			// ------------------
+			// New System::String
+			// New System::Object
+			// Pop
+			// Pop
+			// Ret
+			// ------------------
+			// is not allowed.
+
+			IL_TRY_GEN_STMT_CRITICAL(mEvalStack.Pop(), true);
+			break;
+		}
 
 		case OpCodes::Cmp:
+			mEvalStack.Push(GenerateCompare());
+			break;
+
+		case OpCodes::New:
+			mEvalStack.Push(GenerateNew());
+			break;
+		case OpCodes::NewArr:
+			mEvalStack.Push(GenerateNewArray());
+			break;
+
 
 		default:
 			//You should never reach here
 
 			break;
 		}
-
-		//If there is a generated basic block, link it to list
-		if (generateBB)
-			threadLinkList(basicBlockHead, basicBlockPrevious, basicBlockCurrent);
 	}
 	if (!mEvalStack.IsBalanced())
 	{
 		//Malformed IL
 	}
-	return basicBlockHead;
+	return stmtHead;
 
-#undef IL_TRY_GEN_ST_STMT
+#undef IL_TRY_GEN_STMT
+#undef IL_TRY_GEN_STMT_CRITICAL
+}
+
+RTJ::Hex::ILTransformer::ILTransformer(JITContext const& context) :mJITContext(context) {
+	mCodePtr = mJITContext.CodeSegment;
+	mCodePtrBound = mJITContext.CodeSegment + mJITContext.SegmentLength;
+}
+
+RTJ::Hex::BasicBlock* RTJ::Hex::ILTransformer::TransformILFrom()
+{
+
+
 }
 
 
