@@ -194,12 +194,12 @@ namespace RTJ
 		IL(Cmp, 0x43, 0x21);
 		
 		/// <summary>
-		/// Conditional, followed by uint16 il offset
+		/// Conditional, followed by int16 il offset
 		/// </summary>
 		IL(Jcc, 0x44, 0x10);
 		
 		/// <summary>
-		/// Unconditional, followed by uint16 il offset
+		/// Unconditional, followed by int16 il offset
 		/// </summary>
 		IL(Jmp, 0x45, 0x00);
 		
@@ -209,17 +209,17 @@ namespace RTJ
 		IL(Throw, 0x46, 0x00);
 		
 		/// <summary>
-		/// Try block, followed by uint16 il offset
+		/// Try block, followed by int16 il offset
 		/// </summary>
 		IL(Try, 0x47, 0x00);
 		
 		/// <summary>
-		/// Catch block, followed by uint16 il offset
+		/// Catch block, followed by int16 il offset
 		/// </summary>
 		IL(Catch, 0x48, 0x00);
 		
 		/// <summary>
-		/// Finally block, followed by uint16 il offset
+		/// Finally block, followed by int16 il offset
 		/// </summary>
 		IL(Finally, 0x49, 0x00);
 

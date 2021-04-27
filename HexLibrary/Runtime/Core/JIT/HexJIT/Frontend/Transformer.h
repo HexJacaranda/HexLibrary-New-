@@ -3,12 +3,14 @@
 #include "..\..\JITContext.h"
 #include "IR.h"
 #include "EvaluationStack.h"
-#include <vector>
 
 namespace RTJ::Hex
 {
-	struct BasicBlockPartition
+	struct BasicBlockPartitionPoint
 	{
+		BasicBlockPartitionPoint(Int32 ilOffset, TreeNode* value)
+			:ILOffset(ilOffset), Value(value) {}
+		BasicBlockPartitionPoint* Next = nullptr;
 		Int32 ILOffset;
 		TreeNode* Value;
 	};
@@ -20,6 +22,7 @@ namespace RTJ::Hex
 		JITContext mJITContext;
 		const UInt8* mCodePtr = nullptr;
 		const UInt8* mCodePtrBound = nullptr;
+		const UInt8* mPreviousCodePtr = nullptr;
 		EvaluationStack mEvalStack;
 		// Current instruction BAE state
 
@@ -33,10 +36,21 @@ namespace RTJ::Hex
 			return ret;
 		}
 
-		template<class T> ForcedInline T PeekAs() {
+		template<class T> ForcedInline T PeekAs()const {
 			T ret = *(T*)mCodePtr;
 			return ret;
 		}
+		/// <summary>
+		/// Get offset of now
+		/// </summary>
+		/// <returns></returns>
+		ForcedInline Int32 GetOffset()const;
+
+		/// <summary>
+		/// Get offset of previous instruction
+		/// </summary>
+		/// <returns></returns>
+		ForcedInline Int32 GetPreviousOffset()const;
 
 		/// <summary>
 		/// Decode the instruction at current memory
@@ -44,7 +58,7 @@ namespace RTJ::Hex
 		/// <param name="opcode">opcode value</param>
 		/// <param name="in">Bae group bringing in value</param>
 		/// <param name="out">Bae group bringing out value</param>
-		ForcedInline void DecodeInstruction(UInt8& opcode);
+		ForcedInline void DecodeInstruction(_Out_ UInt8& opcode);
 		CallNode* GenerateCall();
 		TreeNode* GenerateLoadLocalVariable(UInt8 SLMode);
 		TreeNode* GenerateLoadArgument(UInt8 SLMode);
@@ -60,6 +74,12 @@ namespace RTJ::Hex
 		CompareNode* GenerateCompare();
 		DuplicateNode* GenerateDuplicate();
 		ReturnNode* GenerateReturn();
+		BinaryArithmeticNode* GenerateBinaryArithmetic(UInt8 opcode);
+		UnaryArithmeticNode* GenerateUnaryArtithmetic(UInt8 opcode);
+		ConvertNode* GenerateConvert();
+
+		void GenerateJccPP(_Out_ BasicBlockPartitionPoint*& partitions);
+		void GenerateJmpPP(_Out_ BasicBlockPartitionPoint*& partitions);
 
 		/// <summary>
 		/// The key standard for generating a statement is that eval stack is empty(balanced).
@@ -75,8 +95,14 @@ namespace RTJ::Hex
 		/// information we collected
 		/// </summary>
 		/// <returns></returns>
-		Statement* TransformToUnpartitionedStatements(std::vector<BasicBlockPartition> & partitions);
-		BasicBlock* PartitionToBB();
+		Statement* TransformToUnpartitionedStatements(_Out_ BasicBlockPartitionPoint*& partitions);
+		/// <summary>
+		/// Correctly partition the chained statements according to partition information.
+		/// </summary>
+		/// <param name="unpartitionedStmt"></param>
+		/// <param name="partitions"></param>
+		/// <returns></returns>
+		BasicBlock* PartitionToBB(Statement* unpartitionedStmt, BasicBlockPartitionPoint* partitions);
 	public:
 		ILTransformer(JITContext const&);
 		BasicBlock* TransformILFrom();

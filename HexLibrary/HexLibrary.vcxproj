@@ -190,6 +190,7 @@
     <ClInclude Include="Reference.h" />
     <ClInclude Include="Regex.h" />
     <ClInclude Include="RegexParser.h" />
+    <ClInclude Include="Runtime\Utility.h" />
     <ClInclude Include="SPSCQueue.h" />
     <ClInclude Include="Stack.h" />
     <ClInclude Include="String.h" />

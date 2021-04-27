@@ -37,4 +37,7 @@ namespace Runtime
 #define RTIOS2EE Runtime::Core::Interfaces::OSToEE
 	
 #define ForcedInline __forceinline
+
+//Argument as result annotation
+#define _Out_
 }

@@ -1,8 +1,20 @@
 #include "Transformer.h"
 #include "..\..\OpCodes.h"
+#include "..\..\..\..\Utility.h"
+
+ForcedInline RT::Int32 RTJ::Hex::ILTransformer::GetOffset() const
+{
+	return mCodePtr - mJITContext.CodeSegment;
+}
+
+ForcedInline RT::Int32 RTJ::Hex::ILTransformer::GetPreviousOffset() const
+{
+	return mPreviousCodePtr - mJITContext.CodeSegment;
+}
 
 ForcedInline void RTJ::Hex::ILTransformer::DecodeInstruction(UInt8& opcode)
 {
+	mPreviousCodePtr = mCodePtr;
 	opcode = *mCodePtr;
 	mCodePtr++;
 	if (mCodePtr >= mCodePtrBound)
@@ -177,6 +189,68 @@ RTJ::Hex::ReturnNode* RTJ::Hex::ILTransformer::GenerateReturn()
 	return new ReturnNode(ret);
 }
 
+RTJ::Hex::BinaryArithmeticNode* RTJ::Hex::ILTransformer::GenerateBinaryArithmetic(UInt8 opcode)
+{
+	auto right = mEvalStack.Pop();
+	auto left = mEvalStack.Pop();
+	UInt8 kind = ReadAs<UInt8>();
+	return new BinaryArithmeticNode(left, right, kind, opcode);
+}
+
+RTJ::Hex::UnaryArithmeticNode* RTJ::Hex::ILTransformer::GenerateUnaryArtithmetic(UInt8 opcode)
+{
+	auto value = mEvalStack.Pop();
+	UInt8 kind = ReadAs<UInt8>();
+	return new UnaryArithmeticNode(value, kind, opcode);
+}
+
+RTJ::Hex::ConvertNode* RTJ::Hex::ILTransformer::GenerateConvert()
+{
+	auto value = mEvalStack.Pop();
+	UInt8 from = ReadAs<UInt8>();
+	UInt8 to = ReadAs<UInt8>();
+	return new ConvertNode(value, from, to);
+}
+
+void RTJ::Hex::ILTransformer::GenerateJccPP(_Out_ BasicBlockPartitionPoint*& partitions)
+{
+	auto value = mEvalStack.Pop();
+	auto jccOffset = ReadAs<Int16>();
+	auto branchedOffset = GetOffset() + jccOffset;
+	auto currentPoint = new BasicBlockPartitionPoint(GetOffset(), value);
+	auto branchedPoint = new BasicBlockPartitionPoint(branchedOffset, nullptr);
+	//Append current point into list
+	AppendToOneWayLinkedListOrdered(partitions, currentPoint,
+		[&](BasicBlockPartitionPoint* x) {
+			return currentPoint->ILOffset <= x->ILOffset;
+		});
+
+	//Append branched to list
+	AppendToOneWayLinkedListOrdered(partitions, branchedPoint,
+		[&](BasicBlockPartitionPoint* x) {
+			return branchedPoint->ILOffset <= x->ILOffset;
+		});
+}
+
+void RTJ::Hex::ILTransformer::GenerateJmpPP(_Out_ BasicBlockPartitionPoint*& partitions)
+{
+	auto jmpOffset = ReadAs<Int16>();
+	auto branchedOffset = GetOffset() + jmpOffset;
+	auto currentPoint = new BasicBlockPartitionPoint(GetOffset(), nullptr);
+	auto branchedPoint = new BasicBlockPartitionPoint(branchedOffset, nullptr);
+	//Append current point into list
+	AppendToOneWayLinkedListOrdered(partitions, currentPoint,
+		[&](BasicBlockPartitionPoint* x) {
+			return currentPoint->ILOffset <= x->ILOffset;
+		});
+
+	//Append branched to list
+	AppendToOneWayLinkedListOrdered(partitions, branchedPoint,
+		[&](BasicBlockPartitionPoint* x) {
+			return branchedPoint->ILOffset <= x->ILOffset;
+		});
+}
+
 RTJ::Hex::Statement* RTJ::Hex::ILTransformer::TryGenerateStatement(TreeNode* value, bool isBalancedCritical)
 {
 	//Is eval stack already balanced?
@@ -190,26 +264,16 @@ RTJ::Hex::Statement* RTJ::Hex::ILTransformer::TryGenerateStatement(TreeNode* val
 	}
 }
 
-RTJ::Hex::Statement* RTJ::Hex::ILTransformer::TransformToUnpartitionedStatements(std::vector<BasicBlockPartition>& partitions)
+RTJ::Hex::Statement* RTJ::Hex::ILTransformer::TransformToUnpartitionedStatements(_Out_ BasicBlockPartitionPoint*& partitions)
 {
 	Statement* stmtHead = nullptr;
 	Statement* stmtPrevious = nullptr;
 	Statement* stmtCurrent = nullptr;
 
-	auto threadLinkList = [](auto& head, auto& previous, auto current) {
-		if (head == nullptr)
-			head = previous = current;
-		else
-		{
-			previous->Next = current;
-			current->Prev = previous;
-			previous = current;
-		}
-	};
 #define IL_TRY_GEN_STMT_CRITICAL(OP, CRITICAL) auto node = OP; \
 							stmtCurrent = TryGenerateStatement(node, CRITICAL); \
 							if (stmtCurrent == nullptr) { mEvalStack.Push(node); } \
-							else threadLinkList(stmtHead, stmtPrevious, stmtCurrent)
+							else AppendToTwoWayLinkedList(stmtHead, stmtPrevious, stmtCurrent)
 
 	//Try generate statement for operation and thread it if possible
 #define IL_TRY_GEN_STMT(OP) IL_TRY_GEN_STMT_CRITICAL(OP, false)
@@ -220,6 +284,9 @@ RTJ::Hex::Statement* RTJ::Hex::ILTransformer::TransformToUnpartitionedStatements
 		DecodeInstruction(instruction);
 		switch (instruction)
 		{
+		//------------------------------------------------------
+		//control flow related instructions
+		//------------------------------------------------------
 		case OpCodes::Call:
 		case OpCodes::CallVirt:
 		{
@@ -231,14 +298,18 @@ RTJ::Hex::Statement* RTJ::Hex::ILTransformer::TransformToUnpartitionedStatements
 			IL_TRY_GEN_STMT_CRITICAL(GenerateReturn(), true);
 			break;
 		}
-		case OpCodes::Jmp:
-		{
 
-		}
 		case OpCodes::Jcc:
-		{
+			GenerateJccPP(partitions);
+			break;
+		case OpCodes::Jmp:
+			GenerateJmpPP(partitions);
+			break;
 
-		}
+
+		//------------------------------------------------------
+		//Store load related instructions
+		//------------------------------------------------------
 
 		case OpCodes::StArg:
 		{
@@ -285,6 +356,41 @@ RTJ::Hex::Statement* RTJ::Hex::ILTransformer::TransformToUnpartitionedStatements
 			mEvalStack.Push(GenerateLoadArrayElement(SLMode::Indirect));
 			break;
 
+		//---------------------------------------------------
+		//Binary arithmetic instructions
+		//---------------------------------------------------
+
+		case OpCodes::Add:
+		case OpCodes::Sub:
+		case OpCodes::Mul:
+		case OpCodes::Div:
+		case OpCodes::And:
+		case OpCodes::Or:
+		case OpCodes::Xor:
+			mEvalStack.Push(GenerateBinaryArithmetic(instruction));
+			break;
+
+		//---------------------------------------------------
+		//Unary arithmetic instructions
+		//---------------------------------------------------
+
+		case OpCodes::Not:
+		case OpCodes::Neg:
+			mEvalStack.Push(GenerateUnaryArtithmetic(instruction));
+			break;
+
+		//---------------------------------------------------
+		//Convert instruction
+		//---------------------------------------------------
+
+		case OpCodes::Conv:
+			mEvalStack.Push(GenerateConvert());
+			break;
+
+		//------------------------------------------------------
+		//Special instructions
+		//------------------------------------------------------
+
 		case OpCodes::Dup:
 			mEvalStack.Push(GenerateDuplicate());
 			break;
@@ -315,13 +421,15 @@ RTJ::Hex::Statement* RTJ::Hex::ILTransformer::TransformToUnpartitionedStatements
 			mEvalStack.Push(GenerateCompare());
 			break;
 
+		//------------------------------------------------------
+		//GC related opcodes.
+		//------------------------------------------------------
 		case OpCodes::New:
 			mEvalStack.Push(GenerateNew());
 			break;
 		case OpCodes::NewArr:
 			mEvalStack.Push(GenerateNewArray());
 			break;
-
 
 		default:
 			//You should never reach here
@@ -339,8 +447,14 @@ RTJ::Hex::Statement* RTJ::Hex::ILTransformer::TransformToUnpartitionedStatements
 #undef IL_TRY_GEN_STMT_CRITICAL
 }
 
+RTJ::Hex::BasicBlock* RTJ::Hex::ILTransformer::PartitionToBB(Statement* unpartitionedStmt, BasicBlockPartitionPoint* partitions)
+{
+	return nullptr;
+}
+
 RTJ::Hex::ILTransformer::ILTransformer(JITContext const& context) :mJITContext(context) {
 	mCodePtr = mJITContext.CodeSegment;
+	mPreviousCodePtr = mJITContext.CodeSegment;
 	mCodePtrBound = mJITContext.CodeSegment + mJITContext.SegmentLength;
 }
 

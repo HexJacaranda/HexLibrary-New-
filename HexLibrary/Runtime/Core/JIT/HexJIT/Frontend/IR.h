@@ -24,13 +24,14 @@ namespace RTJ::Hex
 		StaticField,
 		InstanceField,
 		Convert,
-		Arithmetic,
 		Compare,
 		Duplicate,
 		New,
 		NewArray,
 		Return,
-		Arithmetic
+		BinaryArithmetic,
+		UnaryArithmetic,
+		Convert
 	};
 
 	struct TreeNode
@@ -242,11 +243,70 @@ namespace RTJ::Hex
 			:UnaryNode(NodeKinds::Return),
 			Ret(ret) {}
 		TreeNode* Ret;
+		virtual ~ReturnNode() {
+			ReleaseNode(Ret);
+		}
 	};
 
-	struct ArithmeticNode : BinaryNode
+	struct BinaryArithmeticNode : BinaryNode
 	{
-		ArithmeticNode() : BinaryNode(NodeKinds::Arithmetic) {}
+		BinaryArithmeticNode(
+			TreeNode* left,
+			TreeNode* right,
+			UInt8 type,
+			UInt8 opcode)
+			: BinaryNode(NodeKinds::BinaryArithmetic),
+			Type(type),
+			Left(left),
+			Right(right),
+			Opcode(opcode) {}
+		TreeNode* Left;
+		TreeNode* Right;
+		UInt8 Type;
+		UInt8 Opcode;
+		virtual ~BinaryArithmeticNode() {
+			ReleaseNode(Left);
+			ReleaseNode(Right);
+		}
+	};
+
+	struct UnaryArithmeticNode : UnaryNode
+	{
+		UnaryArithmeticNode(
+			TreeNode* value,
+			UInt8 type,
+			UInt8 opcode)
+			: UnaryNode(NodeKinds::UnaryArithmetic),
+			Value(value),
+			Type(type),
+			Opcode(opcode) {}
+		UInt8 Type;
+		TreeNode* Value;
+		UInt8 Opcode;
+		virtual ~UnaryArithmeticNode() {
+			ReleaseNode(Value);
+		}
+	};
+
+	/// <summary>
+	/// Convert node for primitive types like i1 to i8.
+	/// </summary>
+	struct ConvertNode : UnaryNode
+	{
+		ConvertNode(
+			TreeNode* value,
+			UInt8 from,
+			UInt8 to)
+			: UnaryNode(NodeKinds::UnaryArithmetic),
+			Value(value),
+			From(from),
+			To(to) {}
+		TreeNode* Value;
+		UInt8 From;
+		UInt8 To;
+		virtual ~ConvertNode() {
+			ReleaseNode(Value);
+		}
 	};
 
 	/// <summary>
@@ -267,6 +327,9 @@ namespace RTJ::Hex
 			return this;
 		}
 		TreeNode* Target;
+		/// <summary>
+		/// For releasing itself.
+		/// </summary>
 		Int32 Count = 0;
 	};
 
