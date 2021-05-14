@@ -16,9 +16,6 @@
     <Filter Include="头文件\System">
       <UniqueIdentifier>{e4369aa3-8615-42d1-a9d0-9d328377d9da}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\System\Runtime">
-      <UniqueIdentifier>{615825e6-6dd0-404e-a033-d367a152bc85}</UniqueIdentifier>
-    </Filter>
     <Filter Include="头文件\System\Collections">
       <UniqueIdentifier>{de0dac31-a84a-4e40-92e3-718f903d20c4}</UniqueIdentifier>
     </Filter>
@@ -99,33 +96,6 @@
     </Filter>
     <Filter Include="头文件\System\Text\CharacterSet">
       <UniqueIdentifier>{3bd0b7ad-0af7-4672-8085-99bfdead4d00}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\System\Runtime\Core">
-      <UniqueIdentifier>{4cda37c1-016c-429d-841c-362ac4943b87}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\System\Runtime\Core\Descriptor">
-      <UniqueIdentifier>{d5999e9d-2865-4a0a-ba49-b73bc93f2548}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\System\Runtime\Core\EEClass">
-      <UniqueIdentifier>{154eb1d2-1075-40ef-9fbb-3c6de3f97e5c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\System\Runtime\Core\JIT">
-      <UniqueIdentifier>{1b2d6639-831e-4889-ab5c-19d7d3d800ee}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\System\Runtime\Core\Exception">
-      <UniqueIdentifier>{5edc8088-5dc1-42c4-a4e6-d8c582192a33}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\System\Runtime\Core\GC">
-      <UniqueIdentifier>{028fea1c-e5bb-42f3-ae84-1f55409c0e5d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\System\Runtime\Core\Object">
-      <UniqueIdentifier>{3c42c991-2273-41a7-9f22-b297436c8e10}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\System\Runtime\Core\JIT\Emitter">
-      <UniqueIdentifier>{10fd2bd6-69bc-4a96-a89c-69178d3a1bbf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\System\Runtime\Core\JIT\Emitter\Page">
-      <UniqueIdentifier>{2deedb37-b538-44c8-ae64-3ba3b7c2ee24}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -252,99 +222,75 @@
     <ClInclude Include="CharSet.h">
       <Filter>头文件\System\Text\CharacterSet</Filter>
     </ClInclude>
-    <ClInclude Include="TypeDescriptor.h">
-      <Filter>头文件\System\Runtime\Core\Descriptor</Filter>
-    </ClInclude>
-    <ClInclude Include="ArrayDescriptor.h">
-      <Filter>头文件\System\Runtime\Core\Descriptor</Filter>
-    </ClInclude>
-    <ClInclude Include="EEClass.h">
-      <Filter>头文件\System\Runtime\Core\EEClass</Filter>
-    </ClInclude>
-    <ClInclude Include="HexJIT.h">
-      <Filter>头文件\System\Runtime\Core\JIT</Filter>
-    </ClInclude>
-    <ClInclude Include="JIT.h">
-      <Filter>头文件\System\Runtime\Core\JIT</Filter>
-    </ClInclude>
-    <ClInclude Include="Emitter.h">
-      <Filter>头文件\System\Runtime\Core\JIT\Emitter</Filter>
-    </ClInclude>
-    <ClInclude Include="X86Emitter.h">
-      <Filter>头文件\System\Runtime\Core\JIT\Emitter</Filter>
-    </ClInclude>
-    <ClInclude Include="WindowsExecutablePage.h">
-      <Filter>头文件\System\Runtime\Core\JIT\Emitter\Page</Filter>
-    </ClInclude>
-    <ClInclude Include="ExecutablePage.h">
-      <Filter>头文件\System\Runtime\Core\JIT\Emitter\Page</Filter>
-    </ClInclude>
-    <ClInclude Include="RuntimeException.h">
-      <Filter>头文件\System\Runtime\Core\Exception</Filter>
-    </ClInclude>
-    <ClInclude Include="GCInterface.h">
-      <Filter>头文件\System\Runtime\Core\GC</Filter>
-    </ClInclude>
-    <ClInclude Include="ArrayBaseObject.h">
-      <Filter>头文件\System\Runtime\Core\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>头文件\System\Runtime\Core\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="RuntimeAlias.h">
-      <Filter>头文件\System\Runtime</Filter>
-    </ClInclude>
-    <ClInclude Include="StandardType.h">
-      <Filter>头文件\System\Runtime\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="MethodTable.h">
-      <Filter>头文件\System\Runtime\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="TypeHandle.h">
-      <Filter>头文件\System\Runtime\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="ArrayClass.h">
-      <Filter>头文件\System\Runtime\Core\EEClass</Filter>
-    </ClInclude>
-    <ClInclude Include="DelegateClass.h">
-      <Filter>头文件\System\Runtime\Core\EEClass</Filter>
-    </ClInclude>
-    <ClInclude Include="Binary.h">
-      <Filter>头文件\System\Runtime</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Emitter.cpp">
+    <ClCompile Include="Runtime\Core\Builders\TypeBuilder.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="X86Emitter.cpp">
+    <ClCompile Include="Runtime\Core\Type\TypeRepresentation.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ArrayBaseObject.cpp">
+    <ClCompile Include="Runtime\Core\Object\StringObject.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="ArrayDescriptor.cpp">
+    <ClCompile Include="Runtime\Core\Type\Type.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="GCInterface.cpp">
+    <ClCompile Include="Runtime\Core\Object\Object.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="MethodTable.cpp">
+    <ClCompile Include="Runtime\Core\Object\ObjectStorage.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Object.cpp">
+    <ClCompile Include="Runtime\Core\MethodTable.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="RuntimeException.cpp">
+    <ClCompile Include="Runtime\Core\Builders\MethodTableBuilder.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="TypeDescriptor.cpp">
+    <ClCompile Include="Runtime\Core\Builders\InterfaceTableBuilder.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="WindowsExecutablePage.cpp">
+    <ClCompile Include="Runtime\Core\FieldTable.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Core\Builders\FieldTableBuilder.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Core\Object\ArrayObject.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Core\Type\AssemblyContext.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Core\JIT\Emitter\Page\WindowsExecutablePage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Core\JIT\Emitter\X86Emitter.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Core\Exception\RuntimeException.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Core\GC\GCInterface.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Core\JIT\Emitter\Emitter.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Binary.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Core\JIT\HexJIT\Frontend\Transformer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Core\JIT\HexJIT\Frontend\EvaluationStack.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Runtime\Core\Meta\MetaManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

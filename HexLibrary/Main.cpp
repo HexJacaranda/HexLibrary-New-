@@ -1,6 +1,9 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
-#include <array>
+#include <future>
 #include "Include.h"
+
+
 
 using namespace HL::System::Collection::Generic;
 using namespace HL::System::Collection;
