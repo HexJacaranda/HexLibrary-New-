@@ -171,28 +171,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Runtime\Binary.cpp" />
-    <ClCompile Include="Runtime\Core\Builders\FieldTableBuilder.cpp" />
-    <ClCompile Include="Runtime\Core\Builders\InterfaceTableBuilder.cpp" />
-    <ClCompile Include="Runtime\Core\Builders\MethodTableBuilder.cpp" />
-    <ClCompile Include="Runtime\Core\Builders\TypeBuilder.cpp" />
-    <ClCompile Include="Runtime\Core\Exception\RuntimeException.cpp" />
-    <ClCompile Include="Runtime\Core\FieldTable.cpp" />
-    <ClCompile Include="Runtime\Core\GC\GCInterface.cpp" />
-    <ClCompile Include="Runtime\Core\JIT\Emitter\Emitter.cpp" />
-    <ClCompile Include="Runtime\Core\JIT\Emitter\Page\WindowsExecutablePage.cpp" />
-    <ClCompile Include="Runtime\Core\JIT\Emitter\X86Emitter.cpp" />
-    <ClCompile Include="Runtime\Core\JIT\HexJIT\Frontend\EvaluationStack.cpp" />
-    <ClCompile Include="Runtime\Core\JIT\HexJIT\Frontend\Transformer.cpp" />
-    <ClCompile Include="Runtime\Core\Meta\MetaManager.cpp" />
-    <ClCompile Include="Runtime\Core\MethodTable.cpp" />
-    <ClCompile Include="Runtime\Core\Object\ArrayObject.cpp" />
-    <ClCompile Include="Runtime\Core\Object\Object.cpp" />
-    <ClCompile Include="Runtime\Core\Object\ObjectStorage.cpp" />
-    <ClCompile Include="Runtime\Core\Object\StringObject.cpp" />
-    <ClCompile Include="Runtime\Core\Type\AssemblyContext.cpp" />
-    <ClCompile Include="Runtime\Core\Type\Type.cpp" />
-    <ClCompile Include="Runtime\Core\Type\TypeRepresentation.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
